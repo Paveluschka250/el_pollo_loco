@@ -1,8 +1,8 @@
 class Background extends MovableObject {
 
-    constructor() {
+    constructor(imagePath) {
         super();
-        // this.loadImage('assets/img/5_background/layers/1.png');
+        this.loadImage(imagePath);
         this.x = 0;
         this.y = 0;
         this.width = 720;

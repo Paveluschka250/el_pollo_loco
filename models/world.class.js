@@ -4,7 +4,9 @@ class World {
   character = new Character();
   chickens = [new Chicken(), new Chicken(), new Chicken()];
   clouds = [new Cloud(), new Cloud(), new Cloud()];
-  background = new Background();
+  background = [
+    new Background("assets/img/5_background/layers/1_first_layer/1.png"),
+  ];
 
   constructor(canvas) {
     this.canvas = canvas;
@@ -14,14 +16,17 @@ class World {
 
   draw() {
     this.ctx.clearRect(0, 0, canvas.width, canvas.height);
-    this.clouds.forEach((cloud) => {
-      this.addToMap(cloud);
-    });
-    this.chickens.forEach((chicken) => {
-      this.addToMap(chicken);
-    });
+    this.addObjectsToMap(this.background);
+    this.addObjectsToMap(this.clouds);
+    this.addObjectsToMap(this.chickens);
     this.addToMap(this.character);
     requestAnimationFrame(this.draw.bind(this));
+  }
+
+  addObjectsToMap(objects){
+    objects.forEach((obj) => {
+      this.addToMap(obj);
+    });
   }
 
   addToMap(mo) {
