@@ -17,25 +17,26 @@ class Character extends MovableObject {
     this.y = 225; // Initial y position
     this.width = 120; // Initial width
     this.height = 200; // Initial height
-    this.speed = 5;
+    this.speed = 6;
     this.animate();
   }
 
   animate() {
     setInterval(() => {
-        if (this.world.keyboard.RIGHT) {
-            this.x += this.speed;
-        }
-        if (this.world.keyboard.LEFT) {
-            this.x -= this.speed;
-        }
+      if (this.world.keyboard.RIGHT) {
+        this.x += this.speed;
+        this.otherDirection = false;
+      }
+      if (this.world.keyboard.LEFT) {
+        this.x -= this.speed;
+        this.otherDirection = true;
+      }
     }, 1000 / 60);
     setInterval(() => {
       if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
-        let i = this.currentImage % this.IMAGES_WALKING.length;
-        let path = this.IMAGES_WALKING[i];
-        this.img = this.imageCache[path];
-        this.currentImage++;
+        this.currentImage =
+          (this.currentImage + 1) % this.IMAGES_WALKING.length;
+        this.img = this.imageCache[this.IMAGES_WALKING[this.currentImage]];
       }
     }, 50);
   }
