@@ -2,6 +2,7 @@ class World {
   canvas;
   ctx;
   keyboard;
+  camera_x;
   character = new Character();
   chickens = [new Chicken(), new Chicken(), new Chicken()];
   clouds = [new Cloud(), new Cloud(), new Cloud()];
@@ -27,10 +28,12 @@ class World {
 
   draw() {
     this.ctx.clearRect(0, 0, canvas.width, canvas.height);
+    this.ctx.translate(this.camera_x, 0);
     this.addObjectsToMap(this.background);
     this.addObjectsToMap(this.clouds);
     this.addObjectsToMap(this.chickens);
     this.addToMap(this.character);
+    this.ctx.translate(-this.camera_x, 0);
     requestAnimationFrame(this.draw.bind(this));
   }
 
