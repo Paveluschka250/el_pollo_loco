@@ -4,31 +4,9 @@ class World {
   keyboard;
   camera_x;
   character = new Character();
-  chickens = [new Chicken(), new Chicken(), new Chicken()];
-  clouds = [new Cloud(), new Cloud(), new Cloud()];
-  background = [
-    new Background("assets/img/5_background/layers/air.png", -720),
-    new Background("assets/img/5_background/layers/3_third_layer/2.png", -720),
-    new Background("assets/img/5_background/layers/2_second_layer/2.png", -720),
-    new Background("assets/img/5_background/layers/1_first_layer/2.png", -720),
-    new Background("assets/img/5_background/layers/air.png", 0),
-    new Background("assets/img/5_background/layers/3_third_layer/1.png", 0),
-    new Background("assets/img/5_background/layers/2_second_layer/1.png", 0),
-    new Background("assets/img/5_background/layers/1_first_layer/1.png", 0),
-    new Background("assets/img/5_background/layers/air.png", 720),
-    new Background("assets/img/5_background/layers/3_third_layer/2.png", 720),
-    new Background("assets/img/5_background/layers/2_second_layer/2.png", 720),
-    new Background("assets/img/5_background/layers/1_first_layer/2.png", 720),
-    new Background("assets/img/5_background/layers/air.png", 720 * 2),
-    new Background("assets/img/5_background/layers/3_third_layer/1.png", 720 * 2),
-    new Background("assets/img/5_background/layers/2_second_layer/1.png", 720 * 2),
-    new Background("assets/img/5_background/layers/1_first_layer/1.png", 720 * 2),
-    new Background("assets/img/5_background/layers/air.png", 720 * 3),
-    new Background("assets/img/5_background/layers/3_third_layer/2.png", 720 * 3),
-    new Background("assets/img/5_background/layers/2_second_layer/2.png", 720 * 3),
-    new Background("assets/img/5_background/layers/1_first_layer/2.png", 720 * 3),
-
-  ];
+  chickens = level.chickens;
+  clouds = level.clouds;
+  background = level.background;
 
   constructor(canvas, keyboard) {
     this.canvas = canvas;
