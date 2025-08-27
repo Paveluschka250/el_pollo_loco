@@ -1,6 +1,6 @@
 const level = new Level(
     [
-        new Chicken(), new Chicken(), new Chicken()
+        new Endboss(), new Chicken(), new Chicken(), new Chicken(),
     ],
     [
         new Cloud(), new Cloud(), new Cloud()
