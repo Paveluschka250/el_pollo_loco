@@ -4,9 +4,7 @@ class World {
   keyboard;
   camera_x;
   character = new Character();
-  chickens = level.chickens;
-  clouds = level.clouds;
-  background = level.background;
+  level = level;
 
   constructor(canvas, keyboard) {
     this.canvas = canvas;
@@ -23,9 +21,9 @@ class World {
   draw() {
     this.ctx.clearRect(0, 0, canvas.width, canvas.height);
     this.ctx.translate(this.camera_x, 0);
-    this.addObjectsToMap(this.background);
-    this.addObjectsToMap(this.clouds);
-    this.addObjectsToMap(this.chickens);
+    this.addObjectsToMap(this.level.background);
+    this.addObjectsToMap(this.level.clouds);
+    this.addObjectsToMap(this.level.chickens);
     this.addToMap(this.character);
     this.ctx.translate(-this.camera_x, 0);
     requestAnimationFrame(this.draw.bind(this));
