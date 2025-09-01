@@ -12,10 +12,21 @@ class World {
     this.keyboard = keyboard;
     this.draw();
     this.setWorld();
+    this.checkCollisions();
   }
 
   setWorld() {
     this.character.world = this;
+  }
+
+  checkCollisions() {
+    setInterval(() => {
+      this.level.chickens.forEach((chicken) => {
+        if (this.character.isCollidingOffset(chicken)) {
+          console.log("collision with chicken");
+        }
+      });
+    }, 1000 / 60);
   }
 
   draw() {
@@ -42,6 +53,7 @@ class World {
 
     mo.draw(this.ctx);
     mo.drawFrame(this.ctx);
+    mo.drawFrameOffset(this.ctx);
 
     if (mo.otherDirection) {
       this.flipImageBack(mo);

@@ -30,8 +30,15 @@ class Character extends MovableObject {
     this.width = 120; // Initial width
     this.height = 200; // Initial height
     this.speed = 6;
+    this.offset = {
+      left: 35,
+      top: 40,
+      bottom: 40,
+      right: 40
+    };
     this.animate();
     this.applyGravity();
+
   }
 
   animate() {

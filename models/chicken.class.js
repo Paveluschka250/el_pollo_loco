@@ -14,6 +14,12 @@ class Chicken extends MovableObject {
     this.width = 60; // Initial width
     this.height = 60; // Initial height
     this.speed = 0.5 + Math.random() * 0.75;
+    this.offset = {
+      left: 5,
+      top: 5,
+      bottom: 5,
+      right: 5
+    };
     this.animate();
   }
 
