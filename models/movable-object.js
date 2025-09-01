@@ -24,10 +24,16 @@ class MovableObject {
     });
   }
 
-  moveLeft() {
-    setInterval(() => {
-      this.x -= this.speed;
-    }, 1000 / 60);
+  draw(ctx) {
+    ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
+  }
+
+  drawFrame(ctx) {
+    ctx.beginPath();
+    ctx.lineWidth = "5";
+    ctx.strokeStyle = "red";
+    ctx.rect(this.x, this.y, this.width, this.height);
+    ctx.stroke();
   }
 
   playAnimation(images) {
@@ -48,5 +54,17 @@ class MovableObject {
 
   isAboveGround() {
     return this.y < 225;
+  }
+
+  jump() {
+    this.speedY = 20;
+  }
+
+  moveRight() {
+    this.x += this.speed;
+  }
+
+  moveLeft() {
+    this.x -= this.speed;
   }
 }
