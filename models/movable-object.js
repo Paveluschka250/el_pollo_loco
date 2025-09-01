@@ -14,8 +14,10 @@ class MovableObject {
     left: 0,
     top: 0,
     bottom: 0,
-    right: 0
+    right: 0,
   };
+  energy = 100;
+  lastHit = 0;
 
   loadImage(path) {
     this.img = new Image();
@@ -35,8 +37,7 @@ class MovableObject {
   }
 
   drawFrame(ctx) {
-
-    if(this instanceof Character || this instanceof Chicken) {
+    if (this instanceof Character || this instanceof Chicken) {
       ctx.beginPath();
       ctx.lineWidth = "1";
       ctx.strokeStyle = "red";
@@ -46,11 +47,16 @@ class MovableObject {
   }
 
   drawFrameOffset(ctx) {
-    if(this instanceof Character || this instanceof Chicken) {
+    if (this instanceof Character || this instanceof Chicken) {
       ctx.beginPath();
       ctx.lineWidth = "2";
       ctx.strokeStyle = "blue";
-      ctx.rect(this.x + this.offset.left, this.y + this.offset.top, this.width - this.offset.right - this.offset.left, this.height - this.offset.top - this.offset.bottom);
+      ctx.rect(
+        this.x + this.offset.left,
+        this.y + this.offset.top,
+        this.width - this.offset.right - this.offset.left,
+        this.height - this.offset.top - this.offset.bottom
+      );
       ctx.stroke();
     }
   }
@@ -64,7 +70,7 @@ class MovableObject {
     );
   }
 
-  isCollidingOffset(mo){
+  isCollidingOffset(mo) {
     return (
       this.x + this.width - this.offset.right > mo.x + mo.offset.left &&
       this.y + this.height - this.offset.bottom > mo.y + mo.offset.top &&
@@ -103,5 +109,24 @@ class MovableObject {
 
   moveLeft() {
     this.x -= this.speed;
+  }
+
+  hit() {
+    this.energy -= 5;
+    if (this.energy <= 0) {
+      this.energy = 0;
+    } else {
+      this.lastHit = new Date().getTime();
+    }
+  }
+
+  die() {
+    return this.energy == 0;
+  }
+
+  hurt() {
+    let timepassed = new Date().getTime() - this.lastHit;
+    timepassed = timepassed / 1000;
+    return timepassed < 1;
   }
 }

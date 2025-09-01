@@ -23,10 +23,11 @@ class World {
     setInterval(() => {
       this.level.chickens.forEach((chicken) => {
         if (this.character.isCollidingOffset(chicken)) {
-          console.log("collision with chicken");
+          this.character.hit();
+          console.log("energy: " + this.character.energy);
         }
       });
-    }, 1000 / 60);
+    }, 200);
   }
 
   draw() {
