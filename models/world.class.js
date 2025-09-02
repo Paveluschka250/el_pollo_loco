@@ -5,6 +5,7 @@ class World {
   camera_x;
   character = new Character();
   level = level;
+  statusbar = new Statusbar();
 
   constructor(canvas, keyboard) {
     this.canvas = canvas;
@@ -24,7 +25,7 @@ class World {
       this.level.chickens.forEach((chicken) => {
         if (this.character.isCollidingOffset(chicken)) {
           this.character.hit();
-          console.log("energy: " + this.character.energy);
+          this.statusbar.setPercentage(this.character.energy);
         }
       });
     }, 200);
@@ -34,6 +35,9 @@ class World {
     this.ctx.clearRect(0, 0, canvas.width, canvas.height);
     this.ctx.translate(this.camera_x, 0);
     this.addObjectsToMap(this.level.background);
+    this.ctx.translate(-this.camera_x, 0);
+    this.addToMap(this.statusbar);
+    this.ctx.translate(this.camera_x, 0);
     this.addObjectsToMap(this.level.clouds);
     this.addObjectsToMap(this.level.chickens);
     this.addToMap(this.character);
