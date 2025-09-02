@@ -12,8 +12,6 @@ class MovableObject extends DrawableObject {
   energy = 100;
   lastHit = 0;
 
-
-
   isColliding(mo) {
     return (
       this.x < mo.x + mo.width &&
@@ -49,7 +47,11 @@ class MovableObject extends DrawableObject {
   }
 
   isAboveGround() {
-    return this.y < 225;
+    if (this instanceof ThrowableObject) {
+      return true;
+    } else {
+      return this.y < 225;
+    }
   }
 
   jump() {

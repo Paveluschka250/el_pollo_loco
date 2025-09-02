@@ -6,6 +6,7 @@ class World {
   character = new Character();
   level = level;
   statusbar = new Statusbar();
+  throwableObjects = [];
 
   constructor(canvas, keyboard) {
     this.canvas = canvas;
@@ -13,22 +14,35 @@ class World {
     this.keyboard = keyboard;
     this.draw();
     this.setWorld();
-    this.checkCollisions();
+    this.run();
   }
 
   setWorld() {
     this.character.world = this;
   }
 
-  checkCollisions() {
+  run() {
     setInterval(() => {
-      this.level.chickens.forEach((chicken) => {
-        if (this.character.isCollidingOffset(chicken)) {
-          this.character.hit();
-          this.statusbar.setPercentage(this.character.energy);
-        }
-      });
+      this.checkCollisions();
+      this.checkThrowableObjects();
     }, 200);
+  }
+
+  checkThrowableObjects() {
+    if (this.keyboard.SPACE) {
+      let bottle = new ThrowableObject(this.character.x + 100, this.character.y + 100);
+      this.throwableObjects.push(bottle);
+    }
+  }
+
+
+  checkCollisions() {
+    this.level.chickens.forEach((chicken) => {
+      if (this.character.isCollidingOffset(chicken)) {
+        this.character.hit();
+        this.statusbar.setPercentage(this.character.energy);
+      }
+    });
   }
 
   draw() {
@@ -41,6 +55,7 @@ class World {
     this.addObjectsToMap(this.level.clouds);
     this.addObjectsToMap(this.level.chickens);
     this.addToMap(this.character);
+    this.addObjectsToMap(this.throwableObjects);
     this.ctx.translate(-this.camera_x, 0);
     requestAnimationFrame(this.draw.bind(this));
   }
