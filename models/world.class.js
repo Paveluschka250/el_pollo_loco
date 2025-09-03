@@ -5,7 +5,11 @@ class World {
   camera_x;
   character = new Character();
   level = level;
-  statusbar = new Statusbar();
+  statusbar = [
+    Object.assign(new Statusbar('health'), { y: -10 }),
+    Object.assign(new Statusbar('coins'), { y: 20 }),
+    Object.assign(new Statusbar('bottle'), { y: 50 })
+  ];
   throwableObjects = [];
 
   constructor(canvas, keyboard) {
@@ -40,17 +44,19 @@ class World {
     this.level.chickens.forEach((chicken) => {
       if (this.character.isCollidingOffset(chicken)) {
         this.character.hit();
-        this.statusbar.setPercentage(this.character.energy);
+        this.statusbar[0].setPercentage(this.character.energy);
       }
     });
   }
+
+  
 
   draw() {
     this.ctx.clearRect(0, 0, canvas.width, canvas.height);
     this.ctx.translate(this.camera_x, 0);
     this.addObjectsToMap(this.level.background);
     this.ctx.translate(-this.camera_x, 0);
-    this.addToMap(this.statusbar);
+    this.addObjectsToMap(this.statusbar);
     this.ctx.translate(this.camera_x, 0);
     this.addObjectsToMap(this.level.coins);
     this.addObjectsToMap(this.level.clouds);
