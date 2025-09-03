@@ -9,7 +9,17 @@
   </head>
   <body onload="init()">
     <h1>El Pollo Loco</h1>
-    <canvas id="canvas" width="720" height="480"></canvas>
+      <canvas id="canvas" width="720" height="480"></canvas>
+      <div class="control-panel">
+        <div class="control-panel-left">
+          <button class="btn-move-left"><img src="./assets/icons/left.svg" alt="left"></button>
+          <button class="btn-move-right"><img src="./assets/icons/right.svg" alt="right"></button>
+        </div>
+        <div class="control-panel-right">
+          <button class="btn-jump"><img src="./assets/icons/jump.svg" alt="jump"></button>
+          <button class="btn-throw"><img src="./assets/img/6_salsa_bottle/1_salsa_bottle_on_ground.png" alt="throw"></button>
+        </div>
+      </div>
   </body>
   <script src="./models/drawable-object.class.js"></script>
   <script src="./models/movable-object.js"></script>

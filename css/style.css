@@ -1,47 +1,94 @@
 @font-face {
-    font-family: "rye";
-    src: url("../assets/fonts/rye.ttf") format("truetype");
+  font-family: "rye";
+  src: url("../assets/fonts/rye.ttf") format("truetype");
 }
 
 body {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    margin: 0;
-    background-image: url("../assets/img/5_background/background.png");
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;
-    font-family: 'rye', Arial, Helvetica, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  margin: 0;
+  background-image: url("../assets/img/5_background/background.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  font-family: "rye", Arial, Helvetica, sans-serif;
 }
 
 h1 {
-    font-size: 40px;
-    letter-spacing: 3px;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  font-size: 40px;
+  letter-spacing: 3px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 canvas {
-    background-color: black;
-    border-radius: 16px;
-    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.7);
-    display: block;
+  background-color: black;
+  border-radius: 16px;
+  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.7);
+  display: block;
 }
 
 @media only screen and (max-width: 720px) {
-    canvas {
-        width: 100%;
-    }
-    h1 {
-        display: none;
-    }
+  canvas {
+    width: 100%;
+  }
+  h1 {
+    display: none;
+  }
 }
 
 @media only screen and (max-height: 480px) {
-    canvas {
-        height: 100vh;
-    }
+  canvas {
+    height: 100vh;
+  }
+  h1 {
+    display: none;
+  }
 }
 
+.control-panel {
+    display: none;
+    /* display: flex; */
+    justify-content: space-between;
+    width: 100%;
+    max-width: 720px;
+    background-color: rgba(0, 0, 0, 0.8);
+    border-radius: 16px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+.control-panel .control-panel-left, .control-panel .control-panel-right {
+    display: flex;
+    gap: 10px;
+}
+
+img {
+    width: 24px;
+    height: 24px;
+}
+
+button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #ffcc00;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-family: 'rye', Arial, Helvetica, sans-serif;
+    color: #000;
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.2s;
+}
+
+button:hover {
+    background-color: #ffaa00;
+    transform: scale(1.1);
+}
+
+button:active {
+    transform: scale(0.95);
+}
