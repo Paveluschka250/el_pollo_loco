@@ -7,8 +7,8 @@ class World {
   level = level;
   statusbar = [
     Object.assign(new Statusbar('health'), { y: -10 }),
-    Object.assign(new Statusbar('coins'), { y: 20 }),
-    Object.assign(new Statusbar('bottle'), { y: 50 })
+    Object.assign(new Statusbar('coins'), { y: 30 }),
+    Object.assign(new Statusbar('bottle'), { y: 70 })
   ];
   throwableObjects = [];
 
@@ -28,8 +28,9 @@ class World {
   run() {
     setInterval(() => {
       this.checkCollisions();
+      this.checkCollisionsCoins();
       this.checkThrowableObjects();
-    }, 200);
+    }, 16);
   }
 
   checkThrowableObjects() {
@@ -45,8 +46,21 @@ class World {
       if (this.character.isCollidingOffset(chicken)) {
         this.character.hit();
         this.statusbar[0].setPercentage(this.character.energy);
+        console.log("Kollision mit Huhn erkannt!");
+
       }
     });
+  }
+
+  checkCollisionsCoins() {
+    for (let i = 0; i < this.level.coins.length; i++) {
+      let coin = this.level.coins[i];
+      if (this.character.isCollidingOffset(coin)) {
+        console.log('Kollision mit Coin erkannt!');
+        this.level.coins.splice(i, 1);
+        break;
+      }
+    }
   }
 
   
