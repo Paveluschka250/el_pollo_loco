@@ -1,6 +1,7 @@
 class Bottle extends MovableObject {
     constructor(xMin = 0, xMax = 500, imagePath = "assets/img/6_salsa_bottle/1_salsa_bottle_on_ground.png") {
         super();
+        this.pickupSound = new Audio('assets/audio/bottle.mp3');
         this.loadImage(imagePath);
         this.x = Math.random() * (xMax - xMin) + xMin;
         this.y = 350;
@@ -13,4 +14,11 @@ class Bottle extends MovableObject {
           right: 26,
         };
       }
+  
+    collect() {
+        try {
+            this.pickupSound.currentTime = 0;
+            this.pickupSound.play();
+        } catch (e) {}
+    }
   }
