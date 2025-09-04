@@ -5,6 +5,7 @@ class World {
   camera_x;
   character = new Character();
   level = level;
+  spaceWasDown = false;
   statusbar = [
     Object.assign(new Statusbar('health'), { y: -10 }),
     Object.assign(new Statusbar('coins'), { y: 30 }),
@@ -35,9 +36,13 @@ class World {
   }
 
   checkThrowableObjects() {
-    if (this.keyboard.SPACE) {
+    if (this.keyboard.SPACE && !this.spaceWasDown) {
       let bottle = new ThrowableObject(this.character.x + 100, this.character.y + 100);
       this.throwableObjects.push(bottle);
+      this.spaceWasDown = true;
+    }
+    if (!this.keyboard.SPACE) {
+      this.spaceWasDown = false;
     }
   }
 

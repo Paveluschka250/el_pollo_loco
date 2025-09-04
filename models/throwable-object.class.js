@@ -11,15 +11,21 @@ class ThrowableObject extends MovableObject {
     this.loadImages(this.IMAGES_BOTTLE);
     this.x = x;
     this.y = y;
-    this.width = 200;
-    this.height = 50;
+    this.width = 80;
+    this.height = 80;
     this.throw();
+    this.animateRotation();
   }
   throw() {
-    this.speedY = 10;
+    this.speedY = 15;
     this.applyGravity();
     setInterval(() => {
-        this.x += 5;
+        this.x += 15   ;
     }, 1000 / 60);
+  }
+  animateRotation() {
+    setInterval(() => {
+      this.playAnimation(this.IMAGES_BOTTLE);
+    }, 1000 / 15);
   }
 }
