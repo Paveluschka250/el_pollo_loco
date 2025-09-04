@@ -55,10 +55,26 @@ class World {
   checkCollisions() {
     this.level.chickens.forEach((chicken) => {
       if (this.character.isCollidingOffset(chicken)) {
-        this.character.hit();
-        this.statusbar[0].setPercentage(this.character.energy);
-        console.log("Kollision mit Huhn erkannt!");
-
+        // Stomp, wenn der Charakter von oben kommt und die Unterkante vor dem Kontakt oberhalb des Chicken-Kopfes war
+        const characterBottom = this.character.y + this.character.height - this.character.offset.bottom;
+        const chickenMidY = chicken.y + chicken.height / 2;
+        const isAirborne = this.character.isAboveGround();
+        const isStomp = isAirborne && this.character.speedY < 0 && characterBottom <= chickenMidY;
+        if (isStomp && !chicken.isDead) {
+          // Von oben gelandet: Chicken töten, 1s Dead-Frame, dann entfernen
+          chicken.playDead();
+          // Charakter exakt auf Chicken setzen und mit Bounce nach oben abfedern
+          this.character.y = chicken.y - (this.character.height - this.character.offset.bottom);
+          this.character.speedY = 15;
+          setTimeout(() => {
+            const idx = this.level.chickens.indexOf(chicken);
+            if (idx >= 0) this.level.chickens.splice(idx, 1);
+          }, 1000);
+        } else if (!chicken.isDead) {
+          // Normale Kollision: Charakter erhält Schaden
+          this.character.hit();
+          this.statusbar[0].setPercentage(this.character.energy);
+        }
       }
     });
   }
