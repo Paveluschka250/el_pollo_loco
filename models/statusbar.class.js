@@ -1,11 +1,11 @@
 class Statusbar extends DrawableObject {
     IMAGES_HEALTH = [
-        "assets/img/7_statusbars/1_statusbar/2_statusbar_health/blue/100.png",
-        "assets/img/7_statusbars/1_statusbar/2_statusbar_health/blue/80.png",
-        "assets/img/7_statusbars/1_statusbar/2_statusbar_health/blue/60.png",
-        "assets/img/7_statusbars/1_statusbar/2_statusbar_health/blue/40.png",
+        "assets/img/7_statusbars/1_statusbar/2_statusbar_health/blue/0.png",
         "assets/img/7_statusbars/1_statusbar/2_statusbar_health/blue/20.png",
-        "assets/img/7_statusbars/1_statusbar/2_statusbar_health/blue/0.png"
+        "assets/img/7_statusbars/1_statusbar/2_statusbar_health/blue/40.png",
+        "assets/img/7_statusbars/1_statusbar/2_statusbar_health/blue/60.png",
+        "assets/img/7_statusbars/1_statusbar/2_statusbar_health/blue/80.png",
+        "assets/img/7_statusbars/1_statusbar/2_statusbar_health/blue/100.png"
     ];
 
     IMAGES_COINS = [
@@ -35,7 +35,7 @@ class Statusbar extends DrawableObject {
         this.width = 200;
         this.height = 50;
         if (type === 'health') {
-            this.loadImage(this.IMAGES_HEALTH[0]);
+            this.loadImage(this.IMAGES_HEALTH[5]); // 100% = letztes Bild
             this.loadImages(this.IMAGES_HEALTH);
         } else if (type === 'coins') {
             this.loadImage(this.IMAGES_COINS[0]);
@@ -58,17 +58,21 @@ class Statusbar extends DrawableObject {
     }
 
     resolveImageIndex() {
-        if (this.percentage == 100) {
-            return 5;
-        } else if (this.percentage == 80) {
-            return 4;
-        } else if (this.percentage == 60) {
-            return 3;
-        } else if (this.percentage == 40) {
-            return 2;
-        } else if (this.percentage == 20) {
-            return 1;
+        if (this.type === 'health') {
+            // Health: 100%=5, 80%=4, 60%=3, 40%=2, 20%=1, 0%=0
+            if (this.percentage == 100) return 5;
+            if (this.percentage == 80) return 4;
+            if (this.percentage == 60) return 3;
+            if (this.percentage == 40) return 2;
+            if (this.percentage == 20) return 1;
+            return 0;
         } else {
+            // Coins/Bottles: 0%=0, 20%=1, 40%=2, 60%=3, 80%=4, 100%=5
+            if (this.percentage == 100) return 5;
+            if (this.percentage == 80) return 4;
+            if (this.percentage == 60) return 3;
+            if (this.percentage == 40) return 2;
+            if (this.percentage == 20) return 1;
             return 0;
         }
     }

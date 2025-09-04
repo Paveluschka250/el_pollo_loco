@@ -77,7 +77,7 @@ class World {
             const idx = this.level.chickens.indexOf(chicken);
             if (idx >= 0) this.level.chickens.splice(idx, 1);
           }, 1000);
-        } else if (!chicken.isDead) {
+        } else if (!chicken.isDead && !this.character.hurt()) {
           this.character.hit();
           this.statusbar[0].setPercentage(this.character.energy);
         }
@@ -112,8 +112,7 @@ class World {
         if (typeof bottle.collect === "function") {
           bottle.collect();
         }
-        this.level.bottles.splice(i, 1);
-        // Bottle-Statusbar um eine Stufe (20%) erhöhen
+        this.level.bottles.splice(i, 1);0
         const bottleBar = this.statusbar[2];
         const newPercentage = Math.min(100, (bottleBar.percentage || 0) + 20);
         bottleBar.setPercentage(newPercentage);
