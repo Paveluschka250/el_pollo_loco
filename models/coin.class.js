@@ -3,6 +3,7 @@ class Coin extends MovableObject {
     "assets/img/8_coin/coin_1.png",
     "assets/img/8_coin/coin_2.png",
   ];
+  pickupSound = new Audio('assets/audio/coin.mp3');
   constructor(xMin = 0, xMax = 500) {
     super();
     this.loadImage("assets/img/8_coin/coin_1.png");
@@ -24,5 +25,13 @@ class Coin extends MovableObject {
     setInterval(() => {
       this.playAnimation(this.IMAGES_COIN);
     }, 200);
+  }
+
+  collect() {
+    try {
+      this.pickupSound.currentTime = 0;
+      this.pickupSound.play();
+    } catch (e) {
+    }
   }
 }

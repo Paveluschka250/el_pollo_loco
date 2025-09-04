@@ -29,7 +29,7 @@ class Statusbar extends DrawableObject {
     constructor(type = 'health') {
         super();
         this.type = type;
-        this.percentage = 100;
+        this.percentage = type === 'health' ? 100 : 0;
         this.x = 0;
         this.y = -10;
         this.width = 200;

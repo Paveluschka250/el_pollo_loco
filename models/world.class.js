@@ -57,7 +57,15 @@ class World {
       let coin = this.level.coins[i];
       if (this.character.isCollidingOffset(coin)) {
         console.log('Kollision mit Coin erkannt!');
+        // Sound über Coin-Instanz abspielen
+        if (typeof coin.collect === 'function') {
+          coin.collect();
+        }
         this.level.coins.splice(i, 1);
+        // Coins-Statusbar um eine Stufe (20%) erhöhen
+        const coinsBar = this.statusbar[1];
+        const newPercentage = Math.min(100, (coinsBar.percentage || 0) + 20);
+        coinsBar.setPercentage(newPercentage);
         break;
       }
     }
@@ -69,13 +77,14 @@ class World {
     this.ctx.clearRect(0, 0, canvas.width, canvas.height);
     this.ctx.translate(this.camera_x, 0);
     this.addObjectsToMap(this.level.background);
-    this.ctx.translate(-this.camera_x, 0);
-    this.addObjectsToMap(this.statusbar);
-    this.ctx.translate(this.camera_x, 0);
     this.addObjectsToMap(this.level.coins);
+    this.addObjectsToMap(this.level.bottles);
     this.addObjectsToMap(this.level.clouds);
     this.addObjectsToMap(this.level.chickens);
     this.addToMap(this.character);
+    this.ctx.translate(-this.camera_x, 0);
+    this.addObjectsToMap(this.statusbar);
+    this.ctx.translate(this.camera_x, 0);
     this.addObjectsToMap(this.throwableObjects);
     this.ctx.translate(-this.camera_x, 0);
     requestAnimationFrame(this.draw.bind(this));
