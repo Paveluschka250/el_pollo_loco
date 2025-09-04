@@ -7,9 +7,9 @@ class World {
   level = level;
   spaceWasDown = false;
   statusbar = [
-    Object.assign(new Statusbar('health'), { y: -10 }),
-    Object.assign(new Statusbar('coins'), { y: 30 }),
-    Object.assign(new Statusbar('bottle'), { y: 70 })
+    Object.assign(new Statusbar("health"), { y: -10 }),
+    Object.assign(new Statusbar("coins"), { y: 30 }),
+    Object.assign(new Statusbar("bottle"), { y: 70 }),
   ];
   throwableObjects = [];
 
@@ -32,6 +32,7 @@ class World {
       this.checkCollisionsCoins();
       this.checkCollisionsBottles();
       this.checkThrowableObjects();
+      this.checkBottleHitsChickens();
     }, 16);
   }
 
@@ -40,7 +41,10 @@ class World {
       const bottleBar = this.statusbar[2];
       const available = bottleBar?.percentage || 0;
       if (available >= 20) {
-        let bottle = new ThrowableObject(this.character.x + 30, this.character.y + 100);
+        let bottle = new ThrowableObject(
+          this.character.x + 30,
+          this.character.y + 100
+        );
         this.throwableObjects.push(bottle);
         bottleBar.setPercentage(Math.max(0, available - 20));
         this.spaceWasDown = true;
@@ -51,27 +55,29 @@ class World {
     }
   }
 
-
   checkCollisions() {
     this.level.chickens.forEach((chicken) => {
       if (this.character.isCollidingOffset(chicken)) {
-        // Stomp, wenn der Charakter von oben kommt und die Unterkante vor dem Kontakt oberhalb des Chicken-Kopfes war
-        const characterBottom = this.character.y + this.character.height - this.character.offset.bottom;
+        const characterBottom =
+          this.character.y +
+          this.character.height -
+          this.character.offset.bottom;
         const chickenMidY = chicken.y + chicken.height / 2;
         const isAirborne = this.character.isAboveGround();
-        const isStomp = isAirborne && this.character.speedY < 0 && characterBottom <= chickenMidY;
+        const isStomp =
+          isAirborne &&
+          this.character.speedY < 0 &&
+          characterBottom <= chickenMidY;
         if (isStomp && !chicken.isDead) {
-          // Von oben gelandet: Chicken töten, 1s Dead-Frame, dann entfernen
           chicken.playDead();
-          // Charakter exakt auf Chicken setzen und mit Bounce nach oben abfedern
-          this.character.y = chicken.y - (this.character.height - this.character.offset.bottom);
+          this.character.y =
+            chicken.y - (this.character.height - this.character.offset.bottom);
           this.character.speedY = 15;
           setTimeout(() => {
             const idx = this.level.chickens.indexOf(chicken);
             if (idx >= 0) this.level.chickens.splice(idx, 1);
           }, 1000);
         } else if (!chicken.isDead) {
-          // Normale Kollision: Charakter erhält Schaden
           this.character.hit();
           this.statusbar[0].setPercentage(this.character.energy);
         }
@@ -83,9 +89,9 @@ class World {
     for (let i = 0; i < this.level.coins.length; i++) {
       let coin = this.level.coins[i];
       if (this.character.isCollidingOffset(coin)) {
-        console.log('Kollision mit Coin erkannt!');
+        console.log("Kollision mit Coin erkannt!");
         // Sound über Coin-Instanz abspielen
-        if (typeof coin.collect === 'function') {
+        if (typeof coin.collect === "function") {
           coin.collect();
         }
         this.level.coins.splice(i, 1);
@@ -102,8 +108,8 @@ class World {
     for (let i = 0; i < this.level.bottles.length; i++) {
       let bottle = this.level.bottles[i];
       if (this.character.isCollidingOffset(bottle)) {
-        console.log('Kollision mit Bottle erkannt!');
-        if (typeof bottle.collect === 'function') {
+        console.log("Kollision mit Bottle erkannt!");
+        if (typeof bottle.collect === "function") {
           bottle.collect();
         }
         this.level.bottles.splice(i, 1);
@@ -115,8 +121,6 @@ class World {
       }
     }
   }
-
-  
 
   draw() {
     this.ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -152,6 +156,26 @@ class World {
 
     if (mo.otherDirection) {
       this.flipImageBack(mo);
+    }
+  }
+
+  checkBottleHitsChickens() {
+    for (let b = 0; b < this.throwableObjects.length; b++) {
+      const bottle = this.throwableObjects[b];
+      for (let c = 0; c < this.level.chickens.length; c++) {
+        const chicken = this.level.chickens[c];
+        if (!chicken.isDead && bottle.isCollidingOffset(chicken)) {
+          chicken.playDead();
+          // Flasche nach Treffer entfernen
+          this.throwableObjects.splice(b, 1);
+          b--; // Index korrigieren nach Entfernen
+          setTimeout(() => {
+            const idx = this.level.chickens.indexOf(chicken);
+            if (idx >= 0) this.level.chickens.splice(idx, 1);
+          }, 1000);
+          break;
+        }
+      }
     }
   }
 
