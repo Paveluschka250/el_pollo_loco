@@ -37,9 +37,14 @@ class World {
 
   checkThrowableObjects() {
     if (this.keyboard.SPACE && !this.spaceWasDown) {
-      let bottle = new ThrowableObject(this.character.x + 100, this.character.y + 100);
-      this.throwableObjects.push(bottle);
-      this.spaceWasDown = true;
+      const bottleBar = this.statusbar[2];
+      const available = bottleBar?.percentage || 0;
+      if (available >= 20) {
+        let bottle = new ThrowableObject(this.character.x + 30, this.character.y + 100);
+        this.throwableObjects.push(bottle);
+        bottleBar.setPercentage(Math.max(0, available - 20));
+        this.spaceWasDown = true;
+      }
     }
     if (!this.keyboard.SPACE) {
       this.spaceWasDown = false;
