@@ -9,6 +9,7 @@ class ThrowableObject extends MovableObject {
     super();
     this.loadImage(this.IMAGES_BOTTLE[0]);
     this.loadImages(this.IMAGES_BOTTLE);
+    this.throwSound = new Audio('assets/audio/throw.mp3');
     this.x = x;
     this.y = y;
     this.width = 80;
@@ -24,6 +25,10 @@ class ThrowableObject extends MovableObject {
   }
   throw() {
     this.speedY = 15;
+    try {
+      this.throwSound.currentTime = 0;
+      this.throwSound.play();
+    } catch (e) {}
     this.applyGravity();
     setInterval(() => {
         this.x += 15   ;

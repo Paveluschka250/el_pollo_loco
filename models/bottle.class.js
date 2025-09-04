@@ -11,7 +11,7 @@ class Bottle extends MovableObject {
           left: 26,
           top: 15,
           bottom: 12,
-          right: 26,
+          right: 18,
         };
       }
   
