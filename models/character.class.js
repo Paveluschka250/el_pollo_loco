@@ -8,8 +8,6 @@ class Character extends MovableObject {
     "assets/img/2_character_pepe/2_walk/W-26.png",
   ];
   IMAGES_JUMP = [
-    "assets/img/2_character_pepe/3_jump/J-31.png",
-    "assets/img/2_character_pepe/3_jump/J-32.png",
     "assets/img/2_character_pepe/3_jump/J-33.png",
     "assets/img/2_character_pepe/3_jump/J-34.png",
     "assets/img/2_character_pepe/3_jump/J-35.png",
@@ -89,6 +87,12 @@ class Character extends MovableObject {
     this.deadSoundPlayed = false;
     this.hurtSound = new Audio("assets/audio/hurt.mp3");
     this.jumpSound = new Audio("assets/audio/jump.mp3");
+    this.walkSound = new Audio("assets/audio/walk.mp3");
+    this.walkSound.loop = true;
+    this.lastJumpFrameAt = 0; // Zeitstempel für Jump-Frames
+    this.jumpFrameInterval = 50; // Jump-Animation verlangsamen (ms pro Frame)
+    this.lastWalkFrameAt = 0; // Zeitstempel für Walk-Frames
+    this.walkFrameInterval = 80; // Walk-Animation verlangsamen (ms pro Frame)
     this.animate();
     this.applyGravity();
   }
@@ -122,6 +126,13 @@ class Character extends MovableObject {
           try { this.hurtSound.pause(); } catch (e) {}
           try { this.hurtSound.currentTime = 0; } catch (e) {}
         }
+        // Walk-Sound stoppen
+        if (this.walkSound && !this.walkSound.paused) {
+          try { this.walkSound.pause(); } catch (e) {}
+          try { this.walkSound.currentTime = 0; } catch (e) {}
+        }
+        // Walk-Frame-Timer zurücksetzen
+        this.lastWalkFrameAt = 0;
         const now = (typeof performance !== "undefined" && performance.now) ? performance.now() : new Date().getTime();
         if (now - this.lastDeadFrameAt >= this.deadFrameInterval) {
           this.playAnimation(this.IMAGES_DEAD);
@@ -131,21 +142,50 @@ class Character extends MovableObject {
       }
       if (this.hurt()) {
         this.playAnimation(this.IMAGES_HURT);
+        // Walk-Sound stoppen
+        if (this.walkSound && !this.walkSound.paused) {
+          try { this.walkSound.pause(); } catch (e) {}
+          try { this.walkSound.currentTime = 0; } catch (e) {}
+        }
+        // Walk-Frame-Timer zurücksetzen
+        this.lastWalkFrameAt = 0;
         return;
       }
 
       if (this.isAboveGround()) {
-        this.playAnimation(this.IMAGES_JUMP);
+        const now = (typeof performance !== "undefined" && performance.now) ? performance.now() : new Date().getTime();
+        if (now - this.lastJumpFrameAt >= this.jumpFrameInterval) {
+          this.playAnimation(this.IMAGES_JUMP);
+          this.lastJumpFrameAt = now;
+        }
         this.idleTime = 0;
         this.lastIdleFrameAt = 0;
+        this.lastWalkFrameAt = 0;
+        // Walk-Sound stoppen
+        if (this.walkSound && !this.walkSound.paused) {
+          try { this.walkSound.pause(); } catch (e) {}
+          try { this.walkSound.currentTime = 0; } catch (e) {}
+        }
         return;
       }
 
       const isMoving = this.world.keyboard.RIGHT || this.world.keyboard.LEFT;
       if (isMoving) {
-        this.playAnimation(this.IMAGES_WALKING);
+        const now = (typeof performance !== "undefined" && performance.now) ? performance.now() : new Date().getTime();
+        if (now - this.lastWalkFrameAt >= this.walkFrameInterval) {
+          this.playAnimation(this.IMAGES_WALKING);
+          this.lastWalkFrameAt = now;
+        }
         this.idleTime = 0;
         this.lastIdleFrameAt = 0;
+        this.lastJumpFrameAt = 0;
+        // Walk-Sound starten
+        try {
+          if (this.walkSound && this.walkSound.paused) {
+            this.walkSound.currentTime = 0;
+            this.walkSound.play();
+          }
+        } catch (e) {}
       } else {
         this.idleTime += 50;
         const now = (typeof performance !== "undefined" && performance.now) ? performance.now() : new Date().getTime();
@@ -157,6 +197,13 @@ class Character extends MovableObject {
             this.playAnimation(this.IMAGES_IDLE);
           }
           this.lastIdleFrameAt = now;
+        }
+        this.lastWalkFrameAt = 0;
+        this.lastJumpFrameAt = 0;
+        // Walk-Sound stoppen
+        if (this.walkSound && !this.walkSound.paused) {
+          try { this.walkSound.pause(); } catch (e) {}
+          try { this.walkSound.currentTime = 0; } catch (e) {}
         }
       }
     }, 50);
@@ -180,6 +227,9 @@ class Character extends MovableObject {
     if (this.die()) {
       return;
     }
+    // Sprunganimation immer von vorne starten
+    this.currentImage = 0;
+    this.lastJumpFrameAt = 0;
     super.jump();
     try {
       if (this.jumpSound) {
