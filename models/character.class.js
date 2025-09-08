@@ -85,6 +85,9 @@ class Character extends MovableObject {
     this.longIdleFrameInterval = 180; // Long-Idle noch etwas langsamer
     this.lastDeadFrameAt = 0; // Zeitstempel für Dead-Frames
     this.deadFrameInterval = 150; // Dead-Animation langsamer (ms pro Frame)
+    this.deadSound = new Audio("assets/audio/dead.mp3");
+    this.deadSoundPlayed = false;
+    this.hurtSound = new Audio("assets/audio/hurt.mp3");
     this.animate();
     this.applyGravity();
   }
@@ -106,6 +109,18 @@ class Character extends MovableObject {
     }, 1000 / 60);
     setInterval(() => {
       if (this.die()) {
+        if (!this.deadSoundPlayed && this.deadSound) {
+          try {
+            this.deadSound.currentTime = 0;
+            this.deadSound.play();
+          } catch (e) {}
+          this.deadSoundPlayed = true;
+        }
+        // sicherstellen, dass Hurt-Sound nicht weiterläuft
+        if (this.hurtSound && !this.hurtSound.paused) {
+          try { this.hurtSound.pause(); } catch (e) {}
+          try { this.hurtSound.currentTime = 0; } catch (e) {}
+        }
         const now = (typeof performance !== "undefined" && performance.now) ? performance.now() : new Date().getTime();
         if (now - this.lastDeadFrameAt >= this.deadFrameInterval) {
           this.playAnimation(this.IMAGES_DEAD);
@@ -144,5 +159,19 @@ class Character extends MovableObject {
         }
       }
     }, 50);
+  }
+
+  hit() {
+    // Wenn bereits tot: keine weiteren Hit-Effekte oder Sounds
+    if (this.die()) {
+      return;
+    }
+    super.hit();
+    try {
+      if (this.hurtSound) {
+        this.hurtSound.currentTime = 0;
+        this.hurtSound.play();
+      }
+    } catch (e) {}
   }
 }
