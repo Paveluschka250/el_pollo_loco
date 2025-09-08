@@ -88,6 +88,7 @@ class Character extends MovableObject {
     this.deadSound = new Audio("assets/audio/dead.mp3");
     this.deadSoundPlayed = false;
     this.hurtSound = new Audio("assets/audio/hurt.mp3");
+    this.jumpSound = new Audio("assets/audio/jump.mp3");
     this.animate();
     this.applyGravity();
   }
@@ -171,6 +172,19 @@ class Character extends MovableObject {
       if (this.hurtSound) {
         this.hurtSound.currentTime = 0;
         this.hurtSound.play();
+      }
+    } catch (e) {}
+  }
+
+  jump() {
+    if (this.die()) {
+      return;
+    }
+    super.jump();
+    try {
+      if (this.jumpSound) {
+        this.jumpSound.currentTime = 0;
+        this.jumpSound.play();
       }
     } catch (e) {}
   }

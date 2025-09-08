@@ -48,6 +48,7 @@ class Chicken extends MovableObject {
       right: 5
     };
     this.isDead = false;
+    this.deadSound = new Audio("assets/audio/chicken.mp3");
     this.animate();
   }
 
@@ -66,5 +67,11 @@ class Chicken extends MovableObject {
     this.speed = 0;
     const deadImg = (this.type === 2 ? this.IMAGES_DEAD2 : this.IMAGES_DEAD1)[0];
     this.loadImage(deadImg);
+    try {
+      if (this.deadSound) {
+        this.deadSound.currentTime = 0;
+        this.deadSound.play();
+      }
+    } catch (e) {}
   }
 }
