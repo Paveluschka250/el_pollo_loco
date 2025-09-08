@@ -165,9 +165,15 @@ class World {
         const chicken = this.level.chickens[c];
         if (!chicken.isDead && bottle.isCollidingOffset(chicken)) {
           chicken.playDead();
-          // Flasche nach Treffer entfernen
-          this.throwableObjects.splice(b, 1);
-          b--; // Index korrigieren nach Entfernen
+          // Flasche: Splash-Animation an der Trefferstelle abspielen lassen
+          if (typeof bottle.onLand === "function") {
+            bottle.onLand();
+          }
+          // Flasche nach kurzer Zeit entfernen (nach Splash)
+          setTimeout(() => {
+            const idxBottle = this.throwableObjects.indexOf(bottle);
+            if (idxBottle >= 0) this.throwableObjects.splice(idxBottle, 1);
+          }, 400);
           setTimeout(() => {
             const idx = this.level.chickens.indexOf(chicken);
             if (idx >= 0) this.level.chickens.splice(idx, 1);

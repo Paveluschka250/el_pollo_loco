@@ -17,17 +17,21 @@ class ThrowableObject extends MovableObject {
     super();
     this.loadImage(this.IMAGES_BOTTLE[0]);
     this.loadImages(this.IMAGES_BOTTLE);
+    this.loadImages(this.IMAGES_BOTTLE_BROKEN);
     this.throwSound = new Audio('assets/audio/throw.mp3');
     this.x = x;
     this.y = y;
     this.width = 80;
     this.height = 80;
+    this.groundY = 360; // Aufprallhöhe (Boden)
     this.offset = {
       left: 26,
       top: 15,
       bottom: 12,
       right: 26,
     };
+    this.hasLanded = false;
+    this.removed = false; // nach Splash nicht mehr rendern
     this.throw();
     this.animateRotation();
   }
@@ -38,13 +42,64 @@ class ThrowableObject extends MovableObject {
       this.throwSound.play();
     } catch (e) {}
     this.applyGravity();
-    setInterval(() => {
-        this.x += 15   ;
+    this.moveInterval = setInterval(() => {
+        if (this.hasLanded) return;
+        this.x += 15;
+        if (this.y >= this.groundY) {
+          this.onLand();
+        }
     }, 1000 / 60);
   }
   animateRotation() {
-    setInterval(() => {
+    this.rotationInterval = setInterval(() => {
+      if (this.hasLanded) return;
       this.playAnimation(this.IMAGES_BOTTLE);
+      if (this.y >= this.groundY) {
+        this.onLand();
+      }
     }, 1000 / 15);
+  }
+
+  // Aufprallerkennung und einmalige Splash-Animation
+  onLand() {
+    if (this.hasLanded) return;
+    this.hasLanded = true;
+    // clamp auf Boden
+    this.y = this.groundY;
+    // Bewegung/Rotation stoppen
+    if (this.moveInterval) clearInterval(this.moveInterval);
+    if (this.rotationInterval) clearInterval(this.rotationInterval);
+    // Splash einmalig abspielen
+    this.playSplashOnce();
+  }
+
+  playSplashOnce() {
+    const images = this.IMAGES_BOTTLE_BROKEN;
+    let i = 0;
+    const frameMs = 1000 / 20;
+    this.splashInterval = setInterval(() => {
+      if (i >= images.length) {
+        clearInterval(this.splashInterval);
+        // nach kompletter Splash-Animation unsichtbar machen
+        this.removed = true;
+        this.width = 0;
+        this.height = 0;
+        return;
+      }
+      const path = images[i];
+      this.img = this.imageCache[path];
+      i++;
+    }, frameMs);
+  }
+
+  // eigenes Draw, um nach Entfernen nichts mehr zu rendern
+  draw(ctx) {
+    if (this.removed) return;
+    super.draw(ctx);
+  }
+
+  // Für Flaschen Bodenprüfung anpassen, damit Gravity bei Boden stoppt
+  isAboveGround() {
+    return this.y < this.groundY;
   }
 }
