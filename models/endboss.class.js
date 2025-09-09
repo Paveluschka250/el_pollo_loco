@@ -44,7 +44,7 @@ class Endboss extends MovableObject {
     this.loadImages(this.IMAGES_ATTACK);
     this.loadImages(this.IMAGES_HURT);
     this.loadImages(this.IMAGES_DEAD);
-    this.x = 500;
+    this.x = 2000;
     this.y = 150;
     this.width = 300; // Initial width
     this.height = 300; // Initial height
@@ -63,6 +63,9 @@ class Endboss extends MovableObject {
     this.attackEndTime = 0;
     this.originalSpeed = this.speed;
     this.attackSpeed = this.speed * 10; // doppelte Geschwindigkeit beim Angriff
+    this.deadAnimationPlayed = false;
+    this.deadAnimationEndTime = 0;
+    this.deadFrameCount = 0;
     this.offset = {
       left: 20,
       top: 20,
@@ -120,7 +123,32 @@ class Endboss extends MovableObject {
 
   playCurrentAnimation() {
     if (this.isDead) {
-      this.playAnimation(this.IMAGES_DEAD);
+      // Dead-Animation einmal durchlaufen lassen
+      if (!this.deadAnimationPlayed) {
+        this.deadAnimationPlayed = true;
+        this.currentImage = 0; // Animation von vorne starten
+        this.lastDeadFrameAt = 0;
+        this.deadFrameCount = 0;
+      }
+      
+      const now = new Date().getTime();
+      // Langsamere Dead-Animation (500ms pro Frame)
+      if (now - this.lastDeadFrameAt >= 300) {
+        // Manuell das aktuelle Bild setzen
+        const frameIndex = this.deadFrameCount % this.IMAGES_DEAD.length;
+        const path = this.IMAGES_DEAD[frameIndex];
+        this.img = this.imageCache[path];
+        this.lastDeadFrameAt = now;
+        this.deadFrameCount++;
+        
+        // Prüfen ob alle 3 Frames gezeigt wurden (nach dem letzten Frame)
+        if (this.deadFrameCount > this.IMAGES_DEAD.length) {
+          // Animation komplett: unsichtbar machen
+          this.width = 0;
+          this.height = 0;
+          return;
+        }
+      }
     } else if (this.isHurt) {
       this.playAnimation(this.IMAGES_HURT);
     } else if (this.state === 'alert') {

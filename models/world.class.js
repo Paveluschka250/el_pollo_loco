@@ -145,9 +145,9 @@ class World {
     this.addObjectsToMap(this.level.bottles);
     this.addObjectsToMap(this.level.clouds);
     this.addObjectsToMap(this.level.chickens);
-    // Endboss-Bar über dem Boss positionieren
+    // Endboss-Bar über dem Boss positionieren (nur wenn Boss noch lebt)
     const boss = this.level.chickens.find((e) => e instanceof Endboss);
-    if (boss && this.endbossBar) {
+    if (boss && this.endbossBar && !boss.isDead) {
       this.endbossBar.x = boss.x + (boss.width - this.endbossBar.width) / 2;
       this.endbossBar.y = boss.y - 20;
       this.addToMap(this.endbossBar);
