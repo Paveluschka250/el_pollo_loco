@@ -11,6 +11,7 @@ class World {
     Object.assign(new Statusbar("coins"), { y: 30 }),
     Object.assign(new Statusbar("bottle"), { y: 70 }),
   ];
+  endbossBar = new Statusbar("endboss");
   throwableObjects = [];
 
   constructor(canvas, keyboard) {
@@ -24,6 +25,11 @@ class World {
 
   setWorld() {
     this.character.world = this;
+    // Endboss-Bar in die Welt einhängen
+    const boss = this.level.chickens.find((e) => e instanceof Endboss);
+    if (boss) {
+      boss.world = this;
+    }
   }
 
   run() {
@@ -58,6 +64,16 @@ class World {
   checkCollisions() {
     this.level.chickens.forEach((chicken) => {
       if (this.character.isCollidingOffset(chicken)) {
+        // Endboss: nur Schaden, kein Stomp möglich
+        if (chicken instanceof Endboss) {
+          if (!this.character.hurt()) {
+            this.character.hit();
+            this.statusbar[0].setPercentage(this.character.energy);
+          }
+          return;
+        }
+        
+        // Normale Chickens: Stomp-Logik
         const characterBottom =
           this.character.y +
           this.character.height -
@@ -129,6 +145,13 @@ class World {
     this.addObjectsToMap(this.level.bottles);
     this.addObjectsToMap(this.level.clouds);
     this.addObjectsToMap(this.level.chickens);
+    // Endboss-Bar über dem Boss positionieren
+    const boss = this.level.chickens.find((e) => e instanceof Endboss);
+    if (boss && this.endbossBar) {
+      this.endbossBar.x = boss.x + (boss.width - this.endbossBar.width) / 2;
+      this.endbossBar.y = boss.y - 20;
+      this.addToMap(this.endbossBar);
+    }
     this.addToMap(this.character);
     this.ctx.translate(-this.camera_x, 0);
     this.addObjectsToMap(this.statusbar);
@@ -163,22 +186,37 @@ class World {
       const bottle = this.throwableObjects[b];
       for (let c = 0; c < this.level.chickens.length; c++) {
         const chicken = this.level.chickens[c];
-        if (!chicken.isDead && bottle.isCollidingOffset(chicken)) {
-          chicken.playDead();
-          // Flasche: Splash-Animation an der Trefferstelle abspielen lassen
-          if (typeof bottle.onLand === "function") {
-            bottle.onLand();
+        if (bottle.isCollidingOffset(chicken)) {
+          // Treffer auf Endboss: 1s Hurt-Animation, stehen bleiben, nicht entfernen
+          if (chicken instanceof Endboss) {
+            if (typeof chicken.takeHit === "function") {
+              chicken.takeHit();
+            }
+            if (typeof bottle.onLand === "function") {
+              bottle.onLand();
+            }
+            setTimeout(() => {
+              const idxBottle = this.throwableObjects.indexOf(bottle);
+              if (idxBottle >= 0) this.throwableObjects.splice(idxBottle, 1);
+            }, 400);
+            break;
           }
-          // Flasche nach kurzer Zeit entfernen (nach Splash)
-          setTimeout(() => {
-            const idxBottle = this.throwableObjects.indexOf(bottle);
-            if (idxBottle >= 0) this.throwableObjects.splice(idxBottle, 1);
-          }, 400);
-          setTimeout(() => {
-            const idx = this.level.chickens.indexOf(chicken);
-            if (idx >= 0) this.level.chickens.splice(idx, 1);
-          }, 1000);
-          break;
+          // Normales Chicken: töten und entfernen
+          if (!chicken.isDead) {
+            chicken.playDead();
+            if (typeof bottle.onLand === "function") {
+              bottle.onLand();
+            }
+            setTimeout(() => {
+              const idxBottle = this.throwableObjects.indexOf(bottle);
+              if (idxBottle >= 0) this.throwableObjects.splice(idxBottle, 1);
+            }, 400);
+            setTimeout(() => {
+              const idx = this.level.chickens.indexOf(chicken);
+              if (idx >= 0) this.level.chickens.splice(idx, 1);
+            }, 1000);
+            break;
+          }
         }
       }
     }

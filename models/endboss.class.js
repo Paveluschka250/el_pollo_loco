@@ -49,6 +49,14 @@ class Endboss extends MovableObject {
     this.width = 300; // Initial width
     this.height = 300; // Initial height
     this.speed = 0.15 + Math.random() * 0.25;
+    this.isHurt = false;
+    this.hurtEndAt = 0;
+    this.isDead = false;
+    this.lastHitTime = 0;
+    this.hitCooldown = 1000; // 1 Sekunde zwischen Treffern
+    this.maxLives = 3;
+    this.lives = 3;
+    this.health = 100; // spiegelt den Statusbar-Prozentsatz
     this.offset = {
       left: 20,
       top: 20,
@@ -61,12 +69,49 @@ class Endboss extends MovableObject {
   animate() {
     // Bewegung unabhängig und flüssig halten
     setInterval(() => {
-      this.moveLeft();
+      if (!this.isHurt && !this.isDead) {
+        this.moveLeft();
+      }
     }, 1000 / 60);
 
     // Animation etwas langsamer abspielen
     setInterval(() => {
-      this.playAnimation(this.IMAGES_WALKING);
+      // Hurt-Status beenden, wenn Zeit vorbei
+      if (this.isHurt && (new Date().getTime() >= this.hurtEndAt)) {
+        this.isHurt = false;
+      }
+      if (this.isDead) {
+        this.playAnimation(this.IMAGES_DEAD);
+      } else if (this.isHurt) {
+        this.playAnimation(this.IMAGES_HURT);
+      } else {
+        this.playAnimation(this.IMAGES_WALKING);
+      }
     }, 150);
+  }
+
+  takeHit() {
+    if (this.isDead) return;
+    // Cooling-Zeit prüfen
+    const now = new Date().getTime();
+    if (now - this.lastHitTime < this.hitCooldown) {
+      return;
+    }
+    this.lastHitTime = now;
+    this.isHurt = true;
+    this.hurtEndAt = new Date().getTime() + 1000; // 1 Sekunde
+    // Leben reduzieren (3 -> 2 -> 1 -> 0)
+    this.lives = Math.max(0, this.lives - 1);
+    // Prozentwerte grob auf 100/60/20/0 mappen
+    const livesToPercent = { 3: 100, 2: 60, 1: 20, 0: 0 };
+    this.health = livesToPercent[this.lives];
+    if (this.world && this.world.endbossBar) {
+      this.world.endbossBar.setPercentage(this.health);
+    }
+    // Beim letzten Treffer in Dead-Zustand wechseln
+    if (this.lives === 0) {
+      this.isDead = true;
+      this.isHurt = false;
+    }
   }
 }
