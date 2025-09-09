@@ -1,6 +1,6 @@
 const level = new Level(
     [
-        // new Endboss(), new Chicken(), new Chicken(), new Chicken(),
+        new Endboss(),
         new Chicken(200, 500, 1),
         new Chicken(500, 1000, 2),
         new Chicken(800, 1500, 1),
