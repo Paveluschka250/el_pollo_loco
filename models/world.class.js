@@ -12,6 +12,7 @@ class World {
     Object.assign(new Statusbar("bottle"), { y: 70 }),
   ];
   endbossBar = new Statusbar("endboss");
+  endscreen = new Endscreen();
   throwableObjects = [];
 
   constructor(canvas, keyboard) {
@@ -39,7 +40,21 @@ class World {
       this.checkCollisionsBottles();
       this.checkThrowableObjects();
       this.checkBottleHitsChickens();
+      this.checkGameEnd();
     }, 16);
+  }
+
+  checkGameEnd() {
+    // Game Over: Character tot
+    if (this.character.die() && !this.endscreen.visible) {
+      this.endscreen.showLose();
+    }
+    
+    // Win: Endboss tot und verschwunden
+    const boss = this.level.chickens.find((e) => e instanceof Endboss);
+    if (boss && boss.isDead && boss.width === 0 && !this.endscreen.visible) {
+      this.endscreen.showWin();
+    }
   }
 
   checkThrowableObjects() {
@@ -158,6 +173,10 @@ class World {
     this.ctx.translate(this.camera_x, 0);
     this.addObjectsToMap(this.throwableObjects);
     this.ctx.translate(-this.camera_x, 0);
+    
+    // Endscreen als Overlay zeichnen (ohne Kamera-Transform)
+    this.endscreen.draw(this.ctx);
+    
     requestAnimationFrame(this.draw.bind(this));
   }
 
