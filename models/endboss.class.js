@@ -57,6 +57,12 @@ class Endboss extends MovableObject {
     this.maxLives = 3;
     this.lives = 3;
     this.health = 100; // spiegelt den Statusbar-Prozentsatz
+    this.state = 'walking'; // walking, alert, attack
+    this.alertPlayed = false;
+    this.alertEndTime = 0;
+    this.attackEndTime = 0;
+    this.originalSpeed = this.speed;
+    this.attackSpeed = this.speed * 10; // doppelte Geschwindigkeit beim Angriff
     this.offset = {
       left: 20,
       top: 20,
@@ -70,7 +76,11 @@ class Endboss extends MovableObject {
     // Bewegung unabhängig und flüssig halten
     setInterval(() => {
       if (!this.isHurt && !this.isDead) {
-        this.moveLeft();
+        this.updateState();
+        // Nur bewegen wenn nicht in Alert-Phase
+        if (this.state !== 'alert') {
+          this.moveLeft();
+        }
       }
     }, 1000 / 60);
 
@@ -80,14 +90,46 @@ class Endboss extends MovableObject {
       if (this.isHurt && (new Date().getTime() >= this.hurtEndAt)) {
         this.isHurt = false;
       }
-      if (this.isDead) {
-        this.playAnimation(this.IMAGES_DEAD);
-      } else if (this.isHurt) {
-        this.playAnimation(this.IMAGES_HURT);
-      } else {
-        this.playAnimation(this.IMAGES_WALKING);
-      }
+      this.playCurrentAnimation();
     }, 150);
+  }
+
+  updateState() {
+    if (!this.world || !this.world.character) return;
+    
+    const distance = Math.abs(this.x - this.world.character.x);
+    const alertDistance = 400; // Distanz für Alert
+    const attackDistance = 300; // Distanz für Attack
+    
+    const now = new Date().getTime();
+    
+    // State-Machine
+    if (this.state === 'walking' && distance <= alertDistance) {
+      this.state = 'alert';
+      this.alertPlayed = false;
+      this.alertEndTime = now + 2000; // 2 Sekunden Alert
+    } else if (this.state === 'alert' && now >= this.alertEndTime) {
+      this.state = 'attack';
+      this.attackEndTime = now + 3000; // 3 Sekunden Attack
+      this.speed = this.attackSpeed;
+    } else if (this.state === 'attack' && now >= this.attackEndTime) {
+      this.state = 'walking';
+      this.speed = this.originalSpeed;
+    }
+  }
+
+  playCurrentAnimation() {
+    if (this.isDead) {
+      this.playAnimation(this.IMAGES_DEAD);
+    } else if (this.isHurt) {
+      this.playAnimation(this.IMAGES_HURT);
+    } else if (this.state === 'alert') {
+      this.playAnimation(this.IMAGES_ALERT);
+    } else if (this.state === 'attack') {
+      this.playAnimation(this.IMAGES_ATTACK);
+    } else {
+      this.playAnimation(this.IMAGES_WALKING);
+    }
   }
 
   takeHit() {
