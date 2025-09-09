@@ -27,6 +27,8 @@ class Chicken extends MovableObject {
   constructor(xMin = 200, xMax = 700, type = 1) {
     super();
     this.type = type;
+    this.xMin = xMin; // Ursprünglicher Spawn-Bereich speichern
+    this.xMax = xMax; // Ursprünglicher Spawn-Bereich speichern
     this.IMAGES_WALKING = type === 2 ? this.IMAGES_WALKING_2 : this.IMAGES_WALKING_1;
     this.loadImage(this.IMAGES_WALKING[0]);
     this.loadImages(this.IMAGES_WALKING);
@@ -73,5 +75,14 @@ class Chicken extends MovableObject {
         this.deadSound.play();
       }
     } catch (e) {}
+  }
+
+  resetPosition() {
+    // Position auf ursprünglichen Spawn-Bereich zurücksetzen
+    this.x = Math.random() * (this.xMax - this.xMin) + this.xMin;
+    this.y = 360;
+    if (this.type === 2) {
+      this.y = 360 + (60 - this.height);
+    }
   }
 }

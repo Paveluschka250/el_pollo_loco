@@ -23,6 +23,9 @@ class Endscreen extends DrawableObject {
         this.canvasHeight = 480;
         this.winSound = new Audio('assets/audio/win.mp3');
         this.loseSound = new Audio('assets/audio/lose.mp3');
+        this.buttonWidth = 120;
+        this.buttonHeight = 40;
+        this.buttonSpacing = 20;
         this.loadImages(this.IMAGES_GAME_LOSE);
         this.loadImages(this.IMAGES_GAME_WIN);
     }
@@ -64,6 +67,7 @@ class Endscreen extends DrawableObject {
         this.visible = false;
         this.type = null;
         this.currentImage = null;
+        this.img = null;
         // Sounds stoppen
         this.winSound.pause();
         this.loseSound.pause();
@@ -84,5 +88,75 @@ class Endscreen extends DrawableObject {
         
         // Bild mit korrekten Proportionen zeichnen
         ctx.drawImage(this.img, imageX, imageY, this.imageWidth, this.imageHeight);
+        
+        // Buttons zeichnen
+        this.drawButtons(ctx, imageY + this.imageHeight + 30);
+    }
+
+    drawButtons(ctx, startY) {
+        const totalButtonWidth = (this.buttonWidth * 2) + this.buttonSpacing;
+        const startX = (this.canvasWidth - totalButtonWidth) / 2;
+        
+        // Main Menu Button
+        this.drawButton(ctx, startX, startY, 'Main Menu', '#4CAF50');
+        
+        // Retry Button
+        const retryX = startX + this.buttonWidth + this.buttonSpacing;
+        this.drawButton(ctx, retryX, startY, 'Retry', '#2196F3');
+    }
+
+    drawButton(ctx, x, y, text, color) {
+        // Button Hintergrund
+        ctx.fillStyle = color;
+        ctx.fillRect(x, y, this.buttonWidth, this.buttonHeight);
+        
+        // Button Rand
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(x, y, this.buttonWidth, this.buttonHeight);
+        
+        // Button Text
+        ctx.fillStyle = '#fff';
+        ctx.font = '16px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(text, x + this.buttonWidth / 2, y + this.buttonHeight / 2);
+    }
+
+    isButtonClicked(mouseX, mouseY, buttonX, buttonY) {
+        return mouseX >= buttonX && 
+               mouseX <= buttonX + this.buttonWidth && 
+               mouseY >= buttonY && 
+               mouseY <= buttonY + this.buttonHeight;
+    }
+
+    handleClick(mouseX, mouseY) {
+        if (!this.visible) return;
+        
+        const imageY = (this.canvasHeight - this.imageHeight) / 2;
+        const buttonY = imageY + this.imageHeight + 30;
+        const totalButtonWidth = (this.buttonWidth * 2) + this.buttonSpacing;
+        const startX = (this.canvasWidth - totalButtonWidth) / 2;
+        const retryX = startX + this.buttonWidth + this.buttonSpacing;
+        
+        // Retry Button
+        if (this.isButtonClicked(mouseX, mouseY, retryX, buttonY)) {
+            this.retryGame();
+        }
+        
+        // Main Menu Button (später implementieren)
+        if (this.isButtonClicked(mouseX, mouseY, startX, buttonY)) {
+            // TODO: Main Menu implementieren
+        }
+    }
+
+    retryGame() {
+        // Endscreen verstecken
+        this.hide();
+        
+        // Spiel neu starten
+        if (window.world) {
+            window.world.restartGame();
+        }
     }
 }

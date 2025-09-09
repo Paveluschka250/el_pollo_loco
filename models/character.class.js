@@ -93,12 +93,14 @@ class Character extends MovableObject {
     this.jumpFrameInterval = 50; // Jump-Animation verlangsamen (ms pro Frame)
     this.lastWalkFrameAt = 0; // Zeitstempel für Walk-Frames
     this.walkFrameInterval = 80; // Walk-Animation verlangsamen (ms pro Frame)
+    this.movementInterval = null;
+    this.animationInterval = null;
     this.animate();
     this.applyGravity();
   }
 
   animate() {
-    setInterval(() => {
+    this.movementInterval = setInterval(() => {
       if (this.world.keyboard.RIGHT && this.x < 2200) {
         this.moveRight();
         this.otherDirection = false;
@@ -112,7 +114,7 @@ class Character extends MovableObject {
       }
       this.world.camera_x = -this.x + 100;
     }, 1000 / 60);
-    setInterval(() => {
+    this.animationInterval = setInterval(() => {
       if (this.die()) {
         if (!this.deadSoundPlayed && this.deadSound) {
           try {
@@ -237,5 +239,16 @@ class Character extends MovableObject {
         this.jumpSound.play();
       }
     } catch (e) {}
+  }
+
+  stopAllIntervals() {
+    if (this.movementInterval) {
+      clearInterval(this.movementInterval);
+      this.movementInterval = null;
+    }
+    if (this.animationInterval) {
+      clearInterval(this.animationInterval);
+      this.animationInterval = null;
+    }
   }
 }

@@ -5,6 +5,8 @@ let keyboard = new Keyboard();
 function init() {
   canvas = document.getElementById("canvas");
   world = new World(canvas, keyboard);
+  // World global verfügbar machen für Endscreen
+  window.world = world;
 }
 
 window.addEventListener("keydown", (e) => {
