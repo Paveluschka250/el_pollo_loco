@@ -69,6 +69,82 @@
       </div>
     </div>
 
+    <!-- Impressum/Datenschutz Screen -->
+    <div id="impressum-screen" class="impressum-screen" style="display: none;">
+      <div class="impressum-content">
+        <h1 class="impressum-title">Impressum & Datenschutz</h1>
+        
+        <div class="impressum-section">
+          <h2 class="section-title">Angaben gemäß § 5 TMG</h2>
+          <div class="info-item">
+            <span class="info-label">Name:</span>
+            <span class="info-value">Paul Gross</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Adresse:</span>
+            <span class="info-value">Franz Martin Str. 4c<br>49152 Bad Essen</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">E-Mail:</span>
+            <span class="info-value">p.gross6408@gmail.com</span>
+          </div>
+        </div>
+
+        <div class="impressum-section">
+          <h2 class="section-title">Projektinformationen</h2>
+          <div class="info-text">
+            <p>Dieses Spiel wurde als Projektaufgabe der <strong>Developer Akademie</strong> erstellt und dient:</p>
+            <ul>
+              <li>Als Übung in der <strong>Objektorientierung</strong></li>
+              <li>Für <strong>Spielspaß</strong> der Nutzer</li>
+              <li>Als <strong>Portfolio-Projekt</strong></li>
+            </ul>
+            <p>Das Projekt ist öffentlich auf <strong>GitHub</strong> verfügbar und wird in mein Portfolio integriert.</p>
+          </div>
+        </div>
+
+        <div class="impressum-section">
+          <h2 class="section-title">Rechtliche Hinweise</h2>
+          <div class="info-text">
+            <p><strong>Keine kommerziellen Transaktionen:</strong> In diesem Spiel können keine Geschäfte oder Käufe abgeschlossen werden.</p>
+            <p><strong>Zweck:</strong> Das Spiel dient ausschließlich der Übung, dem Spielspaß und Portfolio-Zwecken.</p>
+          </div>
+        </div>
+
+        <div class="impressum-section">
+          <h2 class="section-title">Quellen & Lizenzen</h2>
+          <div class="sources-grid">
+            <div class="source-item">
+              <span class="source-label">Bilder & Grafiken:</span>
+              <span class="source-value">Developer Akademie</span>
+            </div>
+            <div class="source-item">
+              <span class="source-label">Sounds:</span>
+              <span class="source-value">freesound.org</span>
+            </div>
+            <div class="source-item">
+              <span class="source-label">Musik:</span>
+              <span class="source-value">Pixabay</span>
+            </div>
+            <div class="source-item">
+              <span class="source-label">Icons:</span>
+              <span class="source-value">SVG Repo</span>
+            </div>
+            <div class="source-item">
+              <span class="source-label">Schriftart:</span>
+              <span class="source-value">Google Fonts (Rye)</span>
+            </div>
+            <div class="source-item">
+              <span class="source-label">Lizenz:</span>
+              <span class="source-value">OFL.txt (in docs enthalten)</span>
+            </div>
+          </div>
+        </div>
+
+        <button id="back-to-menu-impressum-btn" class="menu-button">Zurück zum Menu</button>
+      </div>
+    </div>
+
     <!-- Game Canvas (initially hidden) -->
     <div id="game-container" class="game-container" style="display: none;">
       <h1>El Pollo Loco</h1>
@@ -155,11 +231,13 @@
       const howToPlayBtn = document.getElementById('how-to-play-btn');
       const impressumBtn = document.getElementById('impressum-btn');
       const backToMenuBtn = document.getElementById('back-to-menu-btn');
+      const backToMenuImpressumBtn = document.getElementById('back-to-menu-impressum-btn');
 
       startGameBtn.addEventListener('click', startGame);
       howToPlayBtn.addEventListener('click', showHowToPlay);
       impressumBtn.addEventListener('click', showImpressum);
       backToMenuBtn.addEventListener('click', backToMainMenu);
+      backToMenuImpressumBtn.addEventListener('click', backToMainMenuFromImpressum);
     }
 
     function startGame() {
@@ -202,22 +280,19 @@
     }
 
     function showImpressum() {
-      alert(`IMPRESSUM / DATENSCHUTZ:
+      // Main Menu verstecken
+      document.getElementById('main-menu').style.display = 'none';
+      
+      // Impressum Screen anzeigen
+      document.getElementById('impressum-screen').style.display = 'flex';
+    }
 
-🎮 EL POLLO LOCO
-Ein 2D-Plattformspiel
-
-📧 KONTAKT:
-Für Fragen oder Anregungen wende dich an den Entwickler.
-
-🔒 DATENSCHUTZ:
-Dieses Spiel speichert keine persönlichen Daten.
-Alle Daten werden nur lokal im Browser gespeichert.
-
-🎵 AUDIO:
-Alle verwendeten Sounds sind lizenzfrei oder selbst erstellt.
-
-© 2024 El Pollo Loco - Alle Rechte vorbehalten`);
+    function backToMainMenuFromImpressum() {
+      // Impressum Screen verstecken
+      document.getElementById('impressum-screen').style.display = 'none';
+      
+      // Main Menu anzeigen
+      document.getElementById('main-menu').style.display = 'flex';
     }
 
     // Mobile Rotation Overlay Logic

@@ -174,6 +174,124 @@ body {
   transform: scaleX(1); /* Normal (nicht gespiegelt) */
 }
 
+/* Impressum/Datenschutz Screen */
+.impressum-screen {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+}
+
+.impressum-content {
+  text-align: left;
+  background-color: rgba(0, 0, 0, 0.8);
+  padding: 30px;
+  border-radius: 20px;
+  border: 3px solid #FFD700;
+  box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+  max-width: 600px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.impressum-title {
+  font-size: 40px;
+  letter-spacing: 2px;
+  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
+  color: #FFD700;
+  margin-bottom: 25px;
+  font-family: "rye", Arial, Helvetica, sans-serif;
+  text-align: center;
+}
+
+.impressum-section {
+  margin-bottom: 25px;
+  background-color: rgba(255, 215, 0, 0.1);
+  padding: 20px;
+  border-radius: 12px;
+  border: 2px solid #FFD700;
+}
+
+.section-title {
+  font-size: 20px;
+  color: #FFD700;
+  margin-bottom: 15px;
+  font-family: "rye", Arial, Helvetica, sans-serif;
+  border-bottom: 2px solid #FFD700;
+  padding-bottom: 5px;
+}
+
+.info-item {
+  display: flex;
+  margin-bottom: 10px;
+  align-items: flex-start;
+}
+
+.info-label {
+  font-weight: bold;
+  color: #FFD700;
+  min-width: 80px;
+  font-family: "rye", Arial, Helvetica, sans-serif;
+}
+
+.info-value {
+  color: #FFFFFF;
+  margin-left: 10px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.info-text {
+  color: #FFFFFF;
+  line-height: 1.6;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.info-text p {
+  margin-bottom: 10px;
+}
+
+.info-text ul {
+  margin: 10px 0;
+  padding-left: 20px;
+}
+
+.info-text li {
+  margin-bottom: 5px;
+}
+
+.sources-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.source-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background-color: rgba(255, 215, 0, 0.2);
+  border-radius: 8px;
+  border: 1px solid #FFD700;
+}
+
+.source-label {
+  font-weight: bold;
+  color: #FFD700;
+  font-family: "rye", Arial, Helvetica, sans-serif;
+}
+
+.source-value {
+  color: #FFFFFF;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
 /* Game Container */
 .game-container {
   display: flex;
