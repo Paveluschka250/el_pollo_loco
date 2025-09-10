@@ -17,8 +17,10 @@ class Endscreen extends DrawableObject {
         this.visible = false;
         this.type = null; // 'win' oder 'lose'
         this.currentImage = null;
-        this.imageWidth = 400; // Feste Breite für Bilder
+        this.imageWidth = 0; // Wird automatisch berechnet
         this.imageHeight = 0; // Wird automatisch berechnet
+        this.maxWidth = 400; // Maximale Breite
+        this.maxHeight = 200; // Maximale Höhe
         this.canvasWidth = 720;
         this.canvasHeight = 480;
         this.winSound = new Audio('assets/audio/win.mp3');
@@ -58,8 +60,19 @@ class Endscreen extends DrawableObject {
 
     calculateImageDimensions() {
         if (this.img) {
-            // Verhältnis beibehalten: Höhe = (Originalhöhe / Originalbreite) * neue Breite
-            this.imageHeight = (this.img.naturalHeight / this.img.naturalWidth) * this.imageWidth;
+            const originalWidth = this.img.naturalWidth;
+            const originalHeight = this.img.naturalHeight;
+            const aspectRatio = originalWidth / originalHeight;
+            
+            // Berechne Skalierung basierend auf maximaler Breite
+            let scaleByWidth = this.maxWidth / originalWidth;
+            let scaleByHeight = this.maxHeight / originalHeight;
+            
+            // Verwende den kleineren Skalierungsfaktor, um beide Limits einzuhalten
+            const scale = Math.min(scaleByWidth, scaleByHeight);
+            
+            this.imageWidth = originalWidth * scale;
+            this.imageHeight = originalHeight * scale;
         }
     }
 
