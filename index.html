@@ -20,6 +20,55 @@
       </div>
     </div>
 
+    <!-- How to Play Screen -->
+    <div id="how-to-play-screen" class="how-to-play-screen" style="display: none;">
+      <div class="tutorial-content">
+        <h1 class="tutorial-title">How to Play</h1>
+        <div class="controls-grid">
+          <div class="control-item">
+            <div class="control-icon">
+              <img src="./assets/icons/left.svg" alt="Left Arrow" class="icon-left">
+            </div>
+            <div class="control-text">Links Laufen</div>
+            <div class="control-image">
+              <img src="./assets/img/2_character_pepe/2_walk/W-23.png" alt="Character Left" class="character-left">
+            </div>
+          </div>
+          
+          <div class="control-item">
+            <div class="control-icon">
+              <img src="./assets/icons/right.svg" alt="Right Arrow" class="icon-right">
+            </div>
+            <div class="control-text">Rechts Laufen</div>
+            <div class="control-image">
+              <img src="./assets/img/2_character_pepe/2_walk/W-23.png" alt="Character Right" class="character-right">
+            </div>
+          </div>
+          
+          <div class="control-item">
+            <div class="control-icon">
+              <img src="./assets/icons/jump.svg" alt="Up Arrow" class="icon-up">
+            </div>
+            <div class="control-text">Springen</div>
+            <div class="control-image">
+              <img src="./assets/img/2_character_pepe/3_jump/J-34.png" alt="Character Jump" class="character-jump">
+            </div>
+          </div>
+          
+          <div class="control-item">
+            <div class="control-icon">
+              <img src="./assets/icons/spacebar.svg" alt="Spacebar" class="icon-space">
+            </div>
+            <div class="control-text">Flasche Werfen</div>
+            <div class="control-image">
+              <img src="./assets/img/6_salsa_bottle/bottle_rotation/1_bottle_rotation.png" alt="Bottle" class="bottle-image">
+            </div>
+          </div>
+        </div>
+        <button id="back-to-menu-btn" class="menu-button">Zurück zum Menu</button>
+      </div>
+    </div>
+
     <!-- Game Canvas (initially hidden) -->
     <div id="game-container" class="game-container" style="display: none;">
       <h1>El Pollo Loco</h1>
@@ -105,10 +154,12 @@
       const startGameBtn = document.getElementById('start-game-btn');
       const howToPlayBtn = document.getElementById('how-to-play-btn');
       const impressumBtn = document.getElementById('impressum-btn');
+      const backToMenuBtn = document.getElementById('back-to-menu-btn');
 
       startGameBtn.addEventListener('click', startGame);
       howToPlayBtn.addEventListener('click', showHowToPlay);
       impressumBtn.addEventListener('click', showImpressum);
+      backToMenuBtn.addEventListener('click', backToMainMenu);
     }
 
     function startGame() {
@@ -135,23 +186,19 @@
     }
 
     function showHowToPlay() {
-      alert(`HOW TO PLAY:
+      // Main Menu verstecken
+      document.getElementById('main-menu').style.display = 'none';
+      
+      // How to Play Screen anzeigen
+      document.getElementById('how-to-play-screen').style.display = 'flex';
+    }
 
-🎮 STEUERUNG:
-• Pfeiltasten: Laufen (Links/Rechts)
-• Leertaste: Flasche werfen
-• Springen: Auf Hühnchen springen
-
-🎯 ZIELE:
-• Sammle alle Coins und Flaschen
-• Besiege alle Hühnchen
-• Besiege den Endboss (3 Treffer)
-
-💡 TIPPS:
-• Springe auf Hühnchen um sie zu besiegen
-• Werfe Flaschen auf den Endboss
-• Sammle Flaschen um mehr werfen zu können
-• Achte auf deine Gesundheit!`);
+    function backToMainMenu() {
+      // How to Play Screen verstecken
+      document.getElementById('how-to-play-screen').style.display = 'none';
+      
+      // Main Menu anzeigen
+      document.getElementById('main-menu').style.display = 'flex';
     }
 
     function showImpressum() {
