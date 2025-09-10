@@ -15,6 +15,8 @@ class World {
   endscreen = new Endscreen();
   throwableObjects = [];
   backgroundMusic = new Audio("assets/audio/background-music.mp3");
+  gameRunning = false;
+  gameIntervals = [];
 
   constructor(canvas, keyboard) {
     this.canvas = canvas;
@@ -26,6 +28,7 @@ class World {
     this.setWorld();
     this.run();
     this.setupEventListeners();
+    this.setupKeyboardEvents();
   }
 
   setupBackgroundMusic() {
@@ -60,6 +63,11 @@ class World {
     document.addEventListener('keydown', startOnClick);
   }
 
+  startGame() {
+    this.gameRunning = true;
+    this.startBackgroundMusic();
+  }
+
   setupEventListeners() {
     this.canvas.addEventListener('click', (event) => {
       const rect = this.canvas.getBoundingClientRect();
@@ -67,6 +75,55 @@ class World {
       const mouseY = event.clientY - rect.top;
       this.endscreen.handleClick(mouseX, mouseY);
     });
+  }
+
+  setupKeyboardEvents() {
+    // Entferne alte Event-Listener falls vorhanden
+    if (this.keyboardHandler) {
+      window.removeEventListener("keydown", this.keyboardHandler);
+      window.removeEventListener("keyup", this.keyboardHandler);
+    }
+    
+    // Erstelle neue Event-Handler
+    this.keyboardHandler = (e) => {
+      if (e.key === "ArrowRight") {
+        this.keyboard.RIGHT = true;
+      }
+      if (e.key === "ArrowLeft") {
+        this.keyboard.LEFT = true;
+      }
+      if (e.key === "ArrowUp") {
+        this.keyboard.UP = true;
+      }
+      if (e.key === "ArrowDown") {
+        this.keyboard.DOWN = true;
+      }
+      if (e.key === " ") {
+        this.keyboard.SPACE = true;
+      }
+    };
+
+    this.keyboardUpHandler = (e) => {
+      if (e.key === "ArrowRight") {
+        this.keyboard.RIGHT = false;
+      }
+      if (e.key === "ArrowLeft") {
+        this.keyboard.LEFT = false;
+      }
+      if (e.key === "ArrowUp") {
+        this.keyboard.UP = false;
+      }
+      if (e.key === "ArrowDown") {
+        this.keyboard.DOWN = false;
+      }
+      if (e.key === " ") {
+        this.keyboard.SPACE = false;
+      }
+    };
+
+    // Füge neue Event-Listener hinzu
+    window.addEventListener("keydown", this.keyboardHandler);
+    window.addEventListener("keyup", this.keyboardUpHandler);
   }
 
   setWorld() {
@@ -79,14 +136,31 @@ class World {
   }
 
   run() {
-    setInterval(() => {
-      this.checkCollisions();
-      this.checkCollisionsCoins();
-      this.checkCollisionsBottles();
-      this.checkThrowableObjects();
-      this.checkBottleHitsChickens();
-      this.checkGameEnd();
+    const gameLoop = setInterval(() => {
+      if (this.gameRunning) {
+        this.checkCollisions();
+        this.checkCollisionsCoins();
+        this.checkCollisionsBottles();
+        this.checkThrowableObjects();
+        this.checkBottleHitsChickens();
+        this.checkGameEnd();
+      }
     }, 16);
+    this.gameIntervals.push(gameLoop);
+  }
+
+  pauseGame() {
+    this.gameRunning = false;
+    // Pausiere Hintergrundmusik
+    this.backgroundMusic.pause();
+  }
+
+  resumeGame() {
+    this.gameRunning = true;
+    // Setze Hintergrundmusik fort
+    this.backgroundMusic.play().catch(e => {
+      console.log('Musik konnte nicht fortgesetzt werden:', e);
+    });
   }
 
   checkGameEnd() {
@@ -313,8 +387,12 @@ class World {
   }
 
   restartGame() {
-    // Endscreen verstecken
+    // Endscreen komplett verstecken und zurücksetzen
     this.endscreen.hide();
+    this.endscreen.visible = false;
+    this.endscreen.type = null;
+    this.endscreen.currentImage = null;
+    this.endscreen.img = null;
     
     // Alten Character stoppen
     if (this.character && this.character.stopAllIntervals) {
@@ -330,6 +408,15 @@ class World {
     
     // Level komplett neu laden (alle Objekte werden neu erstellt)
     this.level = level;
+    
+    // Game wieder starten
+    this.gameRunning = true;
+    
+    // Hintergrundmusik neu starten
+    this.backgroundMusic.currentTime = 0;
+    this.backgroundMusic.play().catch(e => {
+      console.log('Musik konnte nicht neu gestartet werden:', e);
+    });
     
     // Statusbars neu erstellen
     this.statusbar = [
@@ -402,6 +489,12 @@ class World {
     
     // Canvas-Transform zurücksetzen
     this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+    
+    // Keyboard-Events neu setzen
+    this.setupKeyboardEvents();
+    
+    // World-Verbindungen neu setzen
+    this.setWorld();
   }
 
 }

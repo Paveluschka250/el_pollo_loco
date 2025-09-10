@@ -8,8 +8,23 @@
     <title>El Pollo Loco</title>
   </head>
   <body onload="init()">
-    <h1>El Pollo Loco</h1>
-    <canvas id="canvas" width="720" height="480"></canvas>
+    <!-- Main Menu -->
+    <div id="main-menu" class="main-menu">
+      <div class="menu-content">
+        <h1 class="game-title">El Pollo Loco</h1>
+        <div class="menu-buttons">
+          <button id="start-game-btn" class="menu-button">Spiel Starten</button>
+          <button id="how-to-play-btn" class="menu-button">How to Play</button>
+          <button id="impressum-btn" class="menu-button">Impressum</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Game Canvas (initially hidden) -->
+    <div id="game-container" class="game-container" style="display: none;">
+      <h1>El Pollo Loco</h1>
+      <canvas id="canvas" width="720" height="480"></canvas>
+    </div>
     
     <!-- Mobile Rotation Overlay -->
     <div id="mobile-rotation-overlay" class="mobile-rotation-overlay">
@@ -38,6 +53,87 @@
   <script src="./js/game.js"></script>
   
   <script>
+    // Main Menu Logic
+    let gameStarted = false;
+    let gameWorld = null; // Umbenannt um Konflikt zu vermeiden
+
+    function init() {
+      // Game wird erst gestartet wenn "Spiel Starten" gedrückt wird
+      setupMenuEventListeners();
+    }
+
+    function setupMenuEventListeners() {
+      const startGameBtn = document.getElementById('start-game-btn');
+      const howToPlayBtn = document.getElementById('how-to-play-btn');
+      const impressumBtn = document.getElementById('impressum-btn');
+
+      startGameBtn.addEventListener('click', startGame);
+      howToPlayBtn.addEventListener('click', showHowToPlay);
+      impressumBtn.addEventListener('click', showImpressum);
+    }
+
+    function startGame() {
+      // Main Menu verstecken
+      document.getElementById('main-menu').style.display = 'none';
+      
+      // Game Container anzeigen
+      document.getElementById('game-container').style.display = 'flex';
+      
+      // Game initialisieren (nur einmal)
+      if (!gameStarted) {
+        const canvas = document.getElementById("canvas");
+        const keyboard = new Keyboard();
+        gameWorld = new World(canvas, keyboard);
+        window.world = gameWorld; // Für Endscreen-Kompatibilität
+        gameWorld.startGame(); // Spiel starten
+        gameStarted = true;
+      } else {
+        // Game neu starten (wie Retry) wenn bereits gestartet
+        if (gameWorld) {
+          gameWorld.restartGame(); // Kompletter Neustart statt nur Resume
+        }
+      }
+    }
+
+    function showHowToPlay() {
+      alert(`HOW TO PLAY:
+
+🎮 STEUERUNG:
+• Pfeiltasten: Laufen (Links/Rechts)
+• Leertaste: Flasche werfen
+• Springen: Auf Hühnchen springen
+
+🎯 ZIELE:
+• Sammle alle Coins und Flaschen
+• Besiege alle Hühnchen
+• Besiege den Endboss (3 Treffer)
+
+💡 TIPPS:
+• Springe auf Hühnchen um sie zu besiegen
+• Werfe Flaschen auf den Endboss
+• Sammle Flaschen um mehr werfen zu können
+• Achte auf deine Gesundheit!`);
+    }
+
+    function showImpressum() {
+      alert(`IMPRESSUM / DATENSCHUTZ:
+
+🎮 EL POLLO LOCO
+Ein 2D-Plattformspiel
+
+📧 KONTAKT:
+Für Fragen oder Anregungen wende dich an den Entwickler.
+
+🔒 DATENSCHUTZ:
+Dieses Spiel speichert keine persönlichen Daten.
+Alle Daten werden nur lokal im Browser gespeichert.
+
+🎵 AUDIO:
+Alle verwendeten Sounds sind lizenzfrei oder selbst erstellt.
+
+© 2024 El Pollo Loco - Alle Rechte vorbehalten`);
+    }
+
     // Mobile Rotation Overlay Logic
     function checkMobileOrientation() {
       const overlay = document.getElementById('mobile-rotation-overlay');

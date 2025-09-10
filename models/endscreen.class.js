@@ -188,9 +188,9 @@ class Endscreen extends DrawableObject {
             this.retryGame();
         }
         
-        // Main Menu Button (später implementieren)
+        // Main Menu Button
         if (this.isButtonClicked(mouseX, mouseY, startX, buttonY)) {
-            // TODO: Main Menu implementieren
+            this.goToMainMenu();
         }
     }
 
@@ -201,6 +201,28 @@ class Endscreen extends DrawableObject {
         // Spiel neu starten
         if (window.world) {
             window.world.restartGame();
+        }
+    }
+
+    goToMainMenu() {
+        // Endscreen verstecken
+        this.hide();
+        
+        // Game Container verstecken
+        const gameContainer = document.getElementById('game-container');
+        if (gameContainer) {
+            gameContainer.style.display = 'none';
+        }
+        
+        // Main Menu anzeigen
+        const mainMenu = document.getElementById('main-menu');
+        if (mainMenu) {
+            mainMenu.style.display = 'flex';
+        }
+        
+        // Game pausieren
+        if (window.world) {
+            window.world.pauseGame();
         }
   }
 }
