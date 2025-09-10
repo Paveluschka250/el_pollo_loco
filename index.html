@@ -56,10 +56,49 @@
     // Main Menu Logic
     let gameStarted = false;
     let gameWorld = null; // Umbenannt um Konflikt zu vermeiden
+    let backgroundMusic = null; // Globale Hintergrundmusik
 
     function init() {
       // Game wird erst gestartet wenn "Spiel Starten" gedrückt wird
       setupMenuEventListeners();
+      setupBackgroundMusic();
+    }
+
+    function setupBackgroundMusic() {
+      // Hintergrundmusik nur einmal erstellen
+      if (!backgroundMusic) {
+        backgroundMusic = new Audio("assets/audio/background-music.mp3");
+        backgroundMusic.loop = true;
+        backgroundMusic.volume = 0.3;
+        backgroundMusic.preload = 'auto';
+        
+        // Musik starten (mit User-Interaktion)
+        startBackgroundMusic();
+      }
+    }
+
+    function startBackgroundMusic() {
+      if (!backgroundMusic) return;
+      
+      // Musik nur starten, wenn der Browser es erlaubt (User-Interaktion erforderlich)
+      const playMusic = () => {
+        backgroundMusic.play().catch(e => {
+          console.log('Musik konnte nicht automatisch gestartet werden:', e);
+        });
+      };
+      
+      // Sofort versuchen zu starten
+      playMusic();
+      
+      // Falls das nicht funktioniert, bei erstem Klick starten
+      const startOnClick = () => {
+        playMusic();
+        document.removeEventListener('click', startOnClick);
+        document.removeEventListener('keydown', startOnClick);
+      };
+      
+      document.addEventListener('click', startOnClick);
+      document.addEventListener('keydown', startOnClick);
     }
 
     function setupMenuEventListeners() {
@@ -83,7 +122,7 @@
       if (!gameStarted) {
         const canvas = document.getElementById("canvas");
         const keyboard = new Keyboard();
-        gameWorld = new World(canvas, keyboard);
+        gameWorld = new World(canvas, keyboard, backgroundMusic); // Musik übergeben
         window.world = gameWorld; // Für Endscreen-Kompatibilität
         gameWorld.startGame(); // Spiel starten
         gameStarted = true;

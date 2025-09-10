@@ -14,16 +14,16 @@ class World {
   endbossBar = new Statusbar("endboss");
   endscreen = new Endscreen();
   throwableObjects = [];
-  backgroundMusic = new Audio("assets/audio/background-music.mp3");
+  backgroundMusic = null; // Wird von außen übergeben
   gameRunning = false;
   gameIntervals = [];
 
-  constructor(canvas, keyboard) {
+  constructor(canvas, keyboard, music = null) {
     this.canvas = canvas;
     this.ctx = canvas.getContext("2d");
     this.keyboard = keyboard;
     this.camera_x = 0;
-    this.setupBackgroundMusic();
+    this.backgroundMusic = music; // Externe Musik verwenden
     this.draw();
     this.setWorld();
     this.run();
@@ -31,41 +31,11 @@ class World {
     this.setupKeyboardEvents();
   }
 
-  setupBackgroundMusic() {
-    // Hintergrundmusik konfigurieren
-    this.backgroundMusic.loop = true;
-    this.backgroundMusic.volume = 0.3; // Leiser als Soundeffekte
-    this.backgroundMusic.preload = 'auto';
-    
-    // Musik starten (mit User-Interaktion)
-    this.startBackgroundMusic();
-  }
-
-  startBackgroundMusic() {
-    // Musik nur starten, wenn der Browser es erlaubt (User-Interaktion erforderlich)
-    const playMusic = () => {
-      this.backgroundMusic.play().catch(e => {
-        console.log('Musik konnte nicht automatisch gestartet werden:', e);
-      });
-    };
-    
-    // Sofort versuchen zu starten
-    playMusic();
-    
-    // Falls das nicht funktioniert, bei erstem Klick starten
-    const startOnClick = () => {
-      playMusic();
-      document.removeEventListener('click', startOnClick);
-      document.removeEventListener('keydown', startOnClick);
-    };
-    
-    document.addEventListener('click', startOnClick);
-    document.addEventListener('keydown', startOnClick);
-  }
+  // setupBackgroundMusic() wird nicht mehr benötigt - Musik wird global verwaltet
 
   startGame() {
     this.gameRunning = true;
-    this.startBackgroundMusic();
+    // Musik läuft bereits global, muss nicht neu gestartet werden
   }
 
   setupEventListeners() {
@@ -151,16 +121,12 @@ class World {
 
   pauseGame() {
     this.gameRunning = false;
-    // Pausiere Hintergrundmusik
-    this.backgroundMusic.pause();
+    // Musik läuft global weiter, wird nicht pausiert
   }
 
   resumeGame() {
     this.gameRunning = true;
-    // Setze Hintergrundmusik fort
-    this.backgroundMusic.play().catch(e => {
-      console.log('Musik konnte nicht fortgesetzt werden:', e);
-    });
+    // Musik läuft bereits global, muss nicht fortgesetzt werden
   }
 
   checkGameEnd() {
@@ -412,11 +378,7 @@ class World {
     // Game wieder starten
     this.gameRunning = true;
     
-    // Hintergrundmusik neu starten
-    this.backgroundMusic.currentTime = 0;
-    this.backgroundMusic.play().catch(e => {
-      console.log('Musik konnte nicht neu gestartet werden:', e);
-    });
+    // Musik läuft bereits global, muss nicht neu gestartet werden
     
     // Statusbars neu erstellen
     this.statusbar = [
