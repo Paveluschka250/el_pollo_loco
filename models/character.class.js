@@ -66,10 +66,10 @@ class Character extends MovableObject {
     this.loadImages(this.IMAGES_HURT);
     this.loadImages(this.IMAGES_IDLE);
     this.loadImages(this.IMAGES_LONG_IDLE);
-    this.x = 100; // Initial x position
-    this.y = 100; // Initial y position
-    this.width = 120; // Initial width
-    this.height = 200; // Initial height
+    this.x = 100;
+    this.y = 100;
+    this.width = 120;
+    this.height = 200;
     this.speed = 6;
     this.offset = {
       left: 25,
@@ -77,22 +77,22 @@ class Character extends MovableObject {
       bottom: 10,
       right: 20,
     };
-    this.idleTime = 0; // ms ohne Eingabe, für Idle/Long-Idle
-    this.lastIdleFrameAt = 0; // Zeitstempel der letzten Idle-Frameaktualisierung
-    this.idleFrameInterval = 150; // Idle: langsamer abspielen (ms pro Frame)
-    this.longIdleFrameInterval = 180; // Long-Idle noch etwas langsamer
-    this.lastDeadFrameAt = 0; // Zeitstempel für Dead-Frames
-    this.deadFrameInterval = 150; // Dead-Animation langsamer (ms pro Frame)
+    this.idleTime = 0;
+    this.lastIdleFrameAt = 0;
+    this.idleFrameInterval = 150;
+    this.longIdleFrameInterval = 180;
+    this.lastDeadFrameAt = 0;
+    this.deadFrameInterval = 150;
     this.deadSound = new Audio("assets/audio/dead.mp3");
     this.deadSoundPlayed = false;
     this.hurtSound = new Audio("assets/audio/hurt.mp3");
     this.jumpSound = new Audio("assets/audio/jump.mp3");
     this.walkSound = new Audio("assets/audio/walk.mp3");
     this.walkSound.loop = true;
-    this.lastJumpFrameAt = 0; // Zeitstempel für Jump-Frames
-    this.jumpFrameInterval = 50; // Jump-Animation verlangsamen (ms pro Frame)
-    this.lastWalkFrameAt = 0; // Zeitstempel für Walk-Frames
-    this.walkFrameInterval = 80; // Walk-Animation verlangsamen (ms pro Frame)
+    this.lastJumpFrameAt = 0;
+    this.jumpFrameInterval = 50;
+    this.lastWalkFrameAt = 0;
+    this.walkFrameInterval = 80;
     this.movementInterval = null;
     this.animationInterval = null;
     this.animate();
@@ -123,17 +123,14 @@ class Character extends MovableObject {
           } catch (e) {}
           this.deadSoundPlayed = true;
         }
-        // sicherstellen, dass Hurt-Sound nicht weiterläuft
         if (this.hurtSound && !this.hurtSound.paused) {
           try { this.hurtSound.pause(); } catch (e) {}
           try { this.hurtSound.currentTime = 0; } catch (e) {}
         }
-        // Walk-Sound stoppen
         if (this.walkSound && !this.walkSound.paused) {
           try { this.walkSound.pause(); } catch (e) {}
           try { this.walkSound.currentTime = 0; } catch (e) {}
         }
-        // Walk-Frame-Timer zurücksetzen
         this.lastWalkFrameAt = 0;
         const now = (typeof performance !== "undefined" && performance.now) ? performance.now() : new Date().getTime();
         if (now - this.lastDeadFrameAt >= this.deadFrameInterval) {
@@ -144,12 +141,10 @@ class Character extends MovableObject {
       }
       if (this.hurt()) {
         this.playAnimation(this.IMAGES_HURT);
-        // Walk-Sound stoppen
         if (this.walkSound && !this.walkSound.paused) {
           try { this.walkSound.pause(); } catch (e) {}
           try { this.walkSound.currentTime = 0; } catch (e) {}
         }
-        // Walk-Frame-Timer zurücksetzen
         this.lastWalkFrameAt = 0;
         return;
       }
@@ -163,7 +158,6 @@ class Character extends MovableObject {
         this.idleTime = 0;
         this.lastIdleFrameAt = 0;
         this.lastWalkFrameAt = 0;
-        // Walk-Sound stoppen
         if (this.walkSound && !this.walkSound.paused) {
           try { this.walkSound.pause(); } catch (e) {}
           try { this.walkSound.currentTime = 0; } catch (e) {}
@@ -181,7 +175,6 @@ class Character extends MovableObject {
         this.idleTime = 0;
         this.lastIdleFrameAt = 0;
         this.lastJumpFrameAt = 0;
-        // Walk-Sound starten
         try {
           if (this.walkSound && this.walkSound.paused) {
             this.walkSound.currentTime = 0;
@@ -202,7 +195,6 @@ class Character extends MovableObject {
         }
         this.lastWalkFrameAt = 0;
         this.lastJumpFrameAt = 0;
-        // Walk-Sound stoppen
         if (this.walkSound && !this.walkSound.paused) {
           try { this.walkSound.pause(); } catch (e) {}
           try { this.walkSound.currentTime = 0; } catch (e) {}
@@ -212,7 +204,6 @@ class Character extends MovableObject {
   }
 
   hit() {
-    // Wenn bereits tot: keine weiteren Hit-Effekte oder Sounds
     if (this.die()) {
       return;
     }
@@ -229,7 +220,6 @@ class Character extends MovableObject {
     if (this.die()) {
       return;
     }
-    // Sprunganimation immer von vorne starten
     this.currentImage = 0;
     this.lastJumpFrameAt = 0;
     super.jump();

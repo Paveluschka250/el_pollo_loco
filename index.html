@@ -8,7 +8,6 @@
     <title>El Pollo Loco</title>
   </head>
   <body onload="init()">
-    <!-- Main Menu -->
     <div id="main-menu" class="main-menu">
       <div class="menu-content">
         <h1 class="game-title">El Pollo Loco</h1>
@@ -20,7 +19,6 @@
       </div>
     </div>
 
-    <!-- How to Play Screen -->
     <div id="how-to-play-screen" class="how-to-play-screen" style="display: none;">
       <div class="tutorial-content">
         <h1 class="tutorial-title">How to Play</h1>
@@ -69,7 +67,6 @@
       </div>
     </div>
 
-    <!-- Impressum/Datenschutz Screen -->
     <div id="impressum-screen" class="impressum-screen" style="display: none;">
       <div class="impressum-content">
         <h1 class="impressum-title">Impressum & Datenschutz</h1>
@@ -145,13 +142,11 @@
       </div>
     </div>
 
-    <!-- Game Canvas (initially hidden) -->
     <div id="game-container" class="game-container" style="display: none;">
       <h1>El Pollo Loco</h1>
       <canvas id="canvas" width="720" height="480"></canvas>
     </div>
     
-    <!-- Mobile Rotation Overlay -->
     <div id="mobile-rotation-overlay" class="mobile-rotation-overlay">
       <div class="mobile-rotation-content">
         <img src="./assets/icons/smartphone-rotate.svg" alt="Rotate Phone" class="rotation-icon">
@@ -178,26 +173,22 @@
   <script src="./js/game.js"></script>
   
   <script>
-    // Main Menu Logic
     let gameStarted = false;
-    let gameWorld = null; // Umbenannt um Konflikt zu vermeiden
-    let backgroundMusic = null; // Globale Hintergrundmusik
+    let gameWorld = null;
+    let backgroundMusic = null;
 
     function init() {
-      // Game wird erst gestartet wenn "Spiel Starten" gedrückt wird
       setupMenuEventListeners();
       setupBackgroundMusic();
     }
 
     function setupBackgroundMusic() {
-      // Hintergrundmusik nur einmal erstellen
       if (!backgroundMusic) {
         backgroundMusic = new Audio("assets/audio/background-music.mp3");
         backgroundMusic.loop = true;
         backgroundMusic.volume = 0.3;
         backgroundMusic.preload = 'auto';
         
-        // Musik starten (mit User-Interaktion)
         startBackgroundMusic();
       }
     }
@@ -205,17 +196,14 @@
     function startBackgroundMusic() {
       if (!backgroundMusic) return;
       
-      // Musik nur starten, wenn der Browser es erlaubt (User-Interaktion erforderlich)
       const playMusic = () => {
         backgroundMusic.play().catch(e => {
           console.log('Musik konnte nicht automatisch gestartet werden:', e);
         });
       };
       
-      // Sofort versuchen zu starten
       playMusic();
       
-      // Falls das nicht funktioniert, bei erstem Klick starten
       const startOnClick = () => {
         playMusic();
         document.removeEventListener('click', startOnClick);
@@ -241,65 +229,52 @@
     }
 
     function startGame() {
-      // Main Menu verstecken
       document.getElementById('main-menu').style.display = 'none';
       
-      // Game Container anzeigen
       document.getElementById('game-container').style.display = 'flex';
       
-      // Game initialisieren (nur einmal)
       if (!gameStarted) {
         const canvas = document.getElementById("canvas");
         const keyboard = new Keyboard();
-        gameWorld = new World(canvas, keyboard, backgroundMusic); // Musik übergeben
-        window.world = gameWorld; // Für Endscreen-Kompatibilität
-        gameWorld.startGame(); // Spiel starten
+        gameWorld = new World(canvas, keyboard, backgroundMusic);
+        window.world = gameWorld;
+        gameWorld.startGame();
         gameStarted = true;
       } else {
-        // Game neu starten (wie Retry) wenn bereits gestartet
         if (gameWorld) {
-          gameWorld.restartGame(); // Kompletter Neustart statt nur Resume
+          gameWorld.restartGame();
         }
       }
     }
 
     function showHowToPlay() {
-      // Main Menu verstecken
       document.getElementById('main-menu').style.display = 'none';
       
-      // How to Play Screen anzeigen
       document.getElementById('how-to-play-screen').style.display = 'flex';
     }
 
     function backToMainMenu() {
-      // How to Play Screen verstecken
       document.getElementById('how-to-play-screen').style.display = 'none';
       
-      // Main Menu anzeigen
       document.getElementById('main-menu').style.display = 'flex';
     }
 
     function showImpressum() {
-      // Main Menu verstecken
       document.getElementById('main-menu').style.display = 'none';
       
-      // Impressum Screen anzeigen
       document.getElementById('impressum-screen').style.display = 'flex';
     }
 
     function backToMainMenuFromImpressum() {
-      // Impressum Screen verstecken
       document.getElementById('impressum-screen').style.display = 'none';
       
-      // Main Menu anzeigen
       document.getElementById('main-menu').style.display = 'flex';
     }
 
-    // Mobile Rotation Overlay Logic
     function checkMobileOrientation() {
       const overlay = document.getElementById('mobile-rotation-overlay');
       const isPortrait = window.innerHeight > window.innerWidth;
-      const isMobile = window.innerWidth <= 768; // Mobile breakpoint
+      const isMobile = window.innerWidth <= 768;
       
       if (isMobile && isPortrait) {
         overlay.style.display = 'flex';
@@ -308,11 +283,9 @@
       }
     }
     
-    // Check on load and resize
     window.addEventListener('load', checkMobileOrientation);
     window.addEventListener('resize', checkMobileOrientation);
     window.addEventListener('orientationchange', () => {
-      // Delay to ensure orientation change is complete
       setTimeout(checkMobileOrientation, 100);
     });
   </script>

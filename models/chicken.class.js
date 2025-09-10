@@ -27,8 +27,8 @@ class Chicken extends MovableObject {
   constructor(xMin = 200, xMax = 700, type = 1) {
     super();
     this.type = type;
-    this.xMin = xMin; // Ursprünglicher Spawn-Bereich speichern
-    this.xMax = xMax; // Ursprünglicher Spawn-Bereich speichern
+    this.xMin = xMin;
+    this.xMax = xMax;
     this.IMAGES_WALKING = type === 2 ? this.IMAGES_WALKING_2 : this.IMAGES_WALKING_1;
     this.loadImage(this.IMAGES_WALKING[0]);
     this.loadImages(this.IMAGES_WALKING);
@@ -68,13 +68,11 @@ class Chicken extends MovableObject {
     this.isDead = true;
     this.speed = 0;
     
-    // Dead-Animation abspielen
     const deadImages = this.type === 2 ? this.IMAGES_DEAD2 : this.IMAGES_DEAD1;
     this.loadImages(deadImages);
     this.currentImage = 0;
     this.img = this.imageCache[deadImages[0]];
     
-    // Dead-Animation für 1 Sekunde abspielen
     let deadFrameCount = 0;
     const deadAnimation = setInterval(() => {
       if (deadFrameCount < deadImages.length) {
@@ -82,12 +80,10 @@ class Chicken extends MovableObject {
         deadFrameCount++;
       } else {
         clearInterval(deadAnimation);
-        // Nach der Animation das letzte Bild beibehalten
         this.img = this.imageCache[deadImages[deadImages.length - 1]];
       }
-    }, 200); // 200ms pro Frame
+    }, 200);
     
-    // Nach 1 Sekunde Chicken unsichtbar machen
     setTimeout(() => {
       this.width = 0;
       this.height = 0;
@@ -103,7 +99,6 @@ class Chicken extends MovableObject {
   }
 
   resetPosition() {
-    // Position auf ursprünglichen Spawn-Bereich zurücksetzen
     this.x = Math.random() * (this.xMax - this.xMin) + this.xMin;
     this.y = 360;
     if (this.type === 2) {
