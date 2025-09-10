@@ -67,8 +67,33 @@ class Chicken extends MovableObject {
     if (this.isDead) return;
     this.isDead = true;
     this.speed = 0;
-    const deadImg = (this.type === 2 ? this.IMAGES_DEAD2 : this.IMAGES_DEAD1)[0];
-    this.loadImage(deadImg);
+    
+    // Dead-Animation abspielen
+    const deadImages = this.type === 2 ? this.IMAGES_DEAD2 : this.IMAGES_DEAD1;
+    this.loadImages(deadImages);
+    this.currentImage = 0;
+    this.img = this.imageCache[deadImages[0]];
+    
+    // Dead-Animation für 1 Sekunde abspielen
+    let deadFrameCount = 0;
+    const deadAnimation = setInterval(() => {
+      if (deadFrameCount < deadImages.length) {
+        this.img = this.imageCache[deadImages[deadFrameCount]];
+        deadFrameCount++;
+      } else {
+        clearInterval(deadAnimation);
+        // Nach der Animation das letzte Bild beibehalten
+        this.img = this.imageCache[deadImages[deadImages.length - 1]];
+      }
+    }, 200); // 200ms pro Frame
+    
+    // Nach 1 Sekunde Chicken unsichtbar machen
+    setTimeout(() => {
+      this.width = 0;
+      this.height = 0;
+      clearInterval(deadAnimation);
+    }, 1000);
+    
     try {
       if (this.deadSound) {
         this.deadSound.currentTime = 0;

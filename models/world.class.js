@@ -254,11 +254,9 @@ class World {
       }
     });
     this.addObjectsToMap(this.level.clouds);
-    // Chickens zeichnen (Endboss auch wenn tot für Dead-Animation)
+    // Chickens zeichnen (alle Chickens, auch tote für Dead-Animation)
     this.level.chickens.forEach(chicken => {
-      if (chicken instanceof Endboss || !chicken.isDead) {
-        this.addToMap(chicken);
-      }
+      this.addToMap(chicken);
     });
     // Endboss-Bar über dem Boss positionieren (nur wenn Boss noch lebt)
     const boss = this.level.chickens.find((e) => e instanceof Endboss);
@@ -429,6 +427,8 @@ class World {
         chicken.currentImage = 0;
         chicken.img = chicken.imageCache[chicken.IMAGES_WALKING[0]];
         chicken.speed = 0.5 + Math.random() * 0.75; // Zufällige Geschwindigkeit neu setzen
+        chicken.width = 60; // Wieder sichtbar machen
+        chicken.height = 60; // Wieder sichtbar machen
         chicken.resetPosition(); // Position auf ursprünglichen Spawn-Bereich zurücksetzen
       }
     });
