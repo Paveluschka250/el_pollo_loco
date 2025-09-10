@@ -17,6 +17,7 @@ class World {
   backgroundMusic = null;
   gameRunning = false;
   gameIntervals = [];
+  buttonController = null;
 
   constructor(canvas, keyboard, music = null) {
     this.canvas = canvas;
@@ -29,6 +30,7 @@ class World {
     this.run();
     this.setupEventListeners();
     this.setupKeyboardEvents();
+    this.setupButtons();
   }
 
   startGame() {
@@ -90,6 +92,10 @@ class World {
     window.addEventListener("keyup", this.keyboardUpHandler);
   }
 
+  setupButtons() {
+    this.buttonController = new ButtonController(this.canvas);
+  }
+
   setWorld() {
     this.character.world = this;
     const boss = this.level.chickens.find((e) => e instanceof Endboss);
@@ -123,11 +129,17 @@ class World {
   checkGameEnd() {
     if (this.character.die() && !this.endscreen.visible) {
       this.endscreen.showLose();
+      if (this.buttonController) {
+        this.buttonController.disable();
+      }
     }
     
     const boss = this.level.chickens.find((e) => e instanceof Endboss);
     if (boss && boss.isDead && boss.width === 0 && !this.endscreen.visible) {
       this.endscreen.showWin();
+      if (this.buttonController) {
+        this.buttonController.disable();
+      }
     }
   }
 
@@ -253,6 +265,10 @@ class World {
     
     this.endscreen.draw(this.ctx);
     
+    if (this.buttonController && !this.endscreen.visible) {
+      this.buttonController.draw(this.ctx);
+    }
+    
     requestAnimationFrame(this.draw.bind(this));
   }
 
@@ -343,6 +359,10 @@ class World {
     this.level = level;
     
     this.gameRunning = true;
+    
+    if (this.buttonController) {
+      this.buttonController.enable();
+    }
     
     this.statusbar = [
       Object.assign(new Statusbar("health"), { y: -10 }),
