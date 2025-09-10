@@ -14,16 +14,50 @@ class World {
   endbossBar = new Statusbar("endboss");
   endscreen = new Endscreen();
   throwableObjects = [];
+  backgroundMusic = new Audio("assets/audio/background-music.mp3");
 
   constructor(canvas, keyboard) {
     this.canvas = canvas;
     this.ctx = canvas.getContext("2d");
     this.keyboard = keyboard;
     this.camera_x = 0;
+    this.setupBackgroundMusic();
     this.draw();
     this.setWorld();
     this.run();
     this.setupEventListeners();
+  }
+
+  setupBackgroundMusic() {
+    // Hintergrundmusik konfigurieren
+    this.backgroundMusic.loop = true;
+    this.backgroundMusic.volume = 0.3; // Leiser als Soundeffekte
+    this.backgroundMusic.preload = 'auto';
+    
+    // Musik starten (mit User-Interaktion)
+    this.startBackgroundMusic();
+  }
+
+  startBackgroundMusic() {
+    // Musik nur starten, wenn der Browser es erlaubt (User-Interaktion erforderlich)
+    const playMusic = () => {
+      this.backgroundMusic.play().catch(e => {
+        console.log('Musik konnte nicht automatisch gestartet werden:', e);
+      });
+    };
+    
+    // Sofort versuchen zu starten
+    playMusic();
+    
+    // Falls das nicht funktioniert, bei erstem Klick starten
+    const startOnClick = () => {
+      playMusic();
+      document.removeEventListener('click', startOnClick);
+      document.removeEventListener('keydown', startOnClick);
+    };
+    
+    document.addEventListener('click', startOnClick);
+    document.addEventListener('keydown', startOnClick);
   }
 
   setupEventListeners() {
