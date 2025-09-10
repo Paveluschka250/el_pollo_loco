@@ -10,6 +10,14 @@
   <body onload="init()">
     <h1>El Pollo Loco</h1>
     <canvas id="canvas" width="720" height="480"></canvas>
+    
+    <!-- Mobile Rotation Overlay -->
+    <div id="mobile-rotation-overlay" class="mobile-rotation-overlay">
+      <div class="mobile-rotation-content">
+        <img src="./assets/icons/smartphone-rotate.svg" alt="Rotate Phone" class="rotation-icon">
+        <p class="rotation-text">Bitte drehe dein Handy für das beste Spielerlebnis</p>
+      </div>
+    </div>
   </body>
   <script src="./models/drawable-object.class.js"></script>
   <script src="./models/movable-object.js"></script>
@@ -28,4 +36,27 @@
   <script src="./models/level.class.js"></script>
   <script src="./js/level.js"></script>
   <script src="./js/game.js"></script>
+  
+  <script>
+    // Mobile Rotation Overlay Logic
+    function checkMobileOrientation() {
+      const overlay = document.getElementById('mobile-rotation-overlay');
+      const isPortrait = window.innerHeight > window.innerWidth;
+      const isMobile = window.innerWidth <= 768; // Mobile breakpoint
+      
+      if (isMobile && isPortrait) {
+        overlay.style.display = 'flex';
+      } else {
+        overlay.style.display = 'none';
+      }
+    }
+    
+    // Check on load and resize
+    window.addEventListener('load', checkMobileOrientation);
+    window.addEventListener('resize', checkMobileOrientation);
+    window.addEventListener('orientationchange', () => {
+      // Delay to ensure orientation change is complete
+      setTimeout(checkMobileOrientation, 100);
+    });
+  </script>
 </html>
