@@ -154,7 +154,7 @@ class Endscreen extends DrawableObject {
         ctx.stroke();
         
         // Text mit 3D-Effekt (Schatten + Haupttext)
-        ctx.font = 'bold 18px Arial';
+        ctx.font = 'bold 18px "rye", Arial, sans-serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         
@@ -162,8 +162,8 @@ class Endscreen extends DrawableObject {
         ctx.fillStyle = '#8B4513';
         ctx.fillText(text, x + this.buttonWidth / 2 + 2, y + this.buttonHeight / 2 + 2);
         
-        // Haupttext
-        ctx.fillStyle = '#FFD700';
+        // Haupttext (schwarz)
+        ctx.fillStyle = '#000000';
         ctx.fillText(text, x + this.buttonWidth / 2, y + this.buttonHeight / 2);
     }
 
