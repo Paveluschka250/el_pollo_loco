@@ -12,8 +12,8 @@ class Endscreen extends DrawableObject {
         "assets/img/You won, you lost/You Won B.png",
     ];
 
-    constructor() {
-        super();
+  constructor() {
+    super();
         this.visible = false;
         this.type = null; // 'win' oder 'lose'
         this.currentImage = null;
@@ -119,20 +119,51 @@ class Endscreen extends DrawableObject {
     }
 
     drawButton(ctx, x, y, text, color) {
-        // Button Hintergrund
-        ctx.fillStyle = color;
+        // 3D-Button mit Gradient und Schatten-Effekt (wie GAME OVER Style)
+        
+        // Schatten (dunkler Hintergrund)
+        ctx.fillStyle = '#8B4513'; // Dunkelbraun für Schatten
+        ctx.fillRect(x + 3, y + 3, this.buttonWidth, this.buttonHeight);
+        
+        // Haupt-Button mit Gradient
+        const gradient = ctx.createLinearGradient(x, y, x, y + this.buttonHeight);
+        gradient.addColorStop(0, '#FFD700'); // Gold oben
+        gradient.addColorStop(0.5, '#FF8C00'); // Orange mitte
+        gradient.addColorStop(1, '#FF4500'); // Rot-orange unten
+        
+        ctx.fillStyle = gradient;
         ctx.fillRect(x, y, this.buttonWidth, this.buttonHeight);
         
-        // Button Rand
-        ctx.strokeStyle = '#fff';
+        // 3D-Rand (heller oben, dunkler unten)
+        ctx.strokeStyle = '#FFD700'; // Goldener Rand oben
         ctx.lineWidth = 2;
-        ctx.strokeRect(x, y, this.buttonWidth, this.buttonHeight);
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.lineTo(x + this.buttonWidth, y);
+        ctx.moveTo(x, y);
+        ctx.lineTo(x, y + this.buttonHeight);
+        ctx.stroke();
         
-        // Button Text
-        ctx.fillStyle = '#fff';
-        ctx.font = '16px Arial';
+        // Dunkler Rand unten für 3D-Effekt
+        ctx.strokeStyle = '#8B4513'; // Dunkelbraun unten
+        ctx.beginPath();
+        ctx.moveTo(x + this.buttonWidth, y);
+        ctx.lineTo(x + this.buttonWidth, y + this.buttonHeight);
+        ctx.moveTo(x, y + this.buttonHeight);
+        ctx.lineTo(x + this.buttonWidth, y + this.buttonHeight);
+        ctx.stroke();
+        
+        // Text mit 3D-Effekt (Schatten + Haupttext)
+        ctx.font = 'bold 18px Arial';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
+        
+        // Text-Schatten
+        ctx.fillStyle = '#8B4513';
+        ctx.fillText(text, x + this.buttonWidth / 2 + 2, y + this.buttonHeight / 2 + 2);
+        
+        // Haupttext
+        ctx.fillStyle = '#FFD700';
         ctx.fillText(text, x + this.buttonWidth / 2, y + this.buttonHeight / 2);
     }
 
@@ -171,5 +202,5 @@ class Endscreen extends DrawableObject {
         if (window.world) {
             window.world.restartGame();
         }
-    }
+  }
 }

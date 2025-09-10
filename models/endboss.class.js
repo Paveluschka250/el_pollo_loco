@@ -44,7 +44,7 @@ class Endboss extends MovableObject {
     this.loadImages(this.IMAGES_ATTACK);
     this.loadImages(this.IMAGES_HURT);
     this.loadImages(this.IMAGES_DEAD);
-    this.x = 2000;
+    this.x = 2500;
     this.y = 150;
     this.width = 300; // Initial width
     this.height = 300; // Initial height
@@ -66,6 +66,7 @@ class Endboss extends MovableObject {
     this.deadAnimationPlayed = false;
     this.deadAnimationEndTime = 0;
     this.deadFrameCount = 0;
+    this.hurtSound = new Audio('assets/audio/endboss-hurt.mp3');
     this.offset = {
       left: 20,
       top: 20,
@@ -170,6 +171,13 @@ class Endboss extends MovableObject {
     this.lastHitTime = now;
     this.isHurt = true;
     this.hurtEndAt = new Date().getTime() + 1000; // 1 Sekunde
+    
+    // Hurt-Sound abspielen
+    this.hurtSound.currentTime = 0;
+    this.hurtSound.play().catch(e => {
+      console.log('Endboss hurt sound konnte nicht abgespielt werden:', e);
+    });
+    
     // Leben reduzieren (3 -> 2 -> 1 -> 0)
     this.lives = Math.max(0, this.lives - 1);
     // Prozentwerte grob auf 100/60/20/0 mappen
