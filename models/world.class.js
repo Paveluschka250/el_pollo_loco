@@ -17,7 +17,6 @@ class World {
   backgroundMusic = null;
   gameRunning = false;
   gameIntervals = [];
-  buttonController = null;
 
   constructor(canvas, keyboard, music = null) {
     this.canvas = canvas;
@@ -30,7 +29,6 @@ class World {
     this.run();
     this.setupEventListeners();
     this.setupKeyboardEvents();
-    this.setupButtons();
   }
 
   startGame() {
@@ -105,10 +103,6 @@ class World {
     window.addEventListener("keyup", this.keyboardUpHandler);
   }
 
-  setupButtons() {
-    this.buttonController = new ButtonController(this.canvas);
-    this.initializeSoundState();
-  }
 
   setWorld() {
     this.character.world = this;
@@ -143,17 +137,11 @@ class World {
   checkGameEnd() {
     if (this.character.die() && !this.endscreen.visible) {
       this.endscreen.showLose();
-      if (this.buttonController) {
-        this.buttonController.disable();
-      }
     }
 
     const boss = this.level.chickens.find((e) => e instanceof Endboss);
     if (boss && boss.isDead && boss.width === 0 && !this.endscreen.visible) {
       this.endscreen.showWin();
-      if (this.buttonController) {
-        this.buttonController.disable();
-      }
     }
   }
 
@@ -344,13 +332,6 @@ class World {
 
   drawOverlays() {
     this.endscreen.draw(this.ctx);
-    this.drawMobileButtons();
-  }
-
-  drawMobileButtons() {
-    if (this.buttonController && !this.endscreen.visible) {
-      this.buttonController.draw(this.ctx);
-    }
   }
 
   addObjectsToMap(objects) {
@@ -443,9 +424,6 @@ class World {
     this.resetCanvas();
     this.setupKeyboardEvents();
     this.setWorld();
-    this.enableButtons();
-    this.restoreSoundState();
-    this.restartBackgroundMusic();
   }
 
   resetEndscreen() {
@@ -549,40 +527,4 @@ class World {
     this.ctx.setTransform(1, 0, 0, 1, 0, 0);
   }
 
-  enableButtons() {
-    if (this.buttonController) {
-      this.buttonController.enable();
-    }
-  }
-
-  initializeSoundState() {
-    if (this.buttonController && this.buttonController.soundButton) {
-      const volume = this.buttonController.soundButton.soundEnabled ? 1.0 : 0.0;
-      this.buttonController.soundButton.setGlobalVolume(volume);
-    }
-    this.initializeBackgroundMusic();
-  }
-
-  initializeBackgroundMusic() {
-    if (window.backgroundMusic && this.buttonController && this.buttonController.soundButton) {
-      const volume = this.buttonController.soundButton.soundEnabled ? 1.0 : 0.0;
-      this.buttonController.soundButton.setBackgroundMusicVolume(volume);
-    }
-  }
-
-  restoreSoundState() {
-    if (this.buttonController && this.buttonController.soundButton) {
-      const volume = this.buttonController.soundButton.soundEnabled ? 1.0 : 0.0;
-      this.buttonController.soundButton.setGlobalVolume(volume);
-    }
-  }
-
-  restartBackgroundMusic() {
-    if (window.backgroundMusic && this.buttonController && this.buttonController.soundButton) {
-      if (this.buttonController.soundButton.soundEnabled) {
-        window.backgroundMusic.currentTime = 0;
-        window.backgroundMusic.play().catch(e => {});
-      }
-    }
-  }
 }
