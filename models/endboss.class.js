@@ -77,69 +77,82 @@ class Endboss extends MovableObject {
   }
 
   animate() {
+    this.startMovementAnimation();
+    this.startAnimationLoop();
+  }
+
+  startMovementAnimation() {
     setInterval(() => {
       if (!this.isHurt && !this.isDead) {
         this.updateState();
-        if (this.state !== 'alert') {
-          this.moveLeft();
-        }
+        this.handleMovement();
       }
     }, 1000 / 60);
+  }
 
+  handleMovement() {
+    if (this.state !== 'alert') {
+      this.moveLeft();
+    }
+  }
+
+  startAnimationLoop() {
     setInterval(() => {
-      if (this.isHurt && (new Date().getTime() >= this.hurtEndAt)) {
-        this.isHurt = false;
-      }
+      this.updateHurtState();
       this.playCurrentAnimation();
     }, 150);
+  }
+
+  updateHurtState() {
+    if (this.isHurt && (new Date().getTime() >= this.hurtEndAt)) {
+      this.isHurt = false;
+    }
   }
 
   updateState() {
     if (!this.world || !this.world.character) return;
     
-    const distance = Math.abs(this.x - this.world.character.x);
+    const distance = this.calculateDistance();
+    this.handleStateTransitions(distance);
+  }
+
+  calculateDistance() {
+    return Math.abs(this.x - this.world.character.x);
+  }
+
+  handleStateTransitions(distance) {
     const alertDistance = 400;
-    const attackDistance = 300;
-    
     const now = new Date().getTime();
     
     if (this.state === 'walking' && distance <= alertDistance) {
-      this.state = 'alert';
-      this.alertPlayed = false;
-      this.alertEndTime = now + 2000;
+      this.transitionToAlert(now);
     } else if (this.state === 'alert' && now >= this.alertEndTime) {
-      this.state = 'attack';
-      this.attackEndTime = now + 3000;
-      this.speed = this.attackSpeed;
+      this.transitionToAttack(now);
     } else if (this.state === 'attack' && now >= this.attackEndTime) {
-      this.state = 'walking';
-      this.speed = this.originalSpeed;
+      this.transitionToWalking();
     }
+  }
+
+  transitionToAlert(now) {
+    this.state = 'alert';
+    this.alertPlayed = false;
+    this.alertEndTime = now + 2000;
+  }
+
+  transitionToAttack(now) {
+    this.state = 'attack';
+    this.attackEndTime = now + 3000;
+    this.speed = this.attackSpeed;
+  }
+
+  transitionToWalking() {
+    this.state = 'walking';
+    this.speed = this.originalSpeed;
   }
 
   playCurrentAnimation() {
     if (this.isDead) {
-      if (!this.deadAnimationPlayed) {
-        this.deadAnimationPlayed = true;
-        this.currentImage = 0;
-        this.lastDeadFrameAt = 0;
-        this.deadFrameCount = 0;
-      }
-      
-      const now = new Date().getTime();
-      if (now - this.lastDeadFrameAt >= 300) {
-        const frameIndex = this.deadFrameCount % this.IMAGES_DEAD.length;
-        const path = this.IMAGES_DEAD[frameIndex];
-        this.img = this.imageCache[path];
-        this.lastDeadFrameAt = now;
-        this.deadFrameCount++;
-        
-        if (this.deadFrameCount > this.IMAGES_DEAD.length) {
-          this.width = 0;
-          this.height = 0;
-          return;
-        }
-      }
+      this.handleDeadAnimation();
     } else if (this.isHurt) {
       this.playAnimation(this.IMAGES_HURT);
     } else if (this.state === 'alert') {
@@ -151,25 +164,84 @@ class Endboss extends MovableObject {
     }
   }
 
+  handleDeadAnimation() {
+    this.initializeDeadAnimation();
+    this.playDeadFrame();
+  }
+
+  initializeDeadAnimation() {
+    if (!this.deadAnimationPlayed) {
+      this.deadAnimationPlayed = true;
+      this.currentImage = 0;
+      this.lastDeadFrameAt = 0;
+      this.deadFrameCount = 0;
+    }
+  }
+
+  playDeadFrame() {
+    const now = new Date().getTime();
+    if (now - this.lastDeadFrameAt >= 300) {
+      this.updateDeadFrame();
+      this.lastDeadFrameAt = now;
+      this.deadFrameCount++;
+      this.checkDeadAnimationEnd();
+    }
+  }
+
+  updateDeadFrame() {
+    const frameIndex = this.deadFrameCount % this.IMAGES_DEAD.length;
+    const path = this.IMAGES_DEAD[frameIndex];
+    this.img = this.imageCache[path];
+  }
+
+  checkDeadAnimationEnd() {
+    if (this.deadFrameCount > this.IMAGES_DEAD.length) {
+      this.width = 0;
+      this.height = 0;
+    }
+  }
+
   takeHit() {
     if (this.isDead) return;
+    if (!this.canTakeHit()) return;
+    
+    this.processHit();
+    this.updateHealth();
+    this.checkDeath();
+  }
+
+  canTakeHit() {
     const now = new Date().getTime();
-    if (now - this.lastHitTime < this.hitCooldown) {
-      return;
-    }
+    return now - this.lastHitTime >= this.hitCooldown;
+  }
+
+  processHit() {
+    const now = new Date().getTime();
     this.lastHitTime = now;
     this.isHurt = true;
-    this.hurtEndAt = new Date().getTime() + 1000;
-    
+    this.hurtEndAt = now + 1000;
+    this.playHurtSound();
+  }
+
+  playHurtSound() {
     this.hurtSound.currentTime = 0;
     this.hurtSound.play().catch(e => {});
-    
+  }
+
+  updateHealth() {
     this.lives = Math.max(0, this.lives - 1);
     const livesToPercent = { 3: 100, 2: 60, 1: 20, 0: 0 };
     this.health = livesToPercent[this.lives];
+    this.updateHealthBar();
+  }
+
+  updateHealthBar() {
     if (this.world && this.world.endbossBar) {
       this.world.endbossBar.setPercentage(this.health);
     }
+  }
+
+  checkDeath() {
     if (this.lives === 0) {
       this.isDead = true;
       this.isHurt = false;
