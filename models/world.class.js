@@ -189,8 +189,8 @@ class World {
   }
 
   handleEndbossCollision(chicken) {
-    if (!chicken.isDead && !this.character.hurt()) {
-      this.character.hit();
+    if (!chicken.isDead && !this.character.die()) {
+      this.character.energy = 0;
       this.statusbar[0].setPercentage(this.character.energy);
     }
   }
