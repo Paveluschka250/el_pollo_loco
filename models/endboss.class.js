@@ -162,9 +162,7 @@ class Endboss extends MovableObject {
     this.hurtEndAt = new Date().getTime() + 1000;
     
     this.hurtSound.currentTime = 0;
-    this.hurtSound.play().catch(e => {
-      console.log('Endboss hurt sound konnte nicht abgespielt werden:', e);
-    });
+    this.hurtSound.play().catch(e => {});
     
     this.lives = Math.max(0, this.lives - 1);
     const livesToPercent = { 3: 100, 2: 60, 1: 20, 0: 0 };

@@ -202,7 +202,6 @@ class World {
     for (let i = 0; i < this.level.coins.length; i++) {
       let coin = this.level.coins[i];
       if (this.character.isCollidingOffset(coin) && !coin.collected) {
-        console.log("Kollision mit Coin erkannt!");
         if (typeof coin.collect === "function") {
           coin.collect();
         }
@@ -219,7 +218,6 @@ class World {
     for (let i = 0; i < this.level.bottles.length; i++) {
       let bottle = this.level.bottles[i];
       if (this.character.isCollidingOffset(bottle) && !bottle.collected) {
-        console.log("Kollision mit Bottle erkannt!");
         if (typeof bottle.collect === "function") {
           bottle.collect();
         }

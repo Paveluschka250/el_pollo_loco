@@ -21,11 +21,9 @@ function setupBackgroundMusic() {
 function startBackgroundMusic() {
   if (!backgroundMusic) return;
   
-  const playMusic = () => {
-    backgroundMusic.play().catch(e => {
-      console.log('Musik konnte nicht automatisch gestartet werden:', e);
-    });
-  };
+      const playMusic = () => {
+        backgroundMusic.play().catch(e => {});
+      };
   
   playMusic();
   
