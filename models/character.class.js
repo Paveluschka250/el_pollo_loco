@@ -100,113 +100,171 @@ class Character extends MovableObject {
   }
 
   animate() {
+    this.startMovementAnimation();
+    this.startCharacterAnimation();
+  }
+
+  startMovementAnimation() {
     this.movementInterval = setInterval(() => {
       if (this.world.endscreen && this.world.endscreen.visible) {
         return;
       }
-      if (this.world.keyboard.RIGHT && this.x < 2200) {
-        this.moveRight();
-        this.otherDirection = false;
-      }
-      if (this.world.keyboard.LEFT && this.x > -600) {
-        this.moveLeft();
-        this.otherDirection = true;
-      }
-      if (this.world.keyboard.UP && !this.isAboveGround()) {
-        this.jump();
-      }
+      this.handleMovement();
       this.world.camera_x = -this.x + 100;
     }, 1000 / 60);
+  }
+
+  handleMovement() {
+    if (this.world.keyboard.RIGHT && this.x < 2200) {
+      this.moveRight();
+      this.otherDirection = false;
+    }
+    if (this.world.keyboard.LEFT && this.x > -600) {
+      this.moveLeft();
+      this.otherDirection = true;
+    }
+    if (this.world.keyboard.UP && !this.isAboveGround()) {
+      this.jump();
+    }
+  }
+
+  startCharacterAnimation() {
     this.animationInterval = setInterval(() => {
       if (this.die()) {
-        if (!this.deadSoundPlayed && this.deadSound) {
-          try {
-            this.deadSound.currentTime = 0;
-            this.deadSound.play();
-          } catch (e) {}
-          this.deadSoundPlayed = true;
-        }
-        if (this.hurtSound && !this.hurtSound.paused) {
-          try { this.hurtSound.pause(); } catch (e) {}
-          try { this.hurtSound.currentTime = 0; } catch (e) {}
-        }
-        if (this.walkSound && !this.walkSound.paused) {
-          try { this.walkSound.pause(); } catch (e) {}
-          try { this.walkSound.currentTime = 0; } catch (e) {}
-        }
-        this.lastWalkFrameAt = 0;
-        const now = (typeof performance !== "undefined" && performance.now) ? performance.now() : new Date().getTime();
-        if (now - this.lastDeadFrameAt >= this.deadFrameInterval) {
-          this.playAnimation(this.IMAGES_DEAD);
-          this.lastDeadFrameAt = now;
-        }
+        this.handleDeadAnimation();
         return;
       }
       if (this.world.endscreen && this.world.endscreen.visible) {
         return;
       }
       if (this.hurt()) {
-        this.playAnimation(this.IMAGES_HURT);
-        if (this.walkSound && !this.walkSound.paused) {
-          try { this.walkSound.pause(); } catch (e) {}
-          try { this.walkSound.currentTime = 0; } catch (e) {}
-        }
-        this.lastWalkFrameAt = 0;
+        this.handleHurtAnimation();
         return;
       }
-
       if (this.isAboveGround()) {
-        const now = (typeof performance !== "undefined" && performance.now) ? performance.now() : new Date().getTime();
-        if (now - this.lastJumpFrameAt >= this.jumpFrameInterval) {
-          this.playAnimation(this.IMAGES_JUMP);
-          this.lastJumpFrameAt = now;
-        }
-        this.idleTime = 0;
-        this.lastIdleFrameAt = 0;
-        this.lastWalkFrameAt = 0;
-        if (this.walkSound && !this.walkSound.paused) {
-          try { this.walkSound.pause(); } catch (e) {}
-          try { this.walkSound.currentTime = 0; } catch (e) {}
-        }
+        this.handleJumpAnimation();
         return;
       }
-
-      const isMoving = this.world.keyboard.RIGHT || this.world.keyboard.LEFT;
-      if (isMoving) {
-        const now = (typeof performance !== "undefined" && performance.now) ? performance.now() : new Date().getTime();
-        if (now - this.lastWalkFrameAt >= this.walkFrameInterval) {
-          this.playAnimation(this.IMAGES_WALKING);
-          this.lastWalkFrameAt = now;
-        }
-        this.idleTime = 0;
-        this.lastIdleFrameAt = 0;
-        this.lastJumpFrameAt = 0;
-        try {
-          if (this.walkSound && this.walkSound.paused) {
-            this.walkSound.currentTime = 0;
-            this.walkSound.play();
-          }
-        } catch (e) {}
-      } else {
-        this.idleTime += 50;
-        const now = (typeof performance !== "undefined" && performance.now) ? performance.now() : new Date().getTime();
-        const interval = this.idleTime > 5000 ? this.longIdleFrameInterval : this.idleFrameInterval;
-        if (now - this.lastIdleFrameAt >= interval) {
-          if (this.idleTime > 5000) {
-            this.playAnimation(this.IMAGES_LONG_IDLE);
-          } else {
-            this.playAnimation(this.IMAGES_IDLE);
-          }
-          this.lastIdleFrameAt = now;
-        }
-        this.lastWalkFrameAt = 0;
-        this.lastJumpFrameAt = 0;
-        if (this.walkSound && !this.walkSound.paused) {
-          try { this.walkSound.pause(); } catch (e) {}
-          try { this.walkSound.currentTime = 0; } catch (e) {}
-        }
-      }
+      this.handleWalkOrIdleAnimation();
     }, 50);
+  }
+
+  handleDeadAnimation() {
+    this.playDeadSound();
+    this.stopAllSounds();
+    this.lastWalkFrameAt = 0;
+    this.playDeadFrame();
+  }
+
+  playDeadSound() {
+    if (!this.deadSoundPlayed && this.deadSound) {
+      try {
+        this.deadSound.currentTime = 0;
+        this.deadSound.play();
+      } catch (e) {}
+      this.deadSoundPlayed = true;
+    }
+  }
+
+  stopAllSounds() {
+    if (this.hurtSound && !this.hurtSound.paused) {
+      try { this.hurtSound.pause(); } catch (e) {}
+      try { this.hurtSound.currentTime = 0; } catch (e) {}
+    }
+    if (this.walkSound && !this.walkSound.paused) {
+      try { this.walkSound.pause(); } catch (e) {}
+      try { this.walkSound.currentTime = 0; } catch (e) {}
+    }
+  }
+
+  playDeadFrame() {
+    const now = (typeof performance !== "undefined" && performance.now) ? performance.now() : new Date().getTime();
+    if (now - this.lastDeadFrameAt >= this.deadFrameInterval) {
+      this.playAnimation(this.IMAGES_DEAD);
+      this.lastDeadFrameAt = now;
+    }
+  }
+
+  handleHurtAnimation() {
+    this.playAnimation(this.IMAGES_HURT);
+    if (this.walkSound && !this.walkSound.paused) {
+      try { this.walkSound.pause(); } catch (e) {}
+      try { this.walkSound.currentTime = 0; } catch (e) {}
+    }
+    this.lastWalkFrameAt = 0;
+  }
+
+  handleJumpAnimation() {
+    const now = (typeof performance !== "undefined" && performance.now) ? performance.now() : new Date().getTime();
+    if (now - this.lastJumpFrameAt >= this.jumpFrameInterval) {
+      this.playAnimation(this.IMAGES_JUMP);
+      this.lastJumpFrameAt = now;
+    }
+    this.idleTime = 0;
+    this.lastIdleFrameAt = 0;
+    this.lastWalkFrameAt = 0;
+    if (this.walkSound && !this.walkSound.paused) {
+      try { this.walkSound.pause(); } catch (e) {}
+      try { this.walkSound.currentTime = 0; } catch (e) {}
+    }
+  }
+
+  handleWalkOrIdleAnimation() {
+    const isMoving = this.world.keyboard.RIGHT || this.world.keyboard.LEFT;
+    if (isMoving) {
+      this.handleWalkAnimation();
+    } else {
+      this.handleIdleAnimation();
+    }
+  }
+
+  handleWalkAnimation() {
+    const now = (typeof performance !== "undefined" && performance.now) ? performance.now() : new Date().getTime();
+    if (now - this.lastWalkFrameAt >= this.walkFrameInterval) {
+      this.playAnimation(this.IMAGES_WALKING);
+      this.lastWalkFrameAt = now;
+    }
+    this.idleTime = 0;
+    this.lastIdleFrameAt = 0;
+    this.lastJumpFrameAt = 0;
+    this.startWalkSound();
+  }
+
+  startWalkSound() {
+    try {
+      if (this.walkSound && this.walkSound.paused) {
+        this.walkSound.currentTime = 0;
+        this.walkSound.play();
+      }
+    } catch (e) {}
+  }
+
+  handleIdleAnimation() {
+    this.idleTime += 50;
+    const now = (typeof performance !== "undefined" && performance.now) ? performance.now() : new Date().getTime();
+    const interval = this.idleTime > 5000 ? this.longIdleFrameInterval : this.idleFrameInterval;
+    if (now - this.lastIdleFrameAt >= interval) {
+      this.playIdleAnimation();
+      this.lastIdleFrameAt = now;
+    }
+    this.lastWalkFrameAt = 0;
+    this.lastJumpFrameAt = 0;
+    this.stopWalkSound();
+  }
+
+  playIdleAnimation() {
+    if (this.idleTime > 5000) {
+      this.playAnimation(this.IMAGES_LONG_IDLE);
+    } else {
+      this.playAnimation(this.IMAGES_IDLE);
+    }
+  }
+
+  stopWalkSound() {
+    if (this.walkSound && !this.walkSound.paused) {
+      try { this.walkSound.pause(); } catch (e) {}
+      try { this.walkSound.currentTime = 0; } catch (e) {}
+    }
   }
 
   hit() {
