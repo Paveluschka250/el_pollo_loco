@@ -153,9 +153,11 @@ class World {
       const bottleBar = this.statusbar[2];
       const available = bottleBar?.percentage || 0;
       if (available >= 20) {
+        const direction = this.character.otherDirection ? -1 : 1;
         let bottle = new ThrowableObject(
           this.character.x + 30,
-          this.character.y + 100
+          this.character.y + 100,
+          direction
         );
         this.throwableObjects.push(bottle);
         bottleBar.setPercentage(Math.max(0, available - 20));

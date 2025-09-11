@@ -13,7 +13,7 @@ class ThrowableObject extends MovableObject {
     "assets/img/6_salsa_bottle/bottle_rotation/bottle_splash/5_bottle_splash.png",
     "assets/img/6_salsa_bottle/bottle_rotation/bottle_splash/6_bottle_splash.png",
   ]
-  constructor(x, y) {
+  constructor(x, y, direction = 1) {
     super();
     this.loadImage(this.IMAGES_BOTTLE[0]);
     this.loadImages(this.IMAGES_BOTTLE);
@@ -24,6 +24,7 @@ class ThrowableObject extends MovableObject {
     this.width = 80;
     this.height = 80;
     this.groundY = 360;
+    this.direction = direction;
     this.offset = {
       left: 26,
       top: 15,
@@ -44,7 +45,7 @@ class ThrowableObject extends MovableObject {
     this.applyGravity();
     this.moveInterval = setInterval(() => {
         if (this.hasLanded) return;
-        this.x += 15;
+        this.x += 15 * this.direction;
         if (this.y >= this.groundY) {
           this.onLand();
         }
@@ -89,7 +90,28 @@ class ThrowableObject extends MovableObject {
 
   draw(ctx) {
     if (this.removed) return;
+    
+    if (this.direction === -1) {
+      this.flipImage(ctx);
+    }
+    
     super.draw(ctx);
+    
+    if (this.direction === -1) {
+      this.flipImageBack(ctx);
+    }
+  }
+
+  flipImage(ctx) {
+    ctx.save();
+    ctx.translate(this.width, 0);
+    ctx.scale(-1, 1);
+    this.x = this.x * -1;
+  }
+
+  flipImageBack(ctx) {
+    this.x = this.x * -1;
+    ctx.restore();
   }
 
   isAboveGround() {
