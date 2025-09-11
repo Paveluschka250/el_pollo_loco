@@ -30,11 +30,11 @@ class Chicken extends MovableObject {
     this.loadImage(this.IMAGES_WALKING[0]);
     this.loadImages(this.IMAGES_WALKING);
     this.x = Math.random() * (xMax - xMin) + xMin;
-    this.y = 360;
+    this.y = 370;
     if (type === 2) {
       this.width = 60;
       this.height = 60;
-      this.y = 360 + (60 - this.height);
+      this.y = 370 + (60 - this.height);
     } else {
       this.width = 60;
       this.height = 60;
