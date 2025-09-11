@@ -38,7 +38,7 @@ class World {
   }
 
   setupEventListeners() {
-    this.canvas.addEventListener('click', (event) => {
+    this.canvas.addEventListener("click", (event) => {
       const rect = this.canvas.getBoundingClientRect();
       const mouseX = event.clientX - rect.left;
       const mouseY = event.clientY - rect.top;
@@ -47,47 +47,60 @@ class World {
   }
 
   setupKeyboardEvents() {
+    this.removeExistingKeyboardListeners();
+    this.createKeyboardHandlers();
+    this.addKeyboardListeners();
+  }
+
+  removeExistingKeyboardListeners() {
     if (this.keyboardHandler) {
       window.removeEventListener("keydown", this.keyboardHandler);
       window.removeEventListener("keyup", this.keyboardHandler);
     }
-    
-    this.keyboardHandler = (e) => {
-      if (e.key === "ArrowRight") {
-        this.keyboard.RIGHT = true;
-      }
-      if (e.key === "ArrowLeft") {
-        this.keyboard.LEFT = true;
-      }
-      if (e.key === "ArrowUp") {
-        this.keyboard.UP = true;
-      }
-      if (e.key === "ArrowDown") {
-        this.keyboard.DOWN = true;
-      }
-      if (e.key === " ") {
-        this.keyboard.SPACE = true;
-      }
-    };
+  }
 
-    this.keyboardUpHandler = (e) => {
-      if (e.key === "ArrowRight") {
-        this.keyboard.RIGHT = false;
-      }
-      if (e.key === "ArrowLeft") {
-        this.keyboard.LEFT = false;
-      }
-      if (e.key === "ArrowUp") {
-        this.keyboard.UP = false;
-      }
-      if (e.key === "ArrowDown") {
-        this.keyboard.DOWN = false;
-      }
-      if (e.key === " ") {
-        this.keyboard.SPACE = false;
-      }
-    };
+  createKeyboardHandlers() {
+    this.keyboardHandler = (e) => this.handleKeyDown(e);
+    this.keyboardUpHandler = (e) => this.handleKeyUp(e);
+  }
 
+  handleKeyDown(e) {
+    if (e.key === "ArrowRight") {
+      this.keyboard.RIGHT = true;
+    }
+    if (e.key === "ArrowLeft") {
+      this.keyboard.LEFT = true;
+    }
+    if (e.key === "ArrowUp") {
+      this.keyboard.UP = true;
+    }
+    if (e.key === "ArrowDown") {
+      this.keyboard.DOWN = true;
+    }
+    if (e.key === " ") {
+      this.keyboard.SPACE = true;
+    }
+  }
+
+  handleKeyUp(e) {
+    if (e.key === "ArrowRight") {
+      this.keyboard.RIGHT = false;
+    }
+    if (e.key === "ArrowLeft") {
+      this.keyboard.LEFT = false;
+    }
+    if (e.key === "ArrowUp") {
+      this.keyboard.UP = false;
+    }
+    if (e.key === "ArrowDown") {
+      this.keyboard.DOWN = false;
+    }
+    if (e.key === " ") {
+      this.keyboard.SPACE = false;
+    }
+  }
+
+  addKeyboardListeners() {
     window.addEventListener("keydown", this.keyboardHandler);
     window.addEventListener("keyup", this.keyboardUpHandler);
   }
@@ -133,7 +146,7 @@ class World {
         this.buttonController.disable();
       }
     }
-    
+
     const boss = this.level.chickens.find((e) => e instanceof Endboss);
     if (boss && boss.isDead && boss.width === 0 && !this.endscreen.visible) {
       this.endscreen.showWin();
@@ -168,37 +181,54 @@ class World {
   checkCollisions() {
     this.level.chickens.forEach((chicken) => {
       if (this.character.isCollidingOffset(chicken)) {
-        if (chicken instanceof Endboss) {
-          if (!chicken.isDead && !this.character.hurt()) {
-            this.character.hit();
-            this.statusbar[0].setPercentage(this.character.energy);
-          }
-          return;
-        }
-        
-        if (chicken.isDead) return;
-        
-        const characterBottom =
-          this.character.y +
-          this.character.height -
-          this.character.offset.bottom;
-        const chickenMidY = chicken.y + chicken.height / 2;
-        const isAirborne = this.character.isAboveGround();
-        const isStomp =
-          isAirborne &&
-          this.character.speedY < 0 &&
-          characterBottom <= chickenMidY;
-        if (isStomp && !chicken.isDead) {
-          chicken.playDead();
-          this.character.y =
-            chicken.y - (this.character.height - this.character.offset.bottom);
-          this.character.speedY = 15;
-        } else if (!chicken.isDead && !this.character.hurt()) {
-          this.character.hit();
-          this.statusbar[0].setPercentage(this.character.energy);
-        }
+        this.handleChickenCollision(chicken);
       }
     });
+  }
+
+  handleChickenCollision(chicken) {
+    if (chicken instanceof Endboss) {
+      this.handleEndbossCollision(chicken);
+      return;
+    }
+
+    if (chicken.isDead) return;
+
+    this.handleNormalChickenCollision(chicken);
+  }
+
+  handleEndbossCollision(chicken) {
+    if (!chicken.isDead && !this.character.hurt()) {
+      this.character.hit();
+      this.statusbar[0].setPercentage(this.character.energy);
+    }
+  }
+
+  handleNormalChickenCollision(chicken) {
+    const isStomp = this.checkStompCondition(chicken);
+    if (isStomp && !chicken.isDead) {
+      this.executeStomp(chicken);
+    } else if (!chicken.isDead && !this.character.hurt()) {
+      this.character.hit();
+      this.statusbar[0].setPercentage(this.character.energy);
+    }
+  }
+
+  checkStompCondition(chicken) {
+    const characterBottom =
+      this.character.y + this.character.height - this.character.offset.bottom;
+    const chickenMidY = chicken.y + chicken.height / 2;
+    const isAirborne = this.character.isAboveGround();
+    return (
+      isAirborne && this.character.speedY < 0 && characterBottom <= chickenMidY
+    );
+  }
+
+  executeStomp(chicken) {
+    chicken.playDead();
+    this.character.y =
+      chicken.y - (this.character.height - this.character.offset.bottom);
+    this.character.speedY = 15;
   }
 
   checkCollisionsCoins() {
@@ -234,43 +264,92 @@ class World {
   }
 
   draw() {
+    this.clearCanvas();
+    this.drawGameWorld();
+    this.drawUI();
+    this.drawOverlays();
+    requestAnimationFrame(this.draw.bind(this));
+  }
+
+  clearCanvas() {
     this.ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+
+  drawGameWorld() {
     this.ctx.translate(this.camera_x, 0);
+    this.drawBackground();
+    this.drawCollectibles();
+    this.drawClouds();
+    this.drawChickens();
+    this.drawEndbossBar();
+    this.addToMap(this.character);
+    this.ctx.translate(-this.camera_x, 0);
+  }
+
+  drawBackground() {
     this.addObjectsToMap(this.level.background);
-    this.level.coins.forEach(coin => {
+  }
+
+  drawCollectibles() {
+    this.drawCoins();
+    this.drawBottles();
+  }
+
+  drawCoins() {
+    this.level.coins.forEach((coin) => {
       if (!coin.collected) {
         this.addToMap(coin);
       }
     });
-    this.level.bottles.forEach(bottle => {
+  }
+
+  drawBottles() {
+    this.level.bottles.forEach((bottle) => {
       if (!bottle.collected) {
         this.addToMap(bottle);
       }
     });
+  }
+
+  drawClouds() {
     this.addObjectsToMap(this.level.clouds);
-    this.level.chickens.forEach(chicken => {
+  }
+
+  drawChickens() {
+    this.level.chickens.forEach((chicken) => {
       this.addToMap(chicken);
     });
+  }
+
+  drawEndbossBar() {
     const boss = this.level.chickens.find((e) => e instanceof Endboss);
     if (boss && this.endbossBar && !boss.isDead) {
-      this.endbossBar.x = boss.x + (boss.width - this.endbossBar.width) / 2;
-      this.endbossBar.y = boss.y - 20;
+      this.positionEndbossBar(boss);
       this.addToMap(this.endbossBar);
     }
-    this.addToMap(this.character);
-    this.ctx.translate(-this.camera_x, 0);
+  }
+
+  positionEndbossBar(boss) {
+    this.endbossBar.x = boss.x + (boss.width - this.endbossBar.width) / 2;
+    this.endbossBar.y = boss.y - 20;
+  }
+
+  drawUI() {
     this.addObjectsToMap(this.statusbar);
     this.ctx.translate(this.camera_x, 0);
     this.addObjectsToMap(this.throwableObjects);
     this.ctx.translate(-this.camera_x, 0);
-    
+  }
+
+  drawOverlays() {
     this.endscreen.draw(this.ctx);
-    
+    this.drawMobileButtons();
+  }
+
+  drawMobileButtons() {
     if (this.buttonController && !this.endscreen.visible) {
       this.buttonController.draw(this.ctx);
     }
-    
-    requestAnimationFrame(this.draw.bind(this));
   }
 
   addObjectsToMap(objects) {
@@ -296,37 +375,48 @@ class World {
   checkBottleHitsChickens() {
     for (let b = 0; b < this.throwableObjects.length; b++) {
       const bottle = this.throwableObjects[b];
-      for (let c = 0; c < this.level.chickens.length; c++) {
-        const chicken = this.level.chickens[c];
-        if (bottle.isCollidingOffset(chicken)) {
-          if (chicken instanceof Endboss) {
-            if (!chicken.isDead && typeof chicken.takeHit === "function") {
-              chicken.takeHit();
-            }
-            if (typeof bottle.onLand === "function") {
-              bottle.onLand();
-            }
-            setTimeout(() => {
-              const idxBottle = this.throwableObjects.indexOf(bottle);
-              if (idxBottle >= 0) this.throwableObjects.splice(idxBottle, 1);
-            }, 400);
-            break;
-          }
-          if (chicken.isDead) continue;
-          if (!chicken.isDead) {
-            chicken.playDead();
-            if (typeof bottle.onLand === "function") {
-              bottle.onLand();
-            }
-            setTimeout(() => {
-              const idxBottle = this.throwableObjects.indexOf(bottle);
-              if (idxBottle >= 0) this.throwableObjects.splice(idxBottle, 1);
-            }, 400);
-            break;
-          }
-        }
+      this.checkBottleAgainstChickens(bottle);
+    }
+  }
+
+  checkBottleAgainstChickens(bottle) {
+    for (let c = 0; c < this.level.chickens.length; c++) {
+      const chicken = this.level.chickens[c];
+      if (bottle.isCollidingOffset(chicken)) {
+        this.handleBottleChickenCollision(bottle, chicken);
+        break;
       }
     }
+  }
+
+  handleBottleChickenCollision(bottle, chicken) {
+    if (chicken instanceof Endboss) {
+      this.handleBottleEndbossCollision(bottle, chicken);
+    } else if (!chicken.isDead) {
+      this.handleBottleNormalChickenCollision(bottle, chicken);
+    }
+  }
+
+  handleBottleEndbossCollision(bottle, chicken) {
+    if (!chicken.isDead && typeof chicken.takeHit === "function") {
+      chicken.takeHit();
+    }
+    this.removeBottleAfterHit(bottle);
+  }
+
+  handleBottleNormalChickenCollision(bottle, chicken) {
+    chicken.playDead();
+    this.removeBottleAfterHit(bottle);
+  }
+
+  removeBottleAfterHit(bottle) {
+    if (typeof bottle.onLand === "function") {
+      bottle.onLand();
+    }
+    setTimeout(() => {
+      const idxBottle = this.throwableObjects.indexOf(bottle);
+      if (idxBottle >= 0) this.throwableObjects.splice(idxBottle, 1);
+    }, 400);
   }
 
   flipImage(mo) {
@@ -342,97 +432,116 @@ class World {
   }
 
   restartGame() {
+    this.resetEndscreen();
+    this.resetCharacter();
+    this.resetGameState();
+    this.resetStatusbars();
+    this.resetChickens();
+    this.resetCollectibles();
+    this.resetThrowableObjects();
+    this.resetCanvas();
+    this.setupKeyboardEvents();
+    this.setWorld();
+  }
+
+  resetEndscreen() {
     this.endscreen.hide();
     this.endscreen.visible = false;
     this.endscreen.type = null;
     this.endscreen.currentImage = null;
     this.endscreen.img = null;
-    
+  }
+
+  resetCharacter() {
     if (this.character && this.character.stopAllIntervals) {
       this.character.stopAllIntervals();
     }
-    
-    this.camera_x = 0;
-    
     this.character = new Character();
     this.character.world = this;
-    
+  }
+
+  resetGameState() {
+    this.camera_x = 0;
     this.level = level;
-    
     this.gameRunning = true;
-    
-    if (this.buttonController) {
-      this.buttonController.enable();
-    }
-    
+    this.spaceWasDown = false;
+  }
+
+  resetStatusbars() {
     this.statusbar = [
       Object.assign(new Statusbar("health"), { y: -10 }),
       Object.assign(new Statusbar("coins"), { y: 30 }),
       Object.assign(new Statusbar("bottle"), { y: 70 }),
     ];
-    
     this.statusbar[0].setPercentage(100);
     this.statusbar[1].setPercentage(0);
     this.statusbar[2].setPercentage(0);
-    
     this.endbossBar = new Statusbar("endboss");
-    
-    this.level.chickens.forEach(chicken => {
+  }
+
+  resetChickens() {
+    this.level.chickens.forEach((chicken) => {
       chicken.world = this;
       if (chicken instanceof Endboss) {
-        chicken.isDead = false;
-        chicken.isHurt = false;
-        chicken.lives = 3;
-        chicken.health = 100;
-        chicken.state = 'walking';
-        chicken.alertPlayed = false;
-        chicken.deadAnimationPlayed = false;
-        chicken.deadFrameCount = 0;
-        chicken.width = 300;
-        chicken.height = 300;
-        chicken.x = 2000;
-        chicken.y = 150;
-        chicken.speed = 0.15 + Math.random() * 0.25;
-        chicken.hurtEndAt = 0;
-        chicken.lastHitTime = 0;
-        chicken.alertEndTime = 0;
-        chicken.attackEndTime = 0;
-        chicken.originalSpeed = chicken.speed;
-        chicken.attackSpeed = chicken.originalSpeed * 10;
-        chicken.deadAnimationEndTime = 0;
-        chicken.lastDeadFrameAt = 0;
-        chicken.currentImage = 0;
-        chicken.img = chicken.imageCache[chicken.IMAGES_WALKING[0]];
+        this.resetEndboss(chicken);
       } else {
-        chicken.isDead = false;
-        chicken.currentImage = 0;
-        chicken.img = chicken.imageCache[chicken.IMAGES_WALKING[0]];
-        chicken.speed = 0.5 + Math.random() * 0.75;
-        chicken.width = 60;
-        chicken.height = 60;
-        chicken.resetPosition();
+        this.resetNormalChicken(chicken);
       }
     });
-    
-    this.level.coins.forEach(coin => {
+  }
+
+  resetEndboss(chicken) {
+    chicken.isDead = false;
+    chicken.isHurt = false;
+    chicken.lives = 3;
+    chicken.health = 100;
+    chicken.state = "walking";
+    chicken.alertPlayed = false;
+    chicken.deadAnimationPlayed = false;
+    chicken.deadFrameCount = 0;
+    chicken.width = 300;
+    chicken.height = 300;
+    chicken.x = 2000;
+    chicken.y = 150;
+    chicken.speed = 0.15 + Math.random() * 0.25;
+    chicken.hurtEndAt = 0;
+    chicken.lastHitTime = 0;
+    chicken.alertEndTime = 0;
+    chicken.attackEndTime = 0;
+    chicken.originalSpeed = chicken.speed;
+    chicken.attackSpeed = chicken.originalSpeed * 10;
+    chicken.deadAnimationEndTime = 0;
+    chicken.lastDeadFrameAt = 0;
+    chicken.currentImage = 0;
+    chicken.img = chicken.imageCache[chicken.IMAGES_WALKING[0]];
+  }
+
+  resetNormalChicken(chicken) {
+    chicken.isDead = false;
+    chicken.currentImage = 0;
+    chicken.img = chicken.imageCache[chicken.IMAGES_WALKING[0]];
+    chicken.speed = 0.5 + Math.random() * 0.75;
+    chicken.width = 60;
+    chicken.height = 60;
+    chicken.resetPosition();
+  }
+
+  resetCollectibles() {
+    this.level.coins.forEach((coin) => {
       coin.world = this;
       coin.collected = false;
     });
-    
-    this.level.bottles.forEach(bottle => {
+    this.level.bottles.forEach((bottle) => {
       bottle.world = this;
       bottle.collected = false;
     });
-    
-    this.throwableObjects = [];
-    
-    this.spaceWasDown = false;
-    
-    this.ctx.setTransform(1, 0, 0, 1, 0, 0);
-    
-    this.setupKeyboardEvents();
-    
-    this.setWorld();
   }
 
+  resetThrowableObjects() {
+    this.throwableObjects = [];
+  }
+
+  resetCanvas() {
+    this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+  }
 }

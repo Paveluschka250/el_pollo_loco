@@ -44,7 +44,7 @@ class Statusbar extends DrawableObject {
     this.width = 200;
     this.height = 50;
     if (type === "health") {
-      this.loadImage(this.IMAGES_HEALTH[5]); // 100% = letztes Bild
+      this.loadImage(this.IMAGES_HEALTH[5]);
       this.loadImages(this.IMAGES_HEALTH);
     } else if (type === "coins") {
       this.loadImage(this.IMAGES_COINS[0]);
