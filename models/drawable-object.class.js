@@ -25,19 +25,18 @@ class DrawableObject {
   }
 
   drawFrame(ctx) {
-    if (this instanceof Character || this instanceof Endboss) {
+    if (this instanceof Character) {
       ctx.beginPath();
-      ctx.lineWidth = "1";
+      ctx.lineWidth = 0;
       ctx.strokeStyle = "red";
       ctx.rect(this.x, this.y, this.width, this.height);
-      ctx.stroke();
     }
   }
 
   drawFrameOffset(ctx) {
-    if (this instanceof Character || this instanceof Endboss) {
+    if (this instanceof Character) {
       ctx.beginPath();
-      ctx.lineWidth = "2";
+      ctx.lineWidth = 0;
       ctx.strokeStyle = "blue";
       ctx.rect(
         this.x + this.offset.left,
@@ -45,7 +44,6 @@ class DrawableObject {
         this.width - this.offset.right - this.offset.left,
         this.height - this.offset.top - this.offset.bottom
       );
-      ctx.stroke();
     }
   }
 }
