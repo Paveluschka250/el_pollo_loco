@@ -13,6 +13,7 @@ function setupBackgroundMusic() {
     backgroundMusic.loop = true;
     backgroundMusic.volume = 0.3;
     backgroundMusic.preload = "auto";
+    window.backgroundMusic = backgroundMusic;
 
     startBackgroundMusic();
   }
@@ -54,6 +55,7 @@ function startGame() {
     const keyboard = new Keyboard();
     gameWorld = new World(canvas, keyboard, backgroundMusic);
     window.world = gameWorld;
+    window.backgroundMusic = backgroundMusic;
     gameWorld.startGame();
     gameStarted = true;
   } else {

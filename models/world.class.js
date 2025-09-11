@@ -107,6 +107,7 @@ class World {
 
   setupButtons() {
     this.buttonController = new ButtonController(this.canvas);
+    this.initializeSoundState();
   }
 
   setWorld() {
@@ -442,6 +443,9 @@ class World {
     this.resetCanvas();
     this.setupKeyboardEvents();
     this.setWorld();
+    this.enableButtons();
+    this.restoreSoundState();
+    this.restartBackgroundMusic();
   }
 
   resetEndscreen() {
@@ -543,5 +547,42 @@ class World {
 
   resetCanvas() {
     this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+  }
+
+  enableButtons() {
+    if (this.buttonController) {
+      this.buttonController.enable();
+    }
+  }
+
+  initializeSoundState() {
+    if (this.buttonController && this.buttonController.soundButton) {
+      const volume = this.buttonController.soundButton.soundEnabled ? 1.0 : 0.0;
+      this.buttonController.soundButton.setGlobalVolume(volume);
+    }
+    this.initializeBackgroundMusic();
+  }
+
+  initializeBackgroundMusic() {
+    if (window.backgroundMusic && this.buttonController && this.buttonController.soundButton) {
+      const volume = this.buttonController.soundButton.soundEnabled ? 1.0 : 0.0;
+      this.buttonController.soundButton.setBackgroundMusicVolume(volume);
+    }
+  }
+
+  restoreSoundState() {
+    if (this.buttonController && this.buttonController.soundButton) {
+      const volume = this.buttonController.soundButton.soundEnabled ? 1.0 : 0.0;
+      this.buttonController.soundButton.setGlobalVolume(volume);
+    }
+  }
+
+  restartBackgroundMusic() {
+    if (window.backgroundMusic && this.buttonController && this.buttonController.soundButton) {
+      if (this.buttonController.soundButton.soundEnabled) {
+        window.backgroundMusic.currentTime = 0;
+        window.backgroundMusic.play().catch(e => {});
+      }
+    }
   }
 }

@@ -84,12 +84,143 @@ class Button extends DrawableObject {
   }
 }
 
+class SoundButton extends DrawableObject {
+  constructor(x, y, width, height) {
+    super();
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+    this.isPressed = false;
+    this.alpha = 1;
+    this.soundEnabled = true;
+    this.loadImage("assets/icons/sound-on.svg");
+  }
+
+  draw(ctx) {
+    if (this.isPressed) {
+      ctx.globalAlpha = 0.7;
+    } else {
+      ctx.globalAlpha = this.alpha;
+    }
+    
+    ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
+    ctx.globalAlpha = 1;
+  }
+
+  isClicked(mouseX, mouseY) {
+    return mouseX >= this.x && 
+           mouseX <= this.x + this.width && 
+           mouseY >= this.y && 
+           mouseY <= this.y + this.height;
+  }
+
+  onTouchStart() {
+    this.isPressed = true;
+    this.toggleSound();
+  }
+
+  onTouchEnd() {
+    this.isPressed = false;
+  }
+
+  toggleSound() {
+    this.soundEnabled = !this.soundEnabled;
+    
+    if (this.soundEnabled) {
+      this.loadImage("assets/icons/sound-on.svg");
+      this.enableAllSounds();
+    } else {
+      this.loadImage("assets/icons/sound-off.svg");
+      this.disableAllSounds();
+    }
+  }
+
+  enableAllSounds() {
+    if (window.world) {
+      this.setGlobalVolume(1.0);
+    }
+  }
+
+  disableAllSounds() {
+    if (window.world) {
+      this.setGlobalVolume(0.0);
+    }
+  }
+
+  setGlobalVolume(volume) {
+    if (window.world && window.world.character) {
+      this.setCharacterVolume(window.world.character, volume);
+    }
+    if (window.world && window.world.level) {
+      this.setLevelVolume(window.world.level, volume);
+    }
+    if (window.world && window.world.endscreen) {
+      this.setEndscreenVolume(window.world.endscreen, volume);
+    }
+    if (window.world && window.world.throwableObjects) {
+      this.setThrowableObjectsVolume(window.world.throwableObjects, volume);
+    }
+    this.setBackgroundMusicVolume(volume);
+  }
+
+  setCharacterVolume(character, volume) {
+    if (character.deadSound) character.deadSound.volume = volume;
+    if (character.hurtSound) character.hurtSound.volume = volume;
+    if (character.jumpSound) character.jumpSound.volume = volume;
+    if (character.walkSound) character.walkSound.volume = volume;
+  }
+
+  setLevelVolume(level, volume) {
+    if (level.chickens) {
+      level.chickens.forEach(chicken => {
+        if (chicken.deadSound) chicken.deadSound.volume = volume;
+        if (chicken.hurtSound) chicken.hurtSound.volume = volume;
+      });
+    }
+    if (level.coins) {
+      level.coins.forEach(coin => {
+        if (coin.pickupSound) coin.pickupSound.volume = volume;
+      });
+    }
+    if (level.bottles) {
+      level.bottles.forEach(bottle => {
+        if (bottle.pickupSound) bottle.pickupSound.volume = volume;
+      });
+    }
+  }
+
+  setEndscreenVolume(endscreen, volume) {
+    if (endscreen.winSound) endscreen.winSound.volume = volume;
+    if (endscreen.loseSound) endscreen.loseSound.volume = volume;
+  }
+
+  setThrowableObjectsVolume(throwableObjects, volume) {
+    throwableObjects.forEach(obj => {
+      if (obj.throwSound) obj.throwSound.volume = volume;
+    });
+  }
+
+  setBackgroundMusicVolume(volume) {
+    if (window.backgroundMusic) {
+      window.backgroundMusic.volume = volume * 0.3;
+      if (volume > 0 && window.backgroundMusic.paused) {
+        window.backgroundMusic.play().catch(e => {});
+      } else if (volume === 0 && !window.backgroundMusic.paused) {
+        window.backgroundMusic.pause();
+      }
+    }
+  }
+}
+
 class ButtonController {
   constructor(canvas) {
     this.canvas = canvas;
     this.buttons = [];
+    this.soundButton = null;
     this.enabled = true;
     this.setupButtons();
+    this.setupSoundButton();
     this.setupEventListeners();
   }
 
@@ -139,6 +270,19 @@ class ButtonController {
     ));
   }
 
+  setupSoundButton() {
+    const buttonSize = 50;
+    const margin = 20;
+    const canvasWidth = this.canvas.width;
+    
+    this.soundButton = new SoundButton(
+      canvasWidth - buttonSize - margin,
+      margin,
+      buttonSize,
+      buttonSize
+    );
+  }
+
   setupEventListeners() {
     this.canvas.addEventListener('touchstart', (e) => {
       if (!this.enabled) return;
@@ -153,6 +297,10 @@ class ButtonController {
           button.onTouchStart();
         }
       });
+      
+      if (this.soundButton && this.soundButton.isClicked(mouseX, mouseY)) {
+        this.soundButton.onTouchStart();
+      }
     });
 
     this.canvas.addEventListener('touchend', (e) => {
@@ -162,6 +310,10 @@ class ButtonController {
         button.onTouchEnd();
         button.resetAction();
       });
+      
+      if (this.soundButton) {
+        this.soundButton.onTouchEnd();
+      }
     });
 
     this.canvas.addEventListener('touchcancel', (e) => {
@@ -183,6 +335,10 @@ class ButtonController {
           button.onTouchStart();
         }
       });
+      
+      if (this.soundButton && this.soundButton.isClicked(mouseX, mouseY)) {
+        this.soundButton.onTouchStart();
+      }
     });
 
     this.canvas.addEventListener('mouseup', (e) => {
@@ -191,6 +347,10 @@ class ButtonController {
         button.onTouchEnd();
         button.resetAction();
       });
+      
+      if (this.soundButton) {
+        this.soundButton.onTouchEnd();
+      }
     });
 
     this.canvas.addEventListener('mouseleave', (e) => {
@@ -205,6 +365,10 @@ class ButtonController {
     this.buttons.forEach(button => {
       button.draw(ctx);
     });
+    
+    if (this.soundButton) {
+      this.soundButton.draw(ctx);
+    }
   }
 
   enable() {
@@ -216,5 +380,9 @@ class ButtonController {
     this.buttons.forEach(button => {
       button.onTouchCancel();
     });
+    
+    if (this.soundButton) {
+      this.soundButton.onTouchEnd();
+    }
   }
 }
