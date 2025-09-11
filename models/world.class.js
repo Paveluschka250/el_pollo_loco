@@ -144,6 +144,9 @@ class World {
   }
 
   checkThrowableObjects() {
+    if (this.endscreen && this.endscreen.visible) {
+      return;
+    }
     if (this.keyboard.SPACE && !this.spaceWasDown) {
       const bottleBar = this.statusbar[2];
       const available = bottleBar?.percentage || 0;

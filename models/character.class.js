@@ -101,6 +101,9 @@ class Character extends MovableObject {
 
   animate() {
     this.movementInterval = setInterval(() => {
+      if (this.world.endscreen && this.world.endscreen.visible) {
+        return;
+      }
       if (this.world.keyboard.RIGHT && this.x < 2200) {
         this.moveRight();
         this.otherDirection = false;
@@ -137,6 +140,9 @@ class Character extends MovableObject {
           this.playAnimation(this.IMAGES_DEAD);
           this.lastDeadFrameAt = now;
         }
+        return;
+      }
+      if (this.world.endscreen && this.world.endscreen.visible) {
         return;
       }
       if (this.hurt()) {
