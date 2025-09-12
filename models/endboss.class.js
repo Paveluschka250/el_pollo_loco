@@ -67,6 +67,9 @@ class Endboss extends MovableObject {
     this.deadAnimationEndTime = 0;
     this.deadFrameCount = 0;
     this.hurtSound = new Audio('assets/audio/endboss-hurt.mp3');
+    this.thrownBottles = [];
+    this.lastBottleThrow = 0;
+    this.bottleThrowCooldown = 2000;
     this.offset = {
       left: 40,
       top: 20,
@@ -93,6 +96,9 @@ class Endboss extends MovableObject {
   handleMovement() {
     if (this.state !== 'alert') {
       this.moveLeft();
+    }
+    if (this.state === 'attack') {
+      this.tryThrowBottle();
     }
   }
 
@@ -246,5 +252,29 @@ class Endboss extends MovableObject {
       this.isDead = true;
       this.isHurt = false;
     }
+  }
+
+  tryThrowBottle() {
+    if (!this.world || !this.world.character) return;
+    
+    const now = new Date().getTime();
+    if (now - this.lastBottleThrow >= this.bottleThrowCooldown) {
+      this.throwBottle();
+      this.lastBottleThrow = now;
+    }
+  }
+
+  throwBottle() {
+    const direction = this.x > this.world.character.x ? -1 : 1;
+    const bottle = new EndbossBottle(
+      this.x + this.width / 2,
+      this.y + this.height / 2,
+      direction
+    );
+    this.thrownBottles.push(bottle);
+  }
+
+  getThrownBottles() {
+    return this.thrownBottles;
   }
 }

@@ -120,6 +120,7 @@ class World {
         this.checkCollisionsBottles();
         this.checkThrowableObjects();
         this.checkBottleHitsChickens();
+        this.checkEndbossBottles();
         this.checkGameEnd();
       }
     }, 16);
@@ -329,11 +330,22 @@ class World {
     this.addObjectsToMap(this.statusbar);
     this.ctx.translate(this.camera_x, 0);
     this.addObjectsToMap(this.throwableObjects);
+    this.drawEndbossBottles();
     this.ctx.translate(-this.camera_x, 0);
   }
 
   drawOverlays() {
     this.endscreen.draw(this.ctx);
+  }
+
+  drawEndbossBottles() {
+    const boss = this.level.chickens.find((e) => e instanceof Endboss);
+    if (boss && boss.getThrownBottles) {
+      const endbossBottles = boss.getThrownBottles();
+      endbossBottles.forEach((bottle) => {
+        this.addToMap(bottle);
+      });
+    }
   }
 
   addObjectsToMap(objects) {
@@ -360,6 +372,43 @@ class World {
     for (let b = 0; b < this.throwableObjects.length; b++) {
       const bottle = this.throwableObjects[b];
       this.checkBottleAgainstChickens(bottle);
+    }
+  }
+
+  checkEndbossBottles() {
+    const boss = this.level.chickens.find((e) => e instanceof Endboss);
+    if (boss && boss.getThrownBottles) {
+      const endbossBottles = boss.getThrownBottles();
+      for (let b = 0; b < endbossBottles.length; b++) {
+        const bottle = endbossBottles[b];
+        this.checkEndbossBottleAgainstCharacter(bottle);
+      }
+    }
+  }
+
+  checkEndbossBottleAgainstCharacter(bottle) {
+    if (bottle.hasLanded || bottle.removed) return;
+    
+    if (bottle.isCollidingOffset(this.character)) {
+      this.handleEndbossBottleHitCharacter(bottle);
+    }
+  }
+
+  handleEndbossBottleHitCharacter(bottle) {
+    if (!this.character.die()) {
+      this.character.hit();
+      this.statusbar[0].setPercentage(this.character.energy);
+    }
+    this.removeEndbossBottle(bottle);
+  }
+
+  removeEndbossBottle(bottle) {
+    const boss = this.level.chickens.find((e) => e instanceof Endboss);
+    if (boss && boss.thrownBottles) {
+      const index = boss.thrownBottles.indexOf(bottle);
+      if (index > -1) {
+        boss.thrownBottles.splice(index, 1);
+      }
     }
   }
 
@@ -495,11 +544,13 @@ class World {
     chicken.alertEndTime = 0;
     chicken.attackEndTime = 0;
     chicken.originalSpeed = chicken.speed;
-    chicken.attackSpeed = chicken.originalSpeed * 10;
+    chicken.attackSpeed = chicken.originalSpeed * 20;
     chicken.deadAnimationEndTime = 0;
     chicken.lastDeadFrameAt = 0;
     chicken.currentImage = 0;
     chicken.img = chicken.imageCache[chicken.IMAGES_WALKING[0]];
+    chicken.thrownBottles = [];
+    chicken.lastBottleThrow = 0;
   }
 
   resetNormalChicken(chicken) {
