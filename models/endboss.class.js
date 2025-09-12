@@ -62,13 +62,13 @@ class Endboss extends MovableObject {
     this.alertEndTime = 0;
     this.attackEndTime = 0;
     this.originalSpeed = this.speed;
-    this.attackSpeed = this.speed * 10;
+    this.attackSpeed = this.speed * 20;
     this.deadAnimationPlayed = false;
     this.deadAnimationEndTime = 0;
     this.deadFrameCount = 0;
     this.hurtSound = new Audio('assets/audio/endboss-hurt.mp3');
     this.offset = {
-      left: 20,
+      left: 40,
       top: 20,
       bottom: 20,
       right: 20,
@@ -121,7 +121,7 @@ class Endboss extends MovableObject {
   }
 
   handleStateTransitions(distance) {
-    const alertDistance = 400;
+    const alertDistance = 500;
     const now = new Date().getTime();
     
     if (this.state === 'walking' && distance <= alertDistance) {
@@ -219,7 +219,7 @@ class Endboss extends MovableObject {
     const now = new Date().getTime();
     this.lastHitTime = now;
     this.isHurt = true;
-    this.hurtEndAt = now + 1000;
+    this.hurtEndAt = now + 1500;
     this.playHurtSound();
   }
 

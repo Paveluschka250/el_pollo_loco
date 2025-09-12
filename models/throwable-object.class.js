@@ -45,7 +45,7 @@ class ThrowableObject extends MovableObject {
     this.applyGravity();
     this.moveInterval = setInterval(() => {
         if (this.hasLanded) return;
-        this.x += 15 * this.direction;
+        this.x += 5 * this.direction;
         if (this.y >= this.groundY) {
           this.onLand();
         }

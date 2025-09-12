@@ -364,6 +364,8 @@ class World {
   }
 
   checkBottleAgainstChickens(bottle) {
+    if (bottle.hasLanded || bottle.removed) return;
+    
     for (let c = 0; c < this.level.chickens.length; c++) {
       const chicken = this.level.chickens[c];
       if (bottle.isCollidingOffset(chicken)) {
@@ -382,7 +384,7 @@ class World {
   }
 
   handleBottleEndbossCollision(bottle, chicken) {
-    if (!chicken.isDead && typeof chicken.takeHit === "function") {
+    if (!chicken.isDead && !chicken.isHurt && typeof chicken.takeHit === "function") {
       chicken.takeHit();
     }
     this.removeBottleAfterHit(bottle);

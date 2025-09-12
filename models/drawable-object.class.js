@@ -25,16 +25,17 @@ class DrawableObject {
   }
 
   drawFrame(ctx) {
-    if (this instanceof Character) {
+    if (this instanceof Endboss) {
       ctx.beginPath();
       ctx.lineWidth = 0;
       ctx.strokeStyle = "red";
       ctx.rect(this.x, this.y, this.width, this.height);
+      ctx.stroke();
     }
   }
 
   drawFrameOffset(ctx) {
-    if (this instanceof Character) {
+    if (this instanceof Endboss) {
       ctx.beginPath();
       ctx.lineWidth = 0;
       ctx.strokeStyle = "blue";
@@ -44,6 +45,7 @@ class DrawableObject {
         this.width - this.offset.right - this.offset.left,
         this.height - this.offset.top - this.offset.bottom
       );
+      ctx.stroke();
     }
   }
 }
