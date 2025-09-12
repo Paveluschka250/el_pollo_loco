@@ -57,6 +57,7 @@ function startGame() {
     window.world = gameWorld;
     window.backgroundMusic = backgroundMusic;
     gameWorld.startGame();
+    setupMobileControls(keyboard);
     gameStarted = true;
   } else {
     if (gameWorld) {
@@ -94,6 +95,60 @@ function checkMobileOrientation() {
   } else {
     overlay.style.display = "none";
   }
+}
+
+function setupMobileControls(keyboard) {
+  const leftBtn = document.getElementById("left-btn");
+  const rightBtn = document.getElementById("right-btn");
+  const jumpBtn = document.getElementById("jump-btn");
+  const throwBtn = document.getElementById("throw-btn");
+
+  // Touch Events für Mobile
+  function addTouchEvents(button, key) {
+    button.addEventListener("touchstart", (e) => {
+      e.preventDefault();
+      keyboard[key] = true;
+    });
+    
+    button.addEventListener("touchend", (e) => {
+      e.preventDefault();
+      keyboard[key] = false;
+    });
+    
+    button.addEventListener("touchcancel", (e) => {
+      e.preventDefault();
+      keyboard[key] = false;
+    });
+  }
+
+  // Mouse Events für Desktop (falls jemand die Buttons mit Maus klickt)
+  function addMouseEvents(button, key) {
+    button.addEventListener("mousedown", (e) => {
+      e.preventDefault();
+      keyboard[key] = true;
+    });
+    
+    button.addEventListener("mouseup", (e) => {
+      e.preventDefault();
+      keyboard[key] = false;
+    });
+    
+    button.addEventListener("mouseleave", (e) => {
+      e.preventDefault();
+      keyboard[key] = false;
+    });
+  }
+
+  // Events für alle Buttons hinzufügen
+  addTouchEvents(leftBtn, "LEFT");
+  addTouchEvents(rightBtn, "RIGHT");
+  addTouchEvents(jumpBtn, "UP");
+  addTouchEvents(throwBtn, "SPACE");
+
+  addMouseEvents(leftBtn, "LEFT");
+  addMouseEvents(rightBtn, "RIGHT");
+  addMouseEvents(jumpBtn, "UP");
+  addMouseEvents(throwBtn, "SPACE");
 }
 
 window.addEventListener("load", checkMobileOrientation);

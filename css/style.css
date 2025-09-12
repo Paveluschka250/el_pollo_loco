@@ -319,17 +319,11 @@ canvas {
   canvas {
     width: 100%;
   }
-  h1 {
-    display: none;
-  }
 }
 
 @media only screen and (max-height: 480px) {
   canvas {
     height: 100vh;
-  }
-  h1 {
-    display: none;
   }
 }
 
@@ -367,4 +361,127 @@ canvas {
   margin: 0;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
   font-family: "rye", Arial, Helvetica, sans-serif;
+}
+
+/* Mobile Controls - nur bei Handygrößen sichtbar */
+.mobile-controls {
+  display: none;
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+  right: 0;
+  justify-content: space-between;
+  width: 100%;
+  z-index: 10;
+}
+
+.mobile-controls-left {
+  display: flex;
+  gap: 15px;
+}
+
+.mobile-controls-right {
+  display: flex;
+  gap: 15px;
+}
+
+/* Mobile Control Buttons */
+.mobile-controls button {
+  width: 60px;
+  height: 60px;
+  border: none;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #ff6b35, #ff8c42);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3), 
+              inset 0 2px 4px rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.mobile-controls button:active {
+  transform: scale(0.95);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4), 
+              inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.mobile-controls button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4), 
+              inset 0 2px 4px rgba(255, 255, 255, 0.3);
+}
+
+/* Button Icons */
+.mobile-controls button img {
+  width: 30px;
+  height: 30px;
+  filter: brightness(0) invert(1);
+  pointer-events: none;
+}
+
+/* Left/Right Buttons */
+.mobile-controls-left button {
+  background: linear-gradient(145deg, #4a90e2, #357abd);
+}
+
+/* Jump Button */
+.mobile-controls-right button:first-child {
+  background: linear-gradient(145deg, #7ed321, #5cb85c);
+}
+
+/* Throw Button */
+.mobile-controls-right button:last-child {
+  background: linear-gradient(145deg, #f39c12, #e67e22);
+}
+
+.mobile-controls-right button:last-child img {
+  width: 25px;
+  height: 25px;
+  filter: none;
+}
+
+/* Mobile Controls bei Handygrößen anzeigen */
+@media only screen and (max-width: 768px) {
+  .mobile-controls {
+    display: flex;
+  }
+}
+
+/* Bei sehr kleinen Bildschirmen in Canvas rücken */
+@media only screen and (max-width: 480px) {
+  .mobile-controls {
+    bottom: 5px;
+  }
+  
+  .mobile-controls button {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .mobile-controls button img {
+    width: 25px;
+    height: 25px;
+  }
+  
+  .mobile-controls-right button:last-child img {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+/* Bei extrem kleinen Bildschirmen über Canvas legen */
+@media only screen and (max-width: 360px) {
+  .mobile-controls {
+    position: fixed;
+    bottom: 5px;
+    left: 5px;
+    right: 5px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    padding: 5px;
+  }
 }
