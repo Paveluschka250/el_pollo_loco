@@ -222,7 +222,13 @@ class Character extends MovableObject {
   }
 
   startWalkSound() {
-    this.soundManager.playSound(this.walkSound);
+    // Only start walk sound if it's not already playing
+    if (this.walkSound && this.walkSound.paused) {
+      this.soundManager.playSound(this.walkSound, { resetTime: false });
+    } else if (this.walkSound && !this.walkSound.paused) {
+      // Ensure volume is correct if already playing
+      this.walkSound.volume = this.soundManager.soundEnabled ? (this.walkSound.originalVolume || 1) : 0;
+    }
   }
 
   handleIdleAnimation() {

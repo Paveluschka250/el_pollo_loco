@@ -35,6 +35,8 @@ body {
   z-index: 2000;
   transition: all 0.3s ease;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  outline: none;
+  user-select: none;
 }
 
 .sound-toggle-btn:hover {
@@ -56,6 +58,15 @@ body {
 
 .sound-toggle-btn:hover .sound-icon {
   filter: invert(1) sepia(1) saturate(5) hue-rotate(45deg);
+}
+
+.sound-toggle-btn:focus {
+  outline: none;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.sound-toggle-btn:focus:not(:focus-visible) {
+  outline: none;
 }
 
 /* Main Menu Styles */
@@ -354,6 +365,12 @@ canvas {
   border-radius: 16px;
   box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.7);
   display: block;
+  outline: none;
+  cursor: none;
+}
+
+canvas:focus {
+  outline: none;
 }
 
 @media only screen and (max-width: 720px) {

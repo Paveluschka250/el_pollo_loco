@@ -58,7 +58,8 @@ class SoundManager {
     if (!sound || !this.soundEnabled) return;
     
     try {
-      if (options.resetTime !== false) {
+      // Don't reset time for loop sounds that are already playing
+      if (options.resetTime !== false && (!sound.loop || sound.paused)) {
         sound.currentTime = 0;
       }
       sound.volume = this.soundEnabled ? (sound.originalVolume || 1) : 0;
@@ -91,6 +92,7 @@ class SoundManager {
     this.sounds.forEach(sound => {
       if (sound && sound.paused && sound.loop) {
         try {
+          sound.volume = sound.originalVolume || 1;
           sound.play().catch(e => {});
         } catch (e) {}
       }

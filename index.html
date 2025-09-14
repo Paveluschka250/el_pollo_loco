@@ -9,7 +9,7 @@
   </head>
   <body onload="init()">
     <!-- Sound Toggle Button -->
-    <button id="sound-toggle-btn" class="sound-toggle-btn">
+    <button id="sound-toggle-btn" class="sound-toggle-btn" tabindex="-1">
       <img id="sound-icon" src="./assets/icons/sound-on.svg" alt="Sound On" class="sound-icon">
     </button>
 
@@ -148,7 +148,7 @@
     </div>
 
     <div id="game-container" class="game-container" style="display: none;">
-      <canvas id="canvas" width="720" height="480"></canvas>
+      <canvas id="canvas" width="720" height="480" tabindex="0"></canvas>
       <div class="mobile-controls">
         <div class="mobile-controls-left">
           <button id="left-btn">

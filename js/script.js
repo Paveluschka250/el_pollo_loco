@@ -25,7 +25,21 @@ function setupSoundToggle() {
   const soundToggleBtn = document.getElementById("sound-toggle-btn");
   const soundIcon = document.getElementById("sound-icon");
   
-  soundToggleBtn.addEventListener("click", toggleSound);
+  soundToggleBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    toggleSound();
+  });
+  
+  // Prevent keyboard events from affecting the sound toggle button
+  soundToggleBtn.addEventListener("keydown", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+  });
+  
+  soundToggleBtn.addEventListener("keyup", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+  });
   
   // Initialize sound manager and load state
   const soundManager = SoundManager.getInstance();
@@ -44,6 +58,14 @@ function toggleSound() {
   if (gameWorld && gameWorld.setSoundEnabled) {
     gameWorld.setSoundEnabled(soundEnabled);
   }
+  
+  // Refocus the canvas after sound toggle to maintain keyboard control
+  setTimeout(() => {
+    const canvas = document.getElementById("canvas");
+    if (canvas) {
+      canvas.focus();
+    }
+  }, 10);
 }
 
 function updateSoundIcon() {
@@ -69,9 +91,21 @@ function startGame() {
     gameWorld.startGame();
     setupMobileControls(keyboard);
     gameStarted = true;
+    
+    // Focus the canvas to ensure keyboard input works
+    setTimeout(() => {
+      canvas.focus();
+    }, 100);
   } else {
     if (gameWorld) {
       gameWorld.restartGame();
+      // Refocus canvas after restart
+      setTimeout(() => {
+        const canvas = document.getElementById("canvas");
+        if (canvas) {
+          canvas.focus();
+        }
+      }, 100);
     }
   }
 }

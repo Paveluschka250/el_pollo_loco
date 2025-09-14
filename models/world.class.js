@@ -60,6 +60,10 @@ class World {
     this.soundManager.setSoundEnabled(enabled);
     if (enabled && this.gameRunning) {
       this.startBackgroundMusic();
+      // Resume walk sound if character is walking
+      if (this.character && this.character.walkSound && this.character.walkSound.paused) {
+        this.character.startWalkSound();
+      }
     } else if (!enabled) {
       this.stopBackgroundMusic();
     }
