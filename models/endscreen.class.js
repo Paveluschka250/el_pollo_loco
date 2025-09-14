@@ -12,6 +12,9 @@ class Endscreen extends DrawableObject {
     "assets/img/You won, you lost/You Won B.png",
   ];
 
+  /**
+   * Creates a new Endscreen instance
+   */
   constructor() {
     super();
     this.visible = false;
@@ -33,6 +36,9 @@ class Endscreen extends DrawableObject {
     this.loadImages(this.IMAGES_GAME_WIN);
   }
 
+  /**
+   * Shows the win screen
+   */
   showWin() {
     this.type = "win";
     this.visible = true;
@@ -43,6 +49,9 @@ class Endscreen extends DrawableObject {
     this.soundManager.playSound(this.winSound);
   }
 
+  /**
+   * Shows the lose screen
+   */
   showLose() {
     this.type = "lose";
     this.visible = true;
@@ -55,6 +64,9 @@ class Endscreen extends DrawableObject {
     this.soundManager.playSound(this.loseSound);
   }
 
+  /**
+   * Calculates image dimensions for proper scaling
+   */
   calculateImageDimensions() {
     if (this.img) {
       const originalWidth = this.img.naturalWidth;
@@ -68,6 +80,9 @@ class Endscreen extends DrawableObject {
     }
   }
 
+  /**
+   * Hides the endscreen and stops sounds
+   */
   hide() {
     this.visible = false;
     this.type = null;
@@ -79,6 +94,10 @@ class Endscreen extends DrawableObject {
     this.loseSound.currentTime = 0;
   }
 
+  /**
+   * Draws the endscreen
+   * @param {CanvasRenderingContext2D} ctx - Canvas context
+   */
   draw(ctx) {
     if (!this.visible || !this.img) return;
     ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
@@ -89,6 +108,11 @@ class Endscreen extends DrawableObject {
     this.drawButtons(ctx, imageY + this.imageHeight + 30);
   }
 
+  /**
+   * Draws the buttons on the endscreen
+   * @param {CanvasRenderingContext2D} ctx - Canvas context
+   * @param {number} startY - Y position to start drawing buttons
+   */
   drawButtons(ctx, startY) {
     const totalButtonWidth = this.buttonWidth * 2 + this.buttonSpacing;
     const startX = (this.canvasWidth - totalButtonWidth) / 2;
@@ -97,6 +121,14 @@ class Endscreen extends DrawableObject {
     this.drawButton(ctx, retryX, startY, "Retry", "#2196F3");
   }
 
+  /**
+   * Draws a single button
+   * @param {CanvasRenderingContext2D} ctx - Canvas context
+   * @param {number} x - X position
+   * @param {number} y - Y position
+   * @param {string} text - Button text
+   * @param {string} color - Button color (unused)
+   */
   drawButton(ctx, x, y, text, color) {
     this.drawButtonShadow(ctx, x, y);
     this.drawButtonGradient(ctx, x, y);
@@ -104,11 +136,23 @@ class Endscreen extends DrawableObject {
     this.drawButtonText(ctx, x, y, text);
   }
 
+  /**
+   * Draws button shadow
+   * @param {CanvasRenderingContext2D} ctx - Canvas context
+   * @param {number} x - X position
+   * @param {number} y - Y position
+   */
   drawButtonShadow(ctx, x, y) {
     ctx.fillStyle = "#8B4513";
     ctx.fillRect(x + 3, y + 3, this.buttonWidth, this.buttonHeight);
   }
 
+  /**
+   * Draws button gradient
+   * @param {CanvasRenderingContext2D} ctx - Canvas context
+   * @param {number} x - X position
+   * @param {number} y - Y position
+   */
   drawButtonGradient(ctx, x, y) {
     const gradient = ctx.createLinearGradient(x, y, x, y + this.buttonHeight);
     gradient.addColorStop(0, "#FFD700");
@@ -118,11 +162,23 @@ class Endscreen extends DrawableObject {
     ctx.fillRect(x, y, this.buttonWidth, this.buttonHeight);
   }
 
+  /**
+   * Draws button borders
+   * @param {CanvasRenderingContext2D} ctx - Canvas context
+   * @param {number} x - X position
+   * @param {number} y - Y position
+   */
   drawButtonBorders(ctx, x, y) {
     this.drawButtonTopBorder(ctx, x, y);
     this.drawButtonBottomBorder(ctx, x, y);
   }
 
+  /**
+   * Draws button top border
+   * @param {CanvasRenderingContext2D} ctx - Canvas context
+   * @param {number} x - X position
+   * @param {number} y - Y position
+   */
   drawButtonTopBorder(ctx, x, y) {
     ctx.strokeStyle = "#FFD700";
     ctx.lineWidth = 2;
@@ -134,6 +190,12 @@ class Endscreen extends DrawableObject {
     ctx.stroke();
   }
 
+  /**
+   * Draws button bottom border
+   * @param {CanvasRenderingContext2D} ctx - Canvas context
+   * @param {number} x - X position
+   * @param {number} y - Y position
+   */
   drawButtonBottomBorder(ctx, x, y) {
     ctx.strokeStyle = "#8B4513";
     ctx.beginPath();
@@ -144,6 +206,13 @@ class Endscreen extends DrawableObject {
     ctx.stroke();
   }
 
+  /**
+   * Draws button text
+   * @param {CanvasRenderingContext2D} ctx - Canvas context
+   * @param {number} x - X position
+   * @param {number} y - Y position
+   * @param {string} text - Text to draw
+   */
   drawButtonText(ctx, x, y, text) {
     ctx.font = 'bold 18px "rye", Arial, sans-serif';
     ctx.textAlign = "center";
@@ -154,6 +223,14 @@ class Endscreen extends DrawableObject {
     ctx.fillText(text, x + this.buttonWidth / 2, y + this.buttonHeight / 2);
   }
 
+  /**
+   * Checks if a button was clicked
+   * @param {number} mouseX - Mouse X position
+   * @param {number} mouseY - Mouse Y position
+   * @param {number} buttonX - Button X position
+   * @param {number} buttonY - Button Y position
+   * @returns {boolean} True if button was clicked
+   */
   isButtonClicked(mouseX, mouseY, buttonX, buttonY) {
     return (
       mouseX >= buttonX &&
@@ -163,6 +240,11 @@ class Endscreen extends DrawableObject {
     );
   }
 
+  /**
+   * Handles mouse click on endscreen
+   * @param {number} mouseX - Mouse X position
+   * @param {number} mouseY - Mouse Y position
+   */
   handleClick(mouseX, mouseY) {
     if (!this.visible) return;
     
@@ -170,6 +252,10 @@ class Endscreen extends DrawableObject {
     this.checkButtonClicks(mouseX, mouseY, buttonPositions);
   }
 
+  /**
+   * Calculates button positions
+   * @returns {Object} Button positions
+   */
   calculateButtonPositions() {
     const imageY = (this.canvasHeight - this.imageHeight) / 2;
     const buttonY = imageY + this.imageHeight + 30;
@@ -180,6 +266,12 @@ class Endscreen extends DrawableObject {
     return { startX, retryX, buttonY };
   }
 
+  /**
+   * Checks which button was clicked
+   * @param {number} mouseX - Mouse X position
+   * @param {number} mouseY - Mouse Y position
+   * @param {Object} positions - Button positions
+   */
   checkButtonClicks(mouseX, mouseY, positions) {
     if (this.isButtonClicked(mouseX, mouseY, positions.retryX, positions.buttonY)) {
       this.retryGame();
@@ -189,6 +281,9 @@ class Endscreen extends DrawableObject {
     }
   }
 
+  /**
+   * Restarts the game
+   */
   retryGame() {
     this.hide();
     if (window.world) {
@@ -196,6 +291,9 @@ class Endscreen extends DrawableObject {
     }
   }
 
+  /**
+   * Returns to main menu
+   */
   goToMainMenu() {
     this.hide();
     const gameContainer = document.getElementById("game-container");

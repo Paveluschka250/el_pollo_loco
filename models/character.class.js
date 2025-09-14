@@ -57,6 +57,9 @@ class Character extends MovableObject {
   ];
   world;
 
+  /**
+   * Creates a new Character instance with all necessary properties and animations
+   */
   constructor() {
     super();
     this.loadImage("assets/img/2_character_pepe/1_idle/idle/I-1.png");
@@ -99,11 +102,17 @@ class Character extends MovableObject {
     this.applyGravity();
   }
 
+  /**
+   * Starts all character animations
+   */
   animate() {
     this.startMovementAnimation();
     this.startCharacterAnimation();
   }
 
+  /**
+   * Starts the movement animation loop
+   */
   startMovementAnimation() {
     this.movementInterval = setInterval(() => {
       if (this.world.endscreen && this.world.endscreen.visible) {
@@ -114,6 +123,9 @@ class Character extends MovableObject {
     }, 1000 / 60);
   }
 
+  /**
+   * Handles character movement based on keyboard input
+   */
   handleMovement() {
     if (this.world.keyboard.RIGHT && this.x < 2200) {
       this.moveRight();
@@ -128,12 +140,18 @@ class Character extends MovableObject {
     }
   }
 
+  /**
+   * Starts the character animation loop
+   */
   startCharacterAnimation() {
     this.animationInterval = setInterval(() => {
       this.processAnimationFrame();
     }, 50);
   }
 
+  /**
+   * Processes a single animation frame based on character state
+   */
   processAnimationFrame() {
     if (this.die()) {
       this.handleDeadAnimation();
@@ -153,6 +171,9 @@ class Character extends MovableObject {
     this.handleWalkOrIdleAnimation();
   }
 
+  /**
+   * Handles the dead animation state
+   */
   handleDeadAnimation() {
     this.playDeadSound();
     this.stopAllSounds();
@@ -160,6 +181,9 @@ class Character extends MovableObject {
     this.playDeadFrame();
   }
 
+  /**
+   * Plays the dead sound effect once
+   */
   playDeadSound() {
     if (!this.deadSoundPlayed && this.deadSound) {
       this.soundManager.playSound(this.deadSound);
@@ -167,11 +191,17 @@ class Character extends MovableObject {
     }
   }
 
+  /**
+   * Stops all character sounds
+   */
   stopAllSounds() {
     this.soundManager.stopSound(this.hurtSound);
     this.soundManager.stopSound(this.walkSound);
   }
 
+  /**
+   * Plays the dead animation frame
+   */
   playDeadFrame() {
     const now = (typeof performance !== "undefined" && performance.now) ? performance.now() : new Date().getTime();
     if (now - this.lastDeadFrameAt >= this.deadFrameInterval) {
@@ -180,6 +210,9 @@ class Character extends MovableObject {
     }
   }
 
+  /**
+   * Handles the hurt animation state
+   */
   handleHurtAnimation() {
     this.playAnimation(this.IMAGES_HURT);
     if (this.walkSound && !this.walkSound.paused) {
@@ -189,12 +222,18 @@ class Character extends MovableObject {
     this.lastWalkFrameAt = 0;
   }
 
+  /**
+   * Handles the jump animation state
+   */
   handleJumpAnimation() {
     this.updateJumpFrame();
     this.resetAnimationTimers();
     this.stopWalkSound();
   }
 
+  /**
+   * Updates the jump animation frame
+   */
   updateJumpFrame() {
     const now = (typeof performance !== "undefined" && performance.now) ? performance.now() : new Date().getTime();
     if (now - this.lastJumpFrameAt >= this.jumpFrameInterval) {
@@ -203,12 +242,18 @@ class Character extends MovableObject {
     }
   }
 
+  /**
+   * Resets all animation timers
+   */
   resetAnimationTimers() {
     this.idleTime = 0;
     this.lastIdleFrameAt = 0;
     this.lastWalkFrameAt = 0;
   }
 
+  /**
+   * Stops the walk sound effect
+   */
   stopWalkSound() {
     if (this.walkSound && !this.walkSound.paused) {
       try { this.walkSound.pause(); } catch (e) {}
@@ -216,6 +261,9 @@ class Character extends MovableObject {
     }
   }
 
+  /**
+   * Handles walk or idle animation based on movement
+   */
   handleWalkOrIdleAnimation() {
     const isMoving = this.world.keyboard.RIGHT || this.world.keyboard.LEFT;
     if (isMoving) {
@@ -225,6 +273,9 @@ class Character extends MovableObject {
     }
   }
 
+  /**
+   * Handles the walk animation state
+   */
   handleWalkAnimation() {
     const now = (typeof performance !== "undefined" && performance.now) ? performance.now() : new Date().getTime();
     if (now - this.lastWalkFrameAt >= this.walkFrameInterval) {
@@ -237,6 +288,9 @@ class Character extends MovableObject {
     this.startWalkSound();
   }
 
+  /**
+   * Starts the walk sound effect
+   */
   startWalkSound() {
     // Only start walk sound if it's not already playing
     if (this.walkSound && this.walkSound.paused) {
@@ -247,6 +301,9 @@ class Character extends MovableObject {
     }
   }
 
+  /**
+   * Handles the idle animation state
+   */
   handleIdleAnimation() {
     this.idleTime += 50;
     const now = (typeof performance !== "undefined" && performance.now) ? performance.now() : new Date().getTime();
@@ -260,6 +317,9 @@ class Character extends MovableObject {
     this.stopWalkSound();
   }
 
+  /**
+   * Plays the appropriate idle animation based on idle time
+   */
   playIdleAnimation() {
     if (this.idleTime > 5000) {
       this.playAnimation(this.IMAGES_LONG_IDLE);
@@ -272,6 +332,9 @@ class Character extends MovableObject {
     this.soundManager.stopSound(this.walkSound);
   }
 
+  /**
+   * Handles character hit with sound effect
+   */
   hit() {
     if (this.die()) {
       return;
@@ -282,6 +345,9 @@ class Character extends MovableObject {
     } catch (e) {}
   }
 
+  /**
+   * Handles character jump with sound effect
+   */
   jump() {
     if (this.die()) {
       return;
@@ -294,6 +360,9 @@ class Character extends MovableObject {
     } catch (e) {}
   }
 
+  /**
+   * Stops all character animation intervals
+   */
   stopAllIntervals() {
     if (this.movementInterval) {
       clearInterval(this.movementInterval);

@@ -35,6 +35,10 @@ class Statusbar extends DrawableObject {
     "assets/img/7_statusbars/2_statusbar_endboss/orange/orange100.png",
   ];
 
+  /**
+   * Creates a new Statusbar instance
+   * @param {string} type - Type of statusbar ("health", "coins", "bottle", "endboss")
+   */
   constructor(type = "health") {
     super();
     this.type = type;
@@ -61,6 +65,10 @@ class Statusbar extends DrawableObject {
     }
   }
 
+  /**
+   * Sets the percentage and updates the image
+   * @param {number} percentage - Percentage value (0-100)
+   */
   setPercentage(percentage) {
     this.percentage = percentage;
     if (this.type === "health") {
@@ -74,6 +82,10 @@ class Statusbar extends DrawableObject {
     }
   }
 
+  /**
+   * Resolves the image index based on percentage and type
+   * @returns {number} Image index
+   */
   resolveImageIndex() {
     if (this.type === "health" || this.type === "endboss") {
       return this.resolveHealthOrEndbossIndex();
@@ -82,6 +94,10 @@ class Statusbar extends DrawableObject {
     }
   }
 
+  /**
+   * Resolves image index for health or endboss statusbars
+   * @returns {number} Image index
+   */
   resolveHealthOrEndbossIndex() {
     if (this.percentage == 100) return 5;
     if (this.percentage == 80) return 4;
@@ -91,6 +107,10 @@ class Statusbar extends DrawableObject {
     return 0;
   }
 
+  /**
+   * Resolves image index for coins or bottles statusbars
+   * @returns {number} Image index
+   */
   resolveCoinsOrBottlesIndex() {
     if (this.percentage == 100) return 5;
     if (this.percentage == 80) return 4;

@@ -1,8 +1,15 @@
 class GameRenderer {
+  /**
+   * Creates a new GameRenderer instance
+   * @param {World} world - World instance
+   */
   constructor(world) {
     this.world = world;
   }
 
+  /**
+   * Main draw method that renders the entire game
+   */
   draw() {
     this.clearCanvas();
     this.drawGameWorld();
@@ -11,10 +18,16 @@ class GameRenderer {
     requestAnimationFrame(this.draw.bind(this));
   }
 
+  /**
+   * Clears the canvas
+   */
   clearCanvas() {
     this.world.ctx.clearRect(0, 0, this.world.canvas.width, this.world.canvas.height);
   }
 
+  /**
+   * Draws the main game world
+   */
   drawGameWorld() {
     this.world.ctx.translate(this.world.camera_x, 0);
     this.drawBackground();
@@ -26,15 +39,24 @@ class GameRenderer {
     this.world.ctx.translate(-this.world.camera_x, 0);
   }
 
+  /**
+   * Draws the background
+   */
   drawBackground() {
     this.addObjectsToMap(this.world.level.background);
   }
 
+  /**
+   * Draws all collectible items
+   */
   drawCollectibles() {
     this.drawCoins();
     this.drawBottles();
   }
 
+  /**
+   * Draws all uncollected coins
+   */
   drawCoins() {
     this.world.level.coins.forEach((coin) => {
       if (!coin.collected) {
@@ -43,6 +65,9 @@ class GameRenderer {
     });
   }
 
+  /**
+   * Draws all uncollected bottles
+   */
   drawBottles() {
     this.world.level.bottles.forEach((bottle) => {
       if (!bottle.collected) {
@@ -51,16 +76,25 @@ class GameRenderer {
     });
   }
 
+  /**
+   * Draws all clouds
+   */
   drawClouds() {
     this.addObjectsToMap(this.world.level.clouds);
   }
 
+  /**
+   * Draws all chickens
+   */
   drawChickens() {
     this.world.level.chickens.forEach((chicken) => {
       this.addToMap(chicken);
     });
   }
 
+  /**
+   * Draws the endboss health bar
+   */
   drawEndbossBar() {
     const boss = this.world.level.chickens.find((e) => e instanceof Endboss);
     if (boss && this.world.endbossBar && !boss.isDead) {
@@ -69,11 +103,18 @@ class GameRenderer {
     }
   }
 
+  /**
+   * Positions the endboss health bar above the boss
+   * @param {Endboss} boss - Endboss instance
+   */
   positionEndbossBar(boss) {
     this.world.endbossBar.x = boss.x + (boss.width - this.world.endbossBar.width) / 2;
     this.world.endbossBar.y = boss.y - 20;
   }
 
+  /**
+   * Draws the UI elements
+   */
   drawUI() {
     this.addObjectsToMap(this.world.statusbar);
     this.world.ctx.translate(this.world.camera_x, 0);
@@ -82,10 +123,16 @@ class GameRenderer {
     this.world.ctx.translate(-this.world.camera_x, 0);
   }
 
+  /**
+   * Draws overlay elements like endscreen
+   */
   drawOverlays() {
     this.world.endscreen.draw(this.world.ctx);
   }
 
+  /**
+   * Draws bottles thrown by the endboss
+   */
   drawEndbossBottles() {
     const boss = this.world.level.chickens.find((e) => e instanceof Endboss);
     if (boss && boss.getThrownBottles) {
@@ -96,12 +143,20 @@ class GameRenderer {
     }
   }
 
+  /**
+   * Adds multiple objects to the map
+   * @param {Array} objects - Array of objects to draw
+   */
   addObjectsToMap(objects) {
     objects.forEach((obj) => {
       this.addToMap(obj);
     });
   }
 
+  /**
+   * Adds a single object to the map with proper flipping
+   * @param {MovableObject} mo - Movable object to draw
+   */
   addToMap(mo) {
     if (mo.otherDirection) {
       this.flipImage(mo);
@@ -116,6 +171,10 @@ class GameRenderer {
     }
   }
 
+  /**
+   * Flips an image horizontally
+   * @param {MovableObject} mo - Movable object to flip
+   */
   flipImage(mo) {
     this.world.ctx.save();
     this.world.ctx.translate(mo.width, 0);
@@ -123,6 +182,10 @@ class GameRenderer {
     mo.x = mo.x * -1;
   }
 
+  /**
+   * Restores image flip
+   * @param {MovableObject} mo - Movable object to restore
+   */
   flipImageBack(mo) {
     mo.x = mo.x * -1;
     this.world.ctx.restore();

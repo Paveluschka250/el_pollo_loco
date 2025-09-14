@@ -14,6 +14,12 @@ class EndbossBottle extends MovableObject {
     "assets/img/6_salsa_bottle/bottle_rotation/bottle_splash/6_bottle_splash.png",
   ]
 
+  /**
+   * Creates a new EndbossBottle instance
+   * @param {number} x - X position
+   * @param {number} y - Y position
+   * @param {number} direction - Direction (1 or -1)
+   */
   constructor(x, y, direction = 1) {
     super();
     this.soundManager = SoundManager.getInstance();
@@ -39,6 +45,9 @@ class EndbossBottle extends MovableObject {
     this.animateRotation();
   }
 
+  /**
+   * Throws the bottle with physics
+   */
   throw() {
     this.speedY = 15;
     this.soundManager.playSound(this.throwSound);
@@ -52,6 +61,9 @@ class EndbossBottle extends MovableObject {
     }, 1000 / 60);
   }
 
+  /**
+   * Animates the bottle rotation while flying
+   */
   animateRotation() {
     this.rotationInterval = setInterval(() => {
       if (this.hasLanded) return;
@@ -62,6 +74,9 @@ class EndbossBottle extends MovableObject {
     }, 1000 / 15);
   }
 
+  /**
+   * Handles bottle landing on ground
+   */
   onLand() {
     if (this.hasLanded) return;
     this.hasLanded = true;
@@ -71,6 +86,9 @@ class EndbossBottle extends MovableObject {
     this.playSplashOnce();
   }
 
+  /**
+   * Plays the splash animation once
+   */
   playSplashOnce() {
     const images = this.IMAGES_BOTTLE_BROKEN;
     let i = 0;
@@ -81,6 +99,11 @@ class EndbossBottle extends MovableObject {
     }, frameMs);
   }
 
+  /**
+   * Processes a single splash animation frame
+   * @param {Array} images - Array of splash images
+   * @param {number} i - Current frame index
+   */
   processSplashFrame(images, i) {
     if (i >= images.length) {
       this.endSplashAnimation();
@@ -90,6 +113,9 @@ class EndbossBottle extends MovableObject {
     this.img = this.imageCache[path];
   }
 
+  /**
+   * Ends the splash animation and removes the bottle
+   */
   endSplashAnimation() {
     clearInterval(this.splashInterval);
     this.removed = true;
@@ -97,6 +123,10 @@ class EndbossBottle extends MovableObject {
     this.height = 0;
   }
 
+  /**
+   * Draws the bottle with proper flipping
+   * @param {CanvasRenderingContext2D} ctx - Canvas context
+   */
   draw(ctx) {
     if (this.removed) return;
     
@@ -105,18 +135,30 @@ class EndbossBottle extends MovableObject {
     this.handleImageFlipBack(ctx);
   }
 
+  /**
+   * Handles image flipping if needed
+   * @param {CanvasRenderingContext2D} ctx - Canvas context
+   */
   handleImageFlip(ctx) {
     if (this.direction === -1) {
       this.flipImage(ctx);
     }
   }
 
+  /**
+   * Handles image flip restoration if needed
+   * @param {CanvasRenderingContext2D} ctx - Canvas context
+   */
   handleImageFlipBack(ctx) {
     if (this.direction === -1) {
       this.flipImageBack(ctx);
     }
   }
 
+  /**
+   * Flips the image horizontally
+   * @param {CanvasRenderingContext2D} ctx - Canvas context
+   */
   flipImage(ctx) {
     ctx.save();
     ctx.translate(this.width, 0);
@@ -124,11 +166,19 @@ class EndbossBottle extends MovableObject {
     this.x = this.x * -1;
   }
 
+  /**
+   * Restores the image flip
+   * @param {CanvasRenderingContext2D} ctx - Canvas context
+   */
   flipImageBack(ctx) {
     this.x = this.x * -1;
     ctx.restore();
   }
 
+  /**
+   * Checks if bottle is above ground
+   * @returns {boolean} True if above ground
+   */
   isAboveGround() {
     return this.y < this.groundY;
   }

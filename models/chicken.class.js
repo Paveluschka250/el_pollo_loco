@@ -20,6 +20,12 @@ class Chicken extends MovableObject {
   ];
   IMAGES_DEAD2 = ["assets/img/3_enemies_chicken/chicken_small/2_dead/dead.png"];
 
+  /**
+   * Creates a new Chicken instance
+   * @param {number} xMin - Minimum x position
+   * @param {number} xMax - Maximum x position
+   * @param {number} type - Chicken type (1 = normal, 2 = small)
+   */
   constructor(xMin = 200, xMax = 700, type = 1) {
     super();
     this.type = type;
@@ -52,6 +58,9 @@ class Chicken extends MovableObject {
     this.animate();
   }
 
+  /**
+   * Animates the chicken by moving and playing walking animation
+   */
   animate() {
     this.animationInterval = setInterval(() => {
       if (!this.isDead) {
@@ -61,16 +70,17 @@ class Chicken extends MovableObject {
     }, 100);
   }
 
+  /**
+   * Plays death animation and sound for the chicken
+   */
   playDead() {
     if (this.isDead) return;
     this.isDead = true;
     this.speed = 0;
-
     const deadImages = this.type === 2 ? this.IMAGES_DEAD2 : this.IMAGES_DEAD1;
     this.loadImages(deadImages);
     this.currentImage = 0;
     this.img = this.imageCache[deadImages[0]];
-
     let deadFrameCount = 0;
     const deadAnimation = setInterval(() => {
       if (deadFrameCount < deadImages.length) {
@@ -91,6 +101,9 @@ class Chicken extends MovableObject {
     this.soundManager.playSound(this.deadSound);
   }
 
+  /**
+   * Resets the chicken position to a random location
+   */
   resetPosition() {
     this.x = Math.random() * (this.xMax - this.xMin) + this.xMin;
     this.y = 360;

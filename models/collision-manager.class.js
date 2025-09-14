@@ -1,8 +1,15 @@
 class CollisionManager {
+  /**
+   * Creates a new CollisionManager instance
+   * @param {World} world - World instance
+   */
   constructor(world) {
     this.world = world;
   }
 
+  /**
+   * Checks all collisions between character and chickens
+   */
   checkCollisions() {
     this.world.level.chickens.forEach((chicken) => {
       if (this.world.character.isCollidingOffset(chicken)) {
@@ -11,6 +18,10 @@ class CollisionManager {
     });
   }
 
+  /**
+   * Handles collision between character and a chicken
+   * @param {Chicken|Endboss} chicken - Chicken or Endboss instance
+   */
   handleChickenCollision(chicken) {
     if (chicken instanceof Endboss) {
       this.handleEndbossCollision(chicken);
@@ -22,6 +33,10 @@ class CollisionManager {
     this.handleNormalChickenCollision(chicken);
   }
 
+  /**
+   * Handles collision between character and endboss
+   * @param {Endboss} chicken - Endboss instance
+   */
   handleEndbossCollision(chicken) {
     if (!chicken.isDead && !this.world.character.die()) {
       this.world.character.energy = 0;
@@ -29,6 +44,10 @@ class CollisionManager {
     }
   }
 
+  /**
+   * Handles collision between character and normal chicken
+   * @param {Chicken} chicken - Chicken instance
+   */
   handleNormalChickenCollision(chicken) {
     const isStomp = this.checkStompCondition(chicken);
     if (isStomp && !chicken.isDead) {
@@ -39,6 +58,11 @@ class CollisionManager {
     }
   }
 
+  /**
+   * Checks if character can stomp on chicken
+   * @param {Chicken} chicken - Chicken instance
+   * @returns {boolean} True if character can stomp
+   */
   checkStompCondition(chicken) {
     const characterBottom =
       this.world.character.y + this.world.character.height - this.world.character.offset.bottom;
@@ -49,6 +73,10 @@ class CollisionManager {
     );
   }
 
+  /**
+   * Executes stomp action on chicken
+   * @param {Chicken} chicken - Chicken instance to stomp
+   */
   executeStomp(chicken) {
     chicken.playDead();
     this.world.character.y =
@@ -56,6 +84,9 @@ class CollisionManager {
     this.world.character.speedY = 15;
   }
 
+  /**
+   * Checks collisions between character and coins
+   */
   checkCollisionsCoins() {
     for (let i = 0; i < this.world.level.coins.length; i++) {
       let coin = this.world.level.coins[i];
@@ -72,6 +103,9 @@ class CollisionManager {
     }
   }
 
+  /**
+   * Checks collisions between character and bottles
+   */
   checkCollisionsBottles() {
     for (let i = 0; i < this.world.level.bottles.length; i++) {
       let bottle = this.world.level.bottles[i];
@@ -88,6 +122,9 @@ class CollisionManager {
     }
   }
 
+  /**
+   * Checks if thrown bottles hit chickens
+   */
   checkBottleHitsChickens() {
     for (let b = 0; b < this.world.throwableObjects.length; b++) {
       const bottle = this.world.throwableObjects[b];
@@ -95,6 +132,10 @@ class CollisionManager {
     }
   }
 
+  /**
+   * Checks if a specific bottle hits any chicken
+   * @param {ThrowableObject} bottle - Bottle instance to check
+   */
   checkBottleAgainstChickens(bottle) {
     if (bottle.hasLanded || bottle.removed) return;
     
@@ -107,6 +148,11 @@ class CollisionManager {
     }
   }
 
+  /**
+   * Handles collision between bottle and chicken
+   * @param {ThrowableObject} bottle - Bottle instance
+   * @param {Chicken|Endboss} chicken - Chicken or Endboss instance
+   */
   handleBottleChickenCollision(bottle, chicken) {
     if (chicken instanceof Endboss) {
       this.handleBottleEndbossCollision(bottle, chicken);
@@ -115,6 +161,11 @@ class CollisionManager {
     }
   }
 
+  /**
+   * Handles collision between bottle and endboss
+   * @param {ThrowableObject} bottle - Bottle instance
+   * @param {Endboss} chicken - Endboss instance
+   */
   handleBottleEndbossCollision(bottle, chicken) {
     if (!chicken.isDead && !chicken.isHurt && typeof chicken.takeHit === "function") {
       chicken.takeHit();
@@ -122,11 +173,20 @@ class CollisionManager {
     this.removeBottleAfterHit(bottle);
   }
 
+  /**
+   * Handles collision between bottle and normal chicken
+   * @param {ThrowableObject} bottle - Bottle instance
+   * @param {Chicken} chicken - Chicken instance
+   */
   handleBottleNormalChickenCollision(bottle, chicken) {
     chicken.playDead();
     this.removeBottleAfterHit(bottle);
   }
 
+  /**
+   * Removes bottle after it hits a target
+   * @param {ThrowableObject} bottle - Bottle instance to remove
+   */
   removeBottleAfterHit(bottle) {
     if (typeof bottle.onLand === "function") {
       bottle.onLand();
@@ -137,6 +197,9 @@ class CollisionManager {
     }, 400);
   }
 
+  /**
+   * Checks if endboss bottles hit the character
+   */
   checkEndbossBottles() {
     const boss = this.world.level.chickens.find((e) => e instanceof Endboss);
     if (boss && boss.getThrownBottles) {
@@ -148,6 +211,10 @@ class CollisionManager {
     }
   }
 
+  /**
+   * Checks if an endboss bottle hits the character
+   * @param {EndbossBottle} bottle - Endboss bottle instance
+   */
   checkEndbossBottleAgainstCharacter(bottle) {
     if (bottle.hasLanded || bottle.removed) return;
     
@@ -156,6 +223,10 @@ class CollisionManager {
     }
   }
 
+  /**
+   * Handles when endboss bottle hits character
+   * @param {EndbossBottle} bottle - Endboss bottle instance
+   */
   handleEndbossBottleHitCharacter(bottle) {
     if (!this.world.character.die()) {
       this.world.character.hit();
@@ -164,6 +235,10 @@ class CollisionManager {
     this.removeEndbossBottle(bottle);
   }
 
+  /**
+   * Removes endboss bottle from the game
+   * @param {EndbossBottle} bottle - Endboss bottle instance to remove
+   */
   removeEndbossBottle(bottle) {
     const boss = this.world.level.chickens.find((e) => e instanceof Endboss);
     if (boss && boss.thrownBottles) {

@@ -22,6 +22,11 @@ class World {
   gameRenderer;
   gameStateManager;
 
+  /**
+   * Creates a new World instance
+   * @param {HTMLCanvasElement} canvas - Game canvas element
+   * @param {Object} keyboard - Keyboard input handler
+   */
   constructor(canvas, keyboard) {
     this.canvas = canvas;
     this.ctx = canvas.getContext("2d");
@@ -37,17 +42,26 @@ class World {
     this.setupKeyboardEvents();
   }
 
+  /**
+   * Initializes all game managers
+   */
   initManagers() {
     this.collisionManager = new CollisionManager(this);
     this.gameRenderer = new GameRenderer(this);
     this.gameStateManager = new GameStateManager(this);
   }
 
+  /**
+   * Starts the game
+   */
   startGame() {
     this.gameRunning = true;
     this.startBackgroundMusic();
   }
 
+  /**
+   * Initializes background music
+   */
   initBackgroundMusic() {
     this.soundManager = SoundManager.getInstance();
     this.backgroundMusic = this.soundManager.createSound("assets/audio/background-music.mp3", { 
@@ -56,21 +70,30 @@ class World {
     });
   }
 
+  /**
+   * Starts playing background music
+   */
   startBackgroundMusic() {
     if (!this.backgroundMusic || !this.soundEnabled) return;
     this.soundManager.playSound(this.backgroundMusic);
   }
 
+  /**
+   * Stops playing background music
+   */
   stopBackgroundMusic() {
     this.soundManager.stopSound(this.backgroundMusic);
   }
 
+  /**
+   * Sets sound enabled state
+   * @param {boolean} enabled - Whether sound is enabled
+   */
   setSoundEnabled(enabled) {
     this.soundEnabled = enabled;
     this.soundManager.setSoundEnabled(enabled);
     if (enabled && this.gameRunning) {
       this.startBackgroundMusic();
-      // Resume walk sound if character is walking
       if (this.character && this.character.walkSound && this.character.walkSound.paused) {
         this.character.startWalkSound();
       }
@@ -79,6 +102,9 @@ class World {
     }
   }
 
+  /**
+   * Sets up event listeners for the canvas
+   */
   setupEventListeners() {
     this.canvas.addEventListener("click", (event) => {
       const rect = this.canvas.getBoundingClientRect();
@@ -88,12 +114,18 @@ class World {
     });
   }
 
+  /**
+   * Sets up keyboard event handlers
+   */
   setupKeyboardEvents() {
     this.removeExistingKeyboardListeners();
     this.createKeyboardHandlers();
     this.addKeyboardListeners();
   }
 
+  /**
+   * Removes existing keyboard event listeners
+   */
   removeExistingKeyboardListeners() {
     if (this.keyboardHandler) {
       window.removeEventListener("keydown", this.keyboardHandler);
@@ -101,11 +133,18 @@ class World {
     }
   }
 
+  /**
+   * Creates keyboard event handlers
+   */
   createKeyboardHandlers() {
     this.keyboardHandler = (e) => this.handleKeyDown(e);
     this.keyboardUpHandler = (e) => this.handleKeyUp(e);
   }
 
+  /**
+   * Handles key down events
+   * @param {KeyboardEvent} e - Keyboard event
+   */
   handleKeyDown(e) {
     if (e.key === "ArrowRight") {
       this.keyboard.RIGHT = true;
@@ -124,6 +163,10 @@ class World {
     }
   }
 
+  /**
+   * Handles key up events
+   * @param {KeyboardEvent} e - Keyboard event
+   */
   handleKeyUp(e) {
     if (e.key === "ArrowRight") {
       this.keyboard.RIGHT = false;
@@ -142,12 +185,18 @@ class World {
     }
   }
 
+  /**
+   * Adds keyboard event listeners to window
+   */
   addKeyboardListeners() {
     window.addEventListener("keydown", this.keyboardHandler);
     window.addEventListener("keyup", this.keyboardUpHandler);
   }
 
 
+  /**
+   * Sets world reference for game objects
+   */
   setWorld() {
     this.character.world = this;
     const boss = this.level.chickens.find((e) => e instanceof Endboss);
@@ -156,6 +205,9 @@ class World {
     }
   }
 
+  /**
+   * Starts the main game loop
+   */
   run() {
     const gameLoop = setInterval(() => {
       if (this.gameRunning) {
@@ -171,19 +223,31 @@ class World {
     this.gameIntervals.push(gameLoop);
   }
 
+  /**
+   * Pauses the game
+   */
   pauseGame() {
     this.gameStateManager.pauseGame();
   }
 
+  /**
+   * Resumes the game
+   */
   resumeGame() {
     this.gameStateManager.resumeGame();
   }
 
 
+  /**
+   * Draws the game world
+   */
   draw() {
     this.gameRenderer.draw();
   }
 
+  /**
+   * Restarts the game
+   */
   restartGame() {
     this.gameStateManager.restartGame();
   }

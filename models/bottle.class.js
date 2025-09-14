@@ -1,4 +1,10 @@
 class Bottle extends MovableObject {
+    /**
+     * Creates a new Bottle instance
+     * @param {number} xMin - Minimum x position
+     * @param {number} xMax - Maximum x position
+     * @param {string} imagePath - Path to bottle image
+     */
     constructor(xMin = 0, xMax = 500, imagePath = "assets/img/6_salsa_bottle/1_salsa_bottle_on_ground.png") {
         super();
         this.soundManager = SoundManager.getInstance();
@@ -16,6 +22,9 @@ class Bottle extends MovableObject {
         };
       }
   
+    /**
+     * Plays pickup sound when bottle is collected
+     */
     collect() {
         this.soundManager.playSound(this.pickupSound);
     }

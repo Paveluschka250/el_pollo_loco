@@ -1,8 +1,15 @@
 class GameStateManager {
+  /**
+   * Creates a new GameStateManager instance
+   * @param {World} world - World instance
+   */
   constructor(world) {
     this.world = world;
   }
 
+  /**
+   * Checks if the game has ended (win or lose)
+   */
   checkGameEnd() {
     if (this.world.character.die() && !this.world.endscreen.visible) {
       this.world.endscreen.showLose();
@@ -16,6 +23,9 @@ class GameStateManager {
     }
   }
 
+  /**
+   * Checks and handles throwable objects (bottles)
+   */
   checkThrowableObjects() {
     if (this.world.endscreen && this.world.endscreen.visible) {
       return;
@@ -40,14 +50,23 @@ class GameStateManager {
     }
   }
 
+  /**
+   * Pauses the game
+   */
   pauseGame() {
     this.world.gameRunning = false;
   }
 
+  /**
+   * Resumes the game
+   */
   resumeGame() {
     this.world.gameRunning = true;
   }
 
+  /**
+   * Restarts the game by resetting all game elements
+   */
   restartGame() {
     this.resetEndscreen();
     this.resetCharacter();
@@ -61,6 +80,9 @@ class GameStateManager {
     this.world.setWorld();
   }
 
+  /**
+   * Resets the endscreen
+   */
   resetEndscreen() {
     this.world.endscreen.hide();
     this.world.endscreen.visible = false;
@@ -69,6 +91,9 @@ class GameStateManager {
     this.world.endscreen.img = null;
   }
 
+  /**
+   * Resets the character
+   */
   resetCharacter() {
     if (this.world.character && this.world.character.stopAllIntervals) {
       this.world.character.stopAllIntervals();
@@ -77,6 +102,9 @@ class GameStateManager {
     this.world.character.world = this.world;
   }
 
+  /**
+   * Resets the game state
+   */
   resetGameState() {
     this.world.camera_x = 0;
     this.world.level = level;
@@ -87,6 +115,9 @@ class GameStateManager {
     }
   }
 
+  /**
+   * Resets all status bars
+   */
   resetStatusbars() {
     this.world.statusbar = [
       Object.assign(new Statusbar("health"), { y: -10 }),
@@ -99,6 +130,9 @@ class GameStateManager {
     this.world.endbossBar = new Statusbar("endboss");
   }
 
+  /**
+   * Resets all chickens
+   */
   resetChickens() {
     this.world.level.chickens.forEach((chicken) => {
       chicken.world = this.world;
@@ -110,6 +144,10 @@ class GameStateManager {
     });
   }
 
+  /**
+   * Resets the endboss
+   * @param {Endboss} chicken - Endboss instance to reset
+   */
   resetEndboss(chicken) {
     chicken.isDead = false;
     chicken.isHurt = false;
@@ -138,6 +176,10 @@ class GameStateManager {
     chicken.lastBottleThrow = 0;
   }
 
+  /**
+   * Resets a normal chicken
+   * @param {Chicken} chicken - Chicken instance to reset
+   */
   resetNormalChicken(chicken) {
     chicken.isDead = false;
     chicken.currentImage = 0;
@@ -148,6 +190,9 @@ class GameStateManager {
     chicken.resetPosition();
   }
 
+  /**
+   * Resets all collectible items
+   */
   resetCollectibles() {
     this.world.level.coins.forEach((coin) => {
       coin.world = this.world;
@@ -159,10 +204,16 @@ class GameStateManager {
     });
   }
 
+  /**
+   * Resets throwable objects array
+   */
   resetThrowableObjects() {
     this.world.throwableObjects = [];
   }
 
+  /**
+   * Resets the canvas transform
+   */
   resetCanvas() {
     this.world.ctx.setTransform(1, 0, 0, 1, 0, 0);
   }

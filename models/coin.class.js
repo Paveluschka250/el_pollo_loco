@@ -3,6 +3,11 @@ class Coin extends MovableObject {
     "assets/img/8_coin/coin_1.png",
     "assets/img/8_coin/coin_2.png",
   ];
+  /**
+   * Creates a new Coin instance
+   * @param {number} xMin - Minimum x position
+   * @param {number} xMax - Maximum x position
+   */
   constructor(xMin = 0, xMax = 500) {
     super();
     this.soundManager = SoundManager.getInstance();
@@ -22,12 +27,18 @@ class Coin extends MovableObject {
     this.animate();
   }
 
+  /**
+   * Animates the coin by cycling through images
+   */
   animate() {
     setInterval(() => {
       this.playAnimation(this.IMAGES_COIN);
     }, 200);
   }
 
+  /**
+   * Plays pickup sound when coin is collected
+   */
   collect() {
     this.soundManager.playSound(this.pickupSound);
   }

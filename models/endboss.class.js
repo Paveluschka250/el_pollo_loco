@@ -36,6 +36,9 @@ class Endboss extends MovableObject {
     "assets/img/4_enemie_boss_chicken/5_dead/G26.png",
   ]
 
+  /**
+   * Creates a new Endboss instance with all necessary properties and animations
+   */
   constructor() {
     super();
     this.loadImage(this.IMAGES_WALKING[0]);
@@ -80,11 +83,17 @@ class Endboss extends MovableObject {
     this.animate();
   }
 
+  /**
+   * Starts all endboss animations
+   */
   animate() {
     this.startMovementAnimation();
     this.startAnimationLoop();
   }
 
+  /**
+   * Starts the movement animation loop
+   */
   startMovementAnimation() {
     setInterval(() => {
       if (!this.isHurt && !this.isDead) {
@@ -94,6 +103,9 @@ class Endboss extends MovableObject {
     }, 1000 / 60);
   }
 
+  /**
+   * Handles endboss movement based on current state
+   */
   handleMovement() {
     if (this.state !== 'alert') {
       this.moveLeft();
@@ -103,6 +115,9 @@ class Endboss extends MovableObject {
     }
   }
 
+  /**
+   * Starts the animation loop
+   */
   startAnimationLoop() {
     setInterval(() => {
       this.updateHurtState();
@@ -110,12 +125,18 @@ class Endboss extends MovableObject {
     }, 150);
   }
 
+  /**
+   * Updates the hurt state based on time
+   */
   updateHurtState() {
     if (this.isHurt && (new Date().getTime() >= this.hurtEndAt)) {
       this.isHurt = false;
     }
   }
 
+  /**
+   * Updates the endboss state based on character distance
+   */
   updateState() {
     if (!this.world || !this.world.character) return;
     
@@ -123,10 +144,18 @@ class Endboss extends MovableObject {
     this.handleStateTransitions(distance);
   }
 
+  /**
+   * Calculates distance to character
+   * @returns {number} Distance to character
+   */
   calculateDistance() {
     return Math.abs(this.x - this.world.character.x);
   }
 
+  /**
+   * Handles state transitions based on distance and time
+   * @param {number} distance - Distance to character
+   */
   handleStateTransitions(distance) {
     const alertDistance = 500;
     const now = new Date().getTime();
@@ -136,41 +165,69 @@ class Endboss extends MovableObject {
     this.checkAttackToWalking(now);
   }
 
+  /**
+   * Checks if endboss should transition from walking to alert
+   * @param {number} distance - Distance to character
+   * @param {number} alertDistance - Alert trigger distance
+   * @param {number} now - Current timestamp
+   */
   checkWalkingToAlert(distance, alertDistance, now) {
     if (this.state === 'walking' && distance <= alertDistance) {
       this.transitionToAlert(now);
     }
   }
 
+  /**
+   * Checks if endboss should transition from alert to attack
+   * @param {number} now - Current timestamp
+   */
   checkAlertToAttack(now) {
     if (this.state === 'alert' && now >= this.alertEndTime) {
       this.transitionToAttack(now);
     }
   }
 
+  /**
+   * Checks if endboss should transition from attack to walking
+   * @param {number} now - Current timestamp
+   */
   checkAttackToWalking(now) {
     if (this.state === 'attack' && now >= this.attackEndTime) {
       this.transitionToWalking();
     }
   }
 
+  /**
+   * Transitions endboss to alert state
+   * @param {number} now - Current timestamp
+   */
   transitionToAlert(now) {
     this.state = 'alert';
     this.alertPlayed = false;
     this.alertEndTime = now + 2000;
   }
 
+  /**
+   * Transitions endboss to attack state
+   * @param {number} now - Current timestamp
+   */
   transitionToAttack(now) {
     this.state = 'attack';
     this.attackEndTime = now + 3000;
     this.speed = this.attackSpeed;
   }
 
+  /**
+   * Transitions endboss to walking state
+   */
   transitionToWalking() {
     this.state = 'walking';
     this.speed = this.originalSpeed;
   }
 
+  /**
+   * Plays the current animation based on state
+   */
   playCurrentAnimation() {
     if (this.isDead) {
       this.handleDeadAnimation();
@@ -185,11 +242,17 @@ class Endboss extends MovableObject {
     }
   }
 
+  /**
+   * Handles the dead animation state
+   */
   handleDeadAnimation() {
     this.initializeDeadAnimation();
     this.playDeadFrame();
   }
 
+  /**
+   * Initializes the dead animation
+   */
   initializeDeadAnimation() {
     if (!this.deadAnimationPlayed) {
       this.deadAnimationPlayed = true;
@@ -199,6 +262,9 @@ class Endboss extends MovableObject {
     }
   }
 
+  /**
+   * Plays a single dead animation frame
+   */
   playDeadFrame() {
     const now = new Date().getTime();
     if (now - this.lastDeadFrameAt >= 300) {
@@ -209,12 +275,18 @@ class Endboss extends MovableObject {
     }
   }
 
+  /**
+   * Updates the dead animation frame
+   */
   updateDeadFrame() {
     const frameIndex = this.deadFrameCount % this.IMAGES_DEAD.length;
     const path = this.IMAGES_DEAD[frameIndex];
     this.img = this.imageCache[path];
   }
 
+  /**
+   * Checks if dead animation should end
+   */
   checkDeadAnimationEnd() {
     if (this.deadFrameCount > this.IMAGES_DEAD.length) {
       this.width = 0;
@@ -222,6 +294,9 @@ class Endboss extends MovableObject {
     }
   }
 
+  /**
+   * Handles endboss taking a hit
+   */
   takeHit() {
     if (this.isDead) return;
     if (!this.canTakeHit()) return;
@@ -231,11 +306,18 @@ class Endboss extends MovableObject {
     this.checkDeath();
   }
 
+  /**
+   * Checks if endboss can take a hit
+   * @returns {boolean} True if can take hit
+   */
   canTakeHit() {
     const now = new Date().getTime();
     return now - this.lastHitTime >= this.hitCooldown;
   }
 
+  /**
+   * Processes the hit effect
+   */
   processHit() {
     const now = new Date().getTime();
     this.lastHitTime = now;
@@ -244,10 +326,16 @@ class Endboss extends MovableObject {
     this.playHurtSound();
   }
 
+  /**
+   * Plays the hurt sound effect
+   */
   playHurtSound() {
     this.soundManager.playSound(this.hurtSound);
   }
 
+  /**
+   * Updates endboss health after taking a hit
+   */
   updateHealth() {
     this.lives = Math.max(0, this.lives - 1);
     const livesToPercent = { 3: 100, 2: 60, 1: 20, 0: 0 };
@@ -255,12 +343,18 @@ class Endboss extends MovableObject {
     this.updateHealthBar();
   }
 
+  /**
+   * Updates the health bar display
+   */
   updateHealthBar() {
     if (this.world && this.world.endbossBar) {
       this.world.endbossBar.setPercentage(this.health);
     }
   }
 
+  /**
+   * Checks if endboss should die
+   */
   checkDeath() {
     if (this.lives === 0) {
       this.isDead = true;
@@ -268,6 +362,9 @@ class Endboss extends MovableObject {
     }
   }
 
+  /**
+   * Tries to throw a bottle if cooldown allows
+   */
   tryThrowBottle() {
     if (!this.world || !this.world.character) return;
     
@@ -278,6 +375,9 @@ class Endboss extends MovableObject {
     }
   }
 
+  /**
+   * Throws a bottle towards the character
+   */
   throwBottle() {
     const direction = this.x > this.world.character.x ? -1 : 1;
     const bottle = new EndbossBottle(
@@ -288,6 +388,10 @@ class Endboss extends MovableObject {
     this.thrownBottles.push(bottle);
   }
 
+  /**
+   * Gets all thrown bottles
+   * @returns {Array} Array of thrown bottles
+   */
   getThrownBottles() {
     return this.thrownBottles;
   }

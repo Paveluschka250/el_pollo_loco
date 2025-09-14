@@ -12,6 +12,11 @@ class MovableObject extends DrawableObject {
   energy = 100;
   lastHit = 0;
 
+  /**
+   * Checks if this object is colliding with another object
+   * @param {MovableObject} mo - Other movable object
+   * @returns {boolean} True if colliding
+   */
   isColliding(mo) {
     return (
       this.x < mo.x + mo.width &&
@@ -21,6 +26,11 @@ class MovableObject extends DrawableObject {
     );
   }
 
+  /**
+   * Checks collision with offset boundaries
+   * @param {MovableObject} mo - Other movable object
+   * @returns {boolean} True if colliding with offset
+   */
   isCollidingOffset(mo) {
     return (
       this.x + this.width - this.offset.right > mo.x + mo.offset.left &&
@@ -30,6 +40,10 @@ class MovableObject extends DrawableObject {
     );
   }
 
+  /**
+   * Plays animation from image array
+   * @param {Array} images - Array of image paths
+   */
   playAnimation(images) {
     let i = this.currentImage % images.length;
     let path = images[i];
@@ -37,6 +51,9 @@ class MovableObject extends DrawableObject {
     this.currentImage++;
   }
 
+  /**
+   * Applies gravity to the object
+   */
   applyGravity() {
     setInterval(() => {
       if (this.isAboveGround() || this.speedY > 0) {
@@ -46,6 +63,10 @@ class MovableObject extends DrawableObject {
     }, 1000 / 60);
   }
 
+  /**
+   * Checks if object is above ground
+   * @returns {boolean} True if above ground
+   */
   isAboveGround() {
     if (this instanceof ThrowableObject) {
       return true;
@@ -54,18 +75,30 @@ class MovableObject extends DrawableObject {
     }
   }
 
+  /**
+   * Makes the object jump
+   */
   jump() {
     this.speedY = 20;
   }
 
+  /**
+   * Moves the object to the right
+   */
   moveRight() {
     this.x += this.speed;
   }
 
+  /**
+   * Moves the object to the left
+   */
   moveLeft() {
     this.x -= this.speed;
   }
 
+  /**
+   * Handles object being hit
+   */
   hit() {
     this.energy -= 20;
     if (this.energy <= 0) {
@@ -75,10 +108,18 @@ class MovableObject extends DrawableObject {
     }
   }
 
+  /**
+   * Checks if object is dead
+   * @returns {boolean} True if dead
+   */
   die() {
     return this.energy == 0;
   }
 
+  /**
+   * Checks if object is in hurt state
+   * @returns {boolean} True if hurt
+   */
   hurt() {
     let timepassed = new Date().getTime() - this.lastHit;
     timepassed = timepassed / 1000;

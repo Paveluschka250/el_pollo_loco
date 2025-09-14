@@ -3,6 +3,9 @@ class SoundManager {
   soundEnabled = true;
   sounds = new Map();
 
+  /**
+   * Creates a new SoundManager instance (Singleton)
+   */
   constructor() {
     if (SoundManager.instance) {
       return SoundManager.instance;
@@ -11,6 +14,10 @@ class SoundManager {
     this.loadSoundState();
   }
 
+  /**
+   * Gets the singleton instance
+   * @returns {SoundManager} SoundManager instance
+   */
   static getInstance() {
     if (!SoundManager.instance) {
       SoundManager.instance = new SoundManager();
@@ -18,6 +25,9 @@ class SoundManager {
     return SoundManager.instance;
   }
 
+  /**
+   * Loads sound state from localStorage
+   */
   loadSoundState() {
     const savedSoundState = localStorage.getItem("soundEnabled");
     if (savedSoundState !== null) {
@@ -25,6 +35,10 @@ class SoundManager {
     }
   }
 
+  /**
+   * Sets sound enabled state
+   * @param {boolean} enabled - Whether sound is enabled
+   */
   setSoundEnabled(enabled) {
     this.soundEnabled = enabled;
     localStorage.setItem("soundEnabled", enabled.toString());
@@ -39,6 +53,12 @@ class SoundManager {
     });
   }
 
+  /**
+   * Creates a new sound
+   * @param {string} audioPath - Path to audio file
+   * @param {Object} options - Sound options
+   * @returns {Audio} Audio object
+   */
   createSound(audioPath, options = {}) {
     const sound = new Audio(audioPath);
     sound.originalVolume = options.volume || 1;
@@ -52,6 +72,11 @@ class SoundManager {
     return sound;
   }
 
+  /**
+   * Plays a sound
+   * @param {Audio} sound - Audio object to play
+   * @param {Object} options - Play options
+   */
   playSound(sound, options = {}) {
     if (!sound || !this.soundEnabled) return;
     
@@ -64,6 +89,10 @@ class SoundManager {
     } catch (e) {}
   }
 
+  /**
+   * Stops a sound
+   * @param {Audio} sound - Audio object to stop
+   */
   stopSound(sound) {
     if (!sound) return;
     
@@ -73,6 +102,9 @@ class SoundManager {
     } catch (e) {}
   }
 
+  /**
+   * Pauses all sounds
+   */
   pauseAllSounds() {
     this.sounds.forEach(sound => {
       if (sound && !sound.paused) {
@@ -83,6 +115,9 @@ class SoundManager {
     });
   }
 
+  /**
+   * Resumes all paused loop sounds
+   */
   resumeAllSounds() {
     if (!this.soundEnabled) return;
     
@@ -96,6 +131,9 @@ class SoundManager {
     });
   }
 
+  /**
+   * Stops all sounds
+   */
   stopAllSounds() {
     this.sounds.forEach(sound => {
       this.stopSound(sound);

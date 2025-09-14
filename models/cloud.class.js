@@ -1,4 +1,10 @@
 class Cloud extends MovableObject {
+  /**
+   * Creates a new Cloud instance
+   * @param {number} xMin - Minimum x position
+   * @param {number} xMax - Maximum x position
+   * @param {string} imagePath - Path to cloud image
+   */
   constructor(xMin = 0, xMax = 500, imagePath = "assets/img/5_background/layers/4_clouds/1.png") {
     super();
     this.loadImage(imagePath);
@@ -12,6 +18,9 @@ class Cloud extends MovableObject {
 
 
 
+  /**
+   * Animates the cloud by moving it left and resetting position
+   */
   animate() {
     setInterval(() => {
       this.moveLeft();
