@@ -75,30 +75,28 @@ class Statusbar extends DrawableObject {
   }
 
   resolveImageIndex() {
-    if (this.type === "health") {
-      // Health: 100%=5, 80%=4, 60%=3, 40%=2, 20%=1, 0%=0
-      if (this.percentage == 100) return 5;
-      if (this.percentage == 80) return 4;
-      if (this.percentage == 60) return 3;
-      if (this.percentage == 40) return 2;
-      if (this.percentage == 20) return 1;
-      return 0;
-    } else if (this.type === "endboss") {
-      // 0..100 in 20er Schritten
-      if (this.percentage == 100) return 5;
-      if (this.percentage == 80) return 4;
-      if (this.percentage == 60) return 3;
-      if (this.percentage == 40) return 2;
-      if (this.percentage == 20) return 1;
-      return 0;
+    if (this.type === "health" || this.type === "endboss") {
+      return this.resolveHealthOrEndbossIndex();
     } else {
-      // Coins/Bottles: 0%=0, 20%=1, 40%=2, 60%=3, 80%=4, 100%=5
-      if (this.percentage == 100) return 5;
-      if (this.percentage == 80) return 4;
-      if (this.percentage == 60) return 3;
-      if (this.percentage == 40) return 2;
-      if (this.percentage == 20) return 1;
-      return 0;
+      return this.resolveCoinsOrBottlesIndex();
     }
+  }
+
+  resolveHealthOrEndbossIndex() {
+    if (this.percentage == 100) return 5;
+    if (this.percentage == 80) return 4;
+    if (this.percentage == 60) return 3;
+    if (this.percentage == 40) return 2;
+    if (this.percentage == 20) return 1;
+    return 0;
+  }
+
+  resolveCoinsOrBottlesIndex() {
+    if (this.percentage == 100) return 5;
+    if (this.percentage == 80) return 4;
+    if (this.percentage == 60) return 3;
+    if (this.percentage == 40) return 2;
+    if (this.percentage == 20) return 1;
+    return 0;
   }
 }

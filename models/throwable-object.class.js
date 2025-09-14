@@ -12,14 +12,14 @@ class ThrowableObject extends MovableObject {
     "assets/img/6_salsa_bottle/bottle_rotation/bottle_splash/4_bottle_splash.png",
     "assets/img/6_salsa_bottle/bottle_rotation/bottle_splash/5_bottle_splash.png",
     "assets/img/6_salsa_bottle/bottle_rotation/bottle_splash/6_bottle_splash.png",
-  ]
+  ];
   constructor(x, y, direction = 1) {
     super();
     this.soundManager = SoundManager.getInstance();
     this.loadImage(this.IMAGES_BOTTLE[0]);
     this.loadImages(this.IMAGES_BOTTLE);
     this.loadImages(this.IMAGES_BOTTLE_BROKEN);
-    this.throwSound = this.soundManager.createSound('assets/audio/throw.mp3');
+    this.throwSound = this.soundManager.createSound("assets/audio/throw.mp3");
     this.x = x;
     this.y = y;
     this.width = 80;
@@ -42,11 +42,11 @@ class ThrowableObject extends MovableObject {
     this.soundManager.playSound(this.throwSound);
     this.applyGravity();
     this.moveInterval = setInterval(() => {
-        if (this.hasLanded) return;
-        this.x += 5 * this.direction;
-        if (this.y >= this.groundY) {
-          this.onLand();
-        }
+      if (this.hasLanded) return;
+      this.x += 5 * this.direction;
+      if (this.y >= this.groundY) {
+        this.onLand();
+      }
     }, 1000 / 60);
   }
   animateRotation() {
@@ -73,28 +73,42 @@ class ThrowableObject extends MovableObject {
     let i = 0;
     const frameMs = 1000 / 20;
     this.splashInterval = setInterval(() => {
-      if (i >= images.length) {
-        clearInterval(this.splashInterval);
-        this.removed = true;
-        this.width = 0;
-        this.height = 0;
-        return;
-      }
-      const path = images[i];
-      this.img = this.imageCache[path];
+      this.processSplashFrame(images, i);
       i++;
     }, frameMs);
+  }
+
+  processSplashFrame(images, i) {
+    if (i >= images.length) {
+      this.endSplashAnimation();
+      return;
+    }
+    const path = images[i];
+    this.img = this.imageCache[path];
+  }
+
+  endSplashAnimation() {
+    clearInterval(this.splashInterval);
+    this.removed = true;
+    this.width = 0;
+    this.height = 0;
   }
 
   draw(ctx) {
     if (this.removed) return;
     
+    this.handleImageFlip(ctx);
+    super.draw(ctx);
+    this.handleImageFlipBack(ctx);
+  }
+
+  handleImageFlip(ctx) {
     if (this.direction === -1) {
       this.flipImage(ctx);
     }
-    
-    super.draw(ctx);
-    
+  }
+
+  handleImageFlipBack(ctx) {
     if (this.direction === -1) {
       this.flipImageBack(ctx);
     }

@@ -1,0 +1,148 @@
+.mobile-rotation-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  flex-direction: column;
+}
+
+.mobile-rotation-content {
+  text-align: center;
+  color: white;
+  padding: 20px;
+}
+
+.rotation-icon {
+  width: 80px;
+  height: 80px;
+  margin-bottom: 20px;
+  filter: invert(1);
+}
+
+.rotation-text {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+  font-family: "rye", Arial, Helvetica, sans-serif;
+}
+
+.mobile-controls {
+  display: none;
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+  right: 0;
+  justify-content: space-between;
+  width: 100%;
+  z-index: 10;
+}
+
+.mobile-controls-left {
+  display: flex;
+  gap: 15px;
+}
+
+.mobile-controls-right {
+  display: flex;
+  gap: 15px;
+}
+
+.mobile-controls button {
+  width: 60px;
+  height: 60px;
+  border: none;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #ff6b35, #ff8c42);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3), 
+              inset 0 2px 4px rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.mobile-controls button:active {
+  transform: scale(0.95);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4), 
+              inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.mobile-controls button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4), 
+              inset 0 2px 4px rgba(255, 255, 255, 0.3);
+}
+
+.mobile-controls button img {
+  width: 30px;
+  height: 30px;
+  filter: brightness(0) invert(1);
+  pointer-events: none;
+}
+
+.mobile-controls-left button {
+  background: linear-gradient(145deg, #4a90e2, #357abd);
+}
+
+.mobile-controls-right button:first-child {
+  background: linear-gradient(145deg, #7ed321, #5cb85c);
+}
+
+.mobile-controls-right button:last-child {
+  background: linear-gradient(145deg, #f39c12, #e67e22);
+}
+
+.mobile-controls-right button:last-child img {
+  width: 25px;
+  height: 25px;
+  filter: none;
+}
+
+@media only screen and (max-width: 768px) {
+  .mobile-controls {
+    display: flex;
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  .mobile-controls {
+    bottom: 5px;
+  }
+  
+  .mobile-controls button {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .mobile-controls button img {
+    width: 25px;
+    height: 25px;
+  }
+  
+  .mobile-controls-right button:last-child img {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+@media only screen and (max-width: 360px) {
+  .mobile-controls {
+    position: fixed;
+    bottom: 5px;
+    left: 5px;
+    right: 5px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    padding: 5px;
+  }
+}

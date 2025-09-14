@@ -1,0 +1,74 @@
+.sound-toggle-btn {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  background: rgba(0, 0, 0, 0.8);
+  border: 2px solid #FFD700;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  outline: none;
+  user-select: none;
+}
+
+.sound-toggle-btn:hover {
+  background: rgba(255, 215, 0, 0.2);
+  transform: scale(1.1);
+  box-shadow: 0 6px 12px rgba(255, 215, 0, 0.4);
+}
+
+.sound-toggle-btn:active {
+  transform: scale(0.95);
+}
+
+.sound-icon {
+  width: 24px;
+  height: 24px;
+  filter: invert(1);
+  transition: all 0.3s ease;
+}
+
+.sound-toggle-btn:hover .sound-icon {
+  filter: invert(1) sepia(1) saturate(5) hue-rotate(45deg);
+}
+
+.sound-toggle-btn:focus {
+  outline: none;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.sound-toggle-btn:focus:not(:focus-visible) {
+  outline: none;
+}
+
+canvas {
+  background-color: black;
+  border-radius: 16px;
+  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.7);
+  display: block;
+  outline: none;
+  cursor: none;
+}
+
+canvas:focus {
+  outline: none;
+}
+
+@media only screen and (max-width: 720px) {
+  canvas {
+    width: 100%;
+  }
+}
+
+@media only screen and (max-height: 480px) {
+  canvas {
+    height: 100vh;
+  }
+}

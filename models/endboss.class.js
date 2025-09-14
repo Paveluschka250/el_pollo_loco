@@ -131,11 +131,25 @@ class Endboss extends MovableObject {
     const alertDistance = 500;
     const now = new Date().getTime();
     
+    this.checkWalkingToAlert(distance, alertDistance, now);
+    this.checkAlertToAttack(now);
+    this.checkAttackToWalking(now);
+  }
+
+  checkWalkingToAlert(distance, alertDistance, now) {
     if (this.state === 'walking' && distance <= alertDistance) {
       this.transitionToAlert(now);
-    } else if (this.state === 'alert' && now >= this.alertEndTime) {
+    }
+  }
+
+  checkAlertToAttack(now) {
+    if (this.state === 'alert' && now >= this.alertEndTime) {
       this.transitionToAttack(now);
-    } else if (this.state === 'attack' && now >= this.attackEndTime) {
+    }
+  }
+
+  checkAttackToWalking(now) {
+    if (this.state === 'attack' && now >= this.attackEndTime) {
       this.transitionToWalking();
     }
   }

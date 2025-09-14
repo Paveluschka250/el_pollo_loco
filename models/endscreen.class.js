@@ -98,14 +98,32 @@ class Endscreen extends DrawableObject {
   }
 
   drawButton(ctx, x, y, text, color) {
+    this.drawButtonShadow(ctx, x, y);
+    this.drawButtonGradient(ctx, x, y);
+    this.drawButtonBorders(ctx, x, y);
+    this.drawButtonText(ctx, x, y, text);
+  }
+
+  drawButtonShadow(ctx, x, y) {
     ctx.fillStyle = "#8B4513";
     ctx.fillRect(x + 3, y + 3, this.buttonWidth, this.buttonHeight);
+  }
+
+  drawButtonGradient(ctx, x, y) {
     const gradient = ctx.createLinearGradient(x, y, x, y + this.buttonHeight);
     gradient.addColorStop(0, "#FFD700");
     gradient.addColorStop(0.5, "#FF8C00");
     gradient.addColorStop(1, "#FF4500");
     ctx.fillStyle = gradient;
     ctx.fillRect(x, y, this.buttonWidth, this.buttonHeight);
+  }
+
+  drawButtonBorders(ctx, x, y) {
+    this.drawButtonTopBorder(ctx, x, y);
+    this.drawButtonBottomBorder(ctx, x, y);
+  }
+
+  drawButtonTopBorder(ctx, x, y) {
     ctx.strokeStyle = "#FFD700";
     ctx.lineWidth = 2;
     ctx.beginPath();
@@ -114,6 +132,9 @@ class Endscreen extends DrawableObject {
     ctx.moveTo(x, y);
     ctx.lineTo(x, y + this.buttonHeight);
     ctx.stroke();
+  }
+
+  drawButtonBottomBorder(ctx, x, y) {
     ctx.strokeStyle = "#8B4513";
     ctx.beginPath();
     ctx.moveTo(x + this.buttonWidth, y);
@@ -121,15 +142,14 @@ class Endscreen extends DrawableObject {
     ctx.moveTo(x, y + this.buttonHeight);
     ctx.lineTo(x + this.buttonWidth, y + this.buttonHeight);
     ctx.stroke();
+  }
+
+  drawButtonText(ctx, x, y, text) {
     ctx.font = 'bold 18px "rye", Arial, sans-serif';
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.fillStyle = "#8B4513";
-    ctx.fillText(
-      text,
-      x + this.buttonWidth / 2 + 2,
-      y + this.buttonHeight / 2 + 2
-    );
+    ctx.fillText(text, x + this.buttonWidth / 2 + 2, y + this.buttonHeight / 2 + 2);
     ctx.fillStyle = "#000000";
     ctx.fillText(text, x + this.buttonWidth / 2, y + this.buttonHeight / 2);
   }
@@ -145,17 +165,26 @@ class Endscreen extends DrawableObject {
 
   handleClick(mouseX, mouseY) {
     if (!this.visible) return;
+    
+    const buttonPositions = this.calculateButtonPositions();
+    this.checkButtonClicks(mouseX, mouseY, buttonPositions);
+  }
+
+  calculateButtonPositions() {
     const imageY = (this.canvasHeight - this.imageHeight) / 2;
     const buttonY = imageY + this.imageHeight + 30;
     const totalButtonWidth = this.buttonWidth * 2 + this.buttonSpacing;
     const startX = (this.canvasWidth - totalButtonWidth) / 2;
     const retryX = startX + this.buttonWidth + this.buttonSpacing;
+    
+    return { startX, retryX, buttonY };
+  }
 
-    if (this.isButtonClicked(mouseX, mouseY, retryX, buttonY)) {
+  checkButtonClicks(mouseX, mouseY, positions) {
+    if (this.isButtonClicked(mouseX, mouseY, positions.retryX, positions.buttonY)) {
       this.retryGame();
     }
-
-    if (this.isButtonClicked(mouseX, mouseY, startX, buttonY)) {
+    if (this.isButtonClicked(mouseX, mouseY, positions.startX, positions.buttonY)) {
       this.goToMainMenu();
     }
   }

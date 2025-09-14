@@ -76,28 +76,42 @@ class EndbossBottle extends MovableObject {
     let i = 0;
     const frameMs = 1000 / 20;
     this.splashInterval = setInterval(() => {
-      if (i >= images.length) {
-        clearInterval(this.splashInterval);
-        this.removed = true;
-        this.width = 0;
-        this.height = 0;
-        return;
-      }
-      const path = images[i];
-      this.img = this.imageCache[path];
+      this.processSplashFrame(images, i);
       i++;
     }, frameMs);
+  }
+
+  processSplashFrame(images, i) {
+    if (i >= images.length) {
+      this.endSplashAnimation();
+      return;
+    }
+    const path = images[i];
+    this.img = this.imageCache[path];
+  }
+
+  endSplashAnimation() {
+    clearInterval(this.splashInterval);
+    this.removed = true;
+    this.width = 0;
+    this.height = 0;
   }
 
   draw(ctx) {
     if (this.removed) return;
     
+    this.handleImageFlip(ctx);
+    super.draw(ctx);
+    this.handleImageFlipBack(ctx);
+  }
+
+  handleImageFlip(ctx) {
     if (this.direction === -1) {
       this.flipImage(ctx);
     }
-    
-    super.draw(ctx);
-    
+  }
+
+  handleImageFlipBack(ctx) {
     if (this.direction === -1) {
       this.flipImageBack(ctx);
     }

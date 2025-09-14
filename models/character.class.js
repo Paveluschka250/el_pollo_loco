@@ -130,23 +130,27 @@ class Character extends MovableObject {
 
   startCharacterAnimation() {
     this.animationInterval = setInterval(() => {
-      if (this.die()) {
-        this.handleDeadAnimation();
-        return;
-      }
-      if (this.world.endscreen && this.world.endscreen.visible) {
-        return;
-      }
-      if (this.hurt()) {
-        this.handleHurtAnimation();
-        return;
-      }
-      if (this.isAboveGround()) {
-        this.handleJumpAnimation();
-        return;
-      }
-      this.handleWalkOrIdleAnimation();
+      this.processAnimationFrame();
     }, 50);
+  }
+
+  processAnimationFrame() {
+    if (this.die()) {
+      this.handleDeadAnimation();
+      return;
+    }
+    if (this.world.endscreen && this.world.endscreen.visible) {
+      return;
+    }
+    if (this.hurt()) {
+      this.handleHurtAnimation();
+      return;
+    }
+    if (this.isAboveGround()) {
+      this.handleJumpAnimation();
+      return;
+    }
+    this.handleWalkOrIdleAnimation();
   }
 
   handleDeadAnimation() {
@@ -186,14 +190,26 @@ class Character extends MovableObject {
   }
 
   handleJumpAnimation() {
+    this.updateJumpFrame();
+    this.resetAnimationTimers();
+    this.stopWalkSound();
+  }
+
+  updateJumpFrame() {
     const now = (typeof performance !== "undefined" && performance.now) ? performance.now() : new Date().getTime();
     if (now - this.lastJumpFrameAt >= this.jumpFrameInterval) {
       this.playAnimation(this.IMAGES_JUMP);
       this.lastJumpFrameAt = now;
     }
+  }
+
+  resetAnimationTimers() {
     this.idleTime = 0;
     this.lastIdleFrameAt = 0;
     this.lastWalkFrameAt = 0;
+  }
+
+  stopWalkSound() {
     if (this.walkSound && !this.walkSound.paused) {
       try { this.walkSound.pause(); } catch (e) {}
       try { this.walkSound.currentTime = 0; } catch (e) {}
