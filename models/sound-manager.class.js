@@ -29,7 +29,6 @@ class SoundManager {
     this.soundEnabled = enabled;
     localStorage.setItem("soundEnabled", enabled.toString());
     
-    // Update all existing sounds
     this.sounds.forEach((sound, key) => {
       if (sound) {
         sound.volume = enabled ? (sound.originalVolume || 1) : 0;
@@ -47,7 +46,6 @@ class SoundManager {
     sound.loop = options.loop || false;
     sound.preload = options.preload || "auto";
     
-    // Store sound for later management
     const soundId = audioPath.split('/').pop().split('.')[0];
     this.sounds.set(soundId, sound);
     
@@ -58,7 +56,6 @@ class SoundManager {
     if (!sound || !this.soundEnabled) return;
     
     try {
-      // Don't reset time for loop sounds that are already playing
       if (options.resetTime !== false && (!sound.loop || sound.paused)) {
         sound.currentTime = 0;
       }
