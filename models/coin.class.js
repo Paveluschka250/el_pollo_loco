@@ -3,9 +3,10 @@ class Coin extends MovableObject {
     "assets/img/8_coin/coin_1.png",
     "assets/img/8_coin/coin_2.png",
   ];
-  pickupSound = new Audio('assets/audio/coin.mp3');
   constructor(xMin = 0, xMax = 500) {
     super();
+    this.soundManager = SoundManager.getInstance();
+    this.pickupSound = this.soundManager.createSound('assets/audio/coin.mp3');
     this.loadImage("assets/img/8_coin/coin_1.png");
     this.loadImages(this.IMAGES_COIN);
     this.x = Math.random() * (xMax - xMin) + xMin;
@@ -28,10 +29,6 @@ class Coin extends MovableObject {
   }
 
   collect() {
-    try {
-      this.pickupSound.currentTime = 0;
-      this.pickupSound.play();
-    } catch (e) {
-    }
+    this.soundManager.playSound(this.pickupSound);
   }
 }

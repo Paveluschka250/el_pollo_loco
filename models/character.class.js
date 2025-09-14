@@ -83,12 +83,12 @@ class Character extends MovableObject {
     this.longIdleFrameInterval = 180;
     this.lastDeadFrameAt = 0;
     this.deadFrameInterval = 150;
-    this.deadSound = new Audio("assets/audio/dead.mp3");
+    this.soundManager = SoundManager.getInstance();
+    this.deadSound = this.soundManager.createSound("assets/audio/dead.mp3");
     this.deadSoundPlayed = false;
-    this.hurtSound = new Audio("assets/audio/hurt.mp3");
-    this.jumpSound = new Audio("assets/audio/jump.mp3");
-    this.walkSound = new Audio("assets/audio/walk.mp3");
-    this.walkSound.loop = true;
+    this.hurtSound = this.soundManager.createSound("assets/audio/hurt.mp3");
+    this.jumpSound = this.soundManager.createSound("assets/audio/jump.mp3");
+    this.walkSound = this.soundManager.createSound("assets/audio/walk.mp3", { loop: true });
     this.lastJumpFrameAt = 0;
     this.jumpFrameInterval = 50;
     this.lastWalkFrameAt = 0;
@@ -158,23 +158,14 @@ class Character extends MovableObject {
 
   playDeadSound() {
     if (!this.deadSoundPlayed && this.deadSound) {
-      try {
-        this.deadSound.currentTime = 0;
-        this.deadSound.play();
-      } catch (e) {}
+      this.soundManager.playSound(this.deadSound);
       this.deadSoundPlayed = true;
     }
   }
 
   stopAllSounds() {
-    if (this.hurtSound && !this.hurtSound.paused) {
-      try { this.hurtSound.pause(); } catch (e) {}
-      try { this.hurtSound.currentTime = 0; } catch (e) {}
-    }
-    if (this.walkSound && !this.walkSound.paused) {
-      try { this.walkSound.pause(); } catch (e) {}
-      try { this.walkSound.currentTime = 0; } catch (e) {}
-    }
+    this.soundManager.stopSound(this.hurtSound);
+    this.soundManager.stopSound(this.walkSound);
   }
 
   playDeadFrame() {
@@ -231,12 +222,7 @@ class Character extends MovableObject {
   }
 
   startWalkSound() {
-    try {
-      if (this.walkSound && this.walkSound.paused) {
-        this.walkSound.currentTime = 0;
-        this.walkSound.play();
-      }
-    } catch (e) {}
+    this.soundManager.playSound(this.walkSound);
   }
 
   handleIdleAnimation() {
@@ -261,10 +247,7 @@ class Character extends MovableObject {
   }
 
   stopWalkSound() {
-    if (this.walkSound && !this.walkSound.paused) {
-      try { this.walkSound.pause(); } catch (e) {}
-      try { this.walkSound.currentTime = 0; } catch (e) {}
-    }
+    this.soundManager.stopSound(this.walkSound);
   }
 
   hit() {
@@ -273,10 +256,7 @@ class Character extends MovableObject {
     }
     super.hit();
     try {
-      if (this.hurtSound) {
-        this.hurtSound.currentTime = 0;
-        this.hurtSound.play();
-      }
+      this.soundManager.playSound(this.hurtSound);
     } catch (e) {}
   }
 
@@ -288,10 +268,7 @@ class Character extends MovableObject {
     this.lastJumpFrameAt = 0;
     super.jump();
     try {
-      if (this.jumpSound) {
-        this.jumpSound.currentTime = 0;
-        this.jumpSound.play();
-      }
+      this.soundManager.playSound(this.jumpSound);
     } catch (e) {}
   }
 

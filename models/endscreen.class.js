@@ -23,8 +23,9 @@ class Endscreen extends DrawableObject {
     this.maxHeight = 200;
     this.canvasWidth = 720;
     this.canvasHeight = 480;
-    this.winSound = new Audio("assets/audio/win.mp3");
-    this.loseSound = new Audio("assets/audio/lose.mp3");
+    this.soundManager = SoundManager.getInstance();
+    this.winSound = this.soundManager.createSound("assets/audio/win.mp3");
+    this.loseSound = this.soundManager.createSound("assets/audio/lose.mp3");
     this.buttonWidth = 120;
     this.buttonHeight = 40;
     this.buttonSpacing = 20;
@@ -39,8 +40,7 @@ class Endscreen extends DrawableObject {
     this.currentImage = this.IMAGES_GAME_WIN[randomIndex];
     this.img = this.imageCache[this.currentImage];
     this.calculateImageDimensions();
-    this.winSound.currentTime = 0;
-    this.winSound.play();
+    this.soundManager.playSound(this.winSound);
   }
 
   showLose() {
@@ -52,8 +52,7 @@ class Endscreen extends DrawableObject {
     this.currentImage = this.IMAGES_GAME_LOSE[randomIndex];
     this.img = this.imageCache[this.currentImage];
     this.calculateImageDimensions();
-    this.loseSound.currentTime = 0;
-    this.loseSound.play();
+    this.soundManager.playSound(this.loseSound);
   }
 
   calculateImageDimensions() {

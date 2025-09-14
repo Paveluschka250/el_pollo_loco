@@ -1,38 +1,12 @@
 let gameStarted = false;
 let gameWorld = null;
-let backgroundMusic = null;
+let soundEnabled = true;
 
 function init() {
   setupMenuEventListeners();
-  setupBackgroundMusic();
+  setupSoundToggle();
 }
 
-function setupBackgroundMusic() {
-  if (!backgroundMusic) {
-    backgroundMusic = new Audio("assets/audio/background-music.mp3");
-    backgroundMusic.loop = true;
-    backgroundMusic.volume = 0.3;
-    backgroundMusic.preload = "auto";
-    window.backgroundMusic = backgroundMusic;
-
-    startBackgroundMusic();
-  }
-}
-
-function startBackgroundMusic() {
-  if (!backgroundMusic) return;
-  const playMusic = () => {
-    backgroundMusic.play().catch((e) => {});
-  };
-  playMusic();
-  const startOnClick = () => {
-    playMusic();
-    document.removeEventListener("click", startOnClick);
-    document.removeEventListener("keydown", startOnClick);
-  };
-  document.addEventListener("click", startOnClick);
-  document.addEventListener("keydown", startOnClick);
-}
 
 function setupMenuEventListeners() {
   const startGameBtn = document.getElementById("start-game-btn");
@@ -47,15 +21,51 @@ function setupMenuEventListeners() {
   backToMenuImpressumBtn.addEventListener("click", backToMainMenuFromImpressum);
 }
 
+function setupSoundToggle() {
+  const soundToggleBtn = document.getElementById("sound-toggle-btn");
+  const soundIcon = document.getElementById("sound-icon");
+  
+  soundToggleBtn.addEventListener("click", toggleSound);
+  
+  // Initialize sound manager and load state
+  const soundManager = SoundManager.getInstance();
+  soundEnabled = soundManager.soundEnabled;
+  updateSoundIcon();
+}
+
+function toggleSound() {
+  soundEnabled = !soundEnabled;
+  updateSoundIcon();
+  
+  // Apply sound state to sound manager and game world
+  const soundManager = SoundManager.getInstance();
+  soundManager.setSoundEnabled(soundEnabled);
+  
+  if (gameWorld && gameWorld.setSoundEnabled) {
+    gameWorld.setSoundEnabled(soundEnabled);
+  }
+}
+
+function updateSoundIcon() {
+  const soundIcon = document.getElementById("sound-icon");
+  if (soundEnabled) {
+    soundIcon.src = "./assets/icons/sound-on.svg";
+    soundIcon.alt = "Sound On";
+  } else {
+    soundIcon.src = "./assets/icons/sound-off.svg";
+    soundIcon.alt = "Sound Off";
+  }
+}
+
 function startGame() {
   document.getElementById("main-menu").style.display = "none";
   document.getElementById("game-container").style.display = "flex";
   if (!gameStarted) {
     const canvas = document.getElementById("canvas");
     const keyboard = new Keyboard();
-    gameWorld = new World(canvas, keyboard, backgroundMusic);
+    gameWorld = new World(canvas, keyboard);
     window.world = gameWorld;
-    window.backgroundMusic = backgroundMusic;
+    gameWorld.setSoundEnabled(soundEnabled);
     gameWorld.startGame();
     setupMobileControls(keyboard);
     gameStarted = true;

@@ -66,7 +66,8 @@ class Endboss extends MovableObject {
     this.deadAnimationPlayed = false;
     this.deadAnimationEndTime = 0;
     this.deadFrameCount = 0;
-    this.hurtSound = new Audio('assets/audio/endboss-hurt.mp3');
+    this.soundManager = SoundManager.getInstance();
+    this.hurtSound = this.soundManager.createSound('assets/audio/endboss-hurt.mp3');
     this.thrownBottles = [];
     this.lastBottleThrow = 0;
     this.bottleThrowCooldown = 2000;
@@ -230,8 +231,7 @@ class Endboss extends MovableObject {
   }
 
   playHurtSound() {
-    this.hurtSound.currentTime = 0;
-    this.hurtSound.play().catch(e => {});
+    this.soundManager.playSound(this.hurtSound);
   }
 
   updateHealth() {

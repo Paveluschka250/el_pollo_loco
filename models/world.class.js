@@ -17,13 +17,15 @@ class World {
   backgroundMusic = null;
   gameRunning = false;
   gameIntervals = [];
+  soundEnabled = true;
 
-  constructor(canvas, keyboard, music = null) {
+  constructor(canvas, keyboard) {
     this.canvas = canvas;
     this.ctx = canvas.getContext("2d");
     this.keyboard = keyboard;
     this.camera_x = 0;
-    this.backgroundMusic = music;
+    this.backgroundMusic = null;
+    this.initBackgroundMusic();
     this.draw();
     this.setWorld();
     this.run();
@@ -33,6 +35,34 @@ class World {
 
   startGame() {
     this.gameRunning = true;
+    this.startBackgroundMusic();
+  }
+
+  initBackgroundMusic() {
+    this.soundManager = SoundManager.getInstance();
+    this.backgroundMusic = this.soundManager.createSound("assets/audio/background-music.mp3", { 
+      loop: true, 
+      volume: 0.3 
+    });
+  }
+
+  startBackgroundMusic() {
+    if (!this.backgroundMusic || !this.soundEnabled) return;
+    this.soundManager.playSound(this.backgroundMusic);
+  }
+
+  stopBackgroundMusic() {
+    this.soundManager.stopSound(this.backgroundMusic);
+  }
+
+  setSoundEnabled(enabled) {
+    this.soundEnabled = enabled;
+    this.soundManager.setSoundEnabled(enabled);
+    if (enabled && this.gameRunning) {
+      this.startBackgroundMusic();
+    } else if (!enabled) {
+      this.stopBackgroundMusic();
+    }
   }
 
   setupEventListeners() {
@@ -138,11 +168,13 @@ class World {
   checkGameEnd() {
     if (this.character.die() && !this.endscreen.visible) {
       this.endscreen.showLose();
+      this.stopBackgroundMusic();
     }
 
     const boss = this.level.chickens.find((e) => e instanceof Endboss);
     if (boss && boss.isDead && boss.width === 0 && !this.endscreen.visible) {
       this.endscreen.showWin();
+      this.stopBackgroundMusic();
     }
   }
 
@@ -500,6 +532,9 @@ class World {
     this.level = level;
     this.gameRunning = true;
     this.spaceWasDown = false;
+    if (this.soundEnabled) {
+      this.startBackgroundMusic();
+    }
   }
 
   resetStatusbars() {

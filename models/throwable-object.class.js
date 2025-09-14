@@ -15,10 +15,11 @@ class ThrowableObject extends MovableObject {
   ]
   constructor(x, y, direction = 1) {
     super();
+    this.soundManager = SoundManager.getInstance();
     this.loadImage(this.IMAGES_BOTTLE[0]);
     this.loadImages(this.IMAGES_BOTTLE);
     this.loadImages(this.IMAGES_BOTTLE_BROKEN);
-    this.throwSound = new Audio('assets/audio/throw.mp3');
+    this.throwSound = this.soundManager.createSound('assets/audio/throw.mp3');
     this.x = x;
     this.y = y;
     this.width = 80;
@@ -38,10 +39,7 @@ class ThrowableObject extends MovableObject {
   }
   throw() {
     this.speedY = 15;
-    try {
-      this.throwSound.currentTime = 0;
-      this.throwSound.play();
-    } catch (e) {}
+    this.soundManager.playSound(this.throwSound);
     this.applyGravity();
     this.moveInterval = setInterval(() => {
         if (this.hasLanded) return;

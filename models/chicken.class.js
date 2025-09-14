@@ -47,7 +47,8 @@ class Chicken extends MovableObject {
       right: 5,
     };
     this.isDead = false;
-    this.deadSound = new Audio("assets/audio/chicken.mp3");
+    this.soundManager = SoundManager.getInstance();
+    this.deadSound = this.soundManager.createSound("assets/audio/chicken.mp3");
     this.animate();
   }
 
@@ -87,12 +88,7 @@ class Chicken extends MovableObject {
       clearInterval(deadAnimation);
     }, 1000);
 
-    try {
-      if (this.deadSound) {
-        this.deadSound.currentTime = 0;
-        this.deadSound.play();
-      }
-    } catch (e) {}
+    this.soundManager.playSound(this.deadSound);
   }
 
   resetPosition() {
