@@ -24,7 +24,8 @@ class GameStateManager {
   }
 
   /**
-   * Checks and handles throwable objects (bottles)
+   * Checks and handles throwable objects (bottles) when spacebar is pressed
+   * Creates new bottle if enough energy available and resets character idle animation
    */
   checkThrowableObjects() {
     if (this.world.endscreen && this.world.endscreen.visible) {

@@ -59,9 +59,9 @@ class CollisionManager {
   }
 
   /**
-   * Checks if character can stomp on chicken
-   * @param {Chicken} chicken - Chicken instance
-   * @returns {boolean} True if character can stomp
+   * Checks if character can stomp on chicken based on position and movement
+   * @param {Chicken} chicken - Chicken instance to check stomp condition for
+   * @returns {boolean} True if character can stomp (airborne, falling, and positioned above chicken)
    */
   checkStompCondition(chicken) {
     const characterBottom =
@@ -74,8 +74,8 @@ class CollisionManager {
   }
 
   /**
-   * Executes stomp action on chicken
-   * @param {Chicken} chicken - Chicken instance to stomp
+   * Executes stomp action on chicken, killing it and bouncing character
+   * @param {Chicken} chicken - Chicken instance to stomp and kill
    */
   executeStomp(chicken) {
     chicken.playDead();

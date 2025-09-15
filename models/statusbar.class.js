@@ -83,8 +83,9 @@ class Statusbar extends DrawableObject {
   }
 
   /**
-   * Resolves the image index based on percentage and type
-   * @returns {number} Image index
+   * Resolves the image index based on percentage and statusbar type
+   * Routes to appropriate index calculation method based on statusbar type
+   * @returns {number} Image index (0-5) corresponding to percentage level
    */
   resolveImageIndex() {
     if (this.type === "health" || this.type === "endboss") {

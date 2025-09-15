@@ -86,7 +86,8 @@ class World {
   }
 
   /**
-   * Sets sound enabled state
+   * Sets sound enabled state and manages background music accordingly
+   * Resumes walk sound if character is moving when sound is re-enabled
    * @param {boolean} enabled - Whether sound is enabled
    */
   setSoundEnabled(enabled) {
@@ -206,7 +207,8 @@ class World {
   }
 
   /**
-   * Starts the main game loop
+   * Starts the main game loop running at ~60 FPS
+   * Handles all collision detection, game state updates, and game end conditions
    */
   run() {
     const gameLoop = setInterval(() => {

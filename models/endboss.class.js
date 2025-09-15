@@ -194,7 +194,8 @@ class Endboss extends MovableObject {
 
   /**
    * Handles state transitions based on distance and time
-   * @param {number} distance - Distance to character
+   * Manages walking -> alert -> attack -> walking state cycle
+   * @param {number} distance - Distance to character in pixels
    */
   handleStateTransitions(distance) {
     const alertDistance = 500;
@@ -375,6 +376,7 @@ class Endboss extends MovableObject {
 
   /**
    * Updates endboss health after taking a hit
+   * Decreases lives and converts to percentage for health bar display
    */
   updateHealth() {
     this.lives = Math.max(0, this.lives - 1);

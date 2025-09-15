@@ -36,7 +36,8 @@ class SoundManager {
   }
 
   /**
-   * Sets sound enabled state
+   * Sets sound enabled state and updates all existing sounds
+   * Saves preference to localStorage and adjusts volume/pause state of all sounds
    * @param {boolean} enabled - Whether sound is enabled
    */
   setSoundEnabled(enabled) {
@@ -54,10 +55,10 @@ class SoundManager {
   }
 
   /**
-   * Creates a new sound
+   * Creates a new sound with specified options and stores it in the sound map
    * @param {string} audioPath - Path to audio file
-   * @param {Object} options - Sound options
-   * @returns {Audio} Audio object
+   * @param {Object} options - Sound options (volume, loop, preload)
+   * @returns {Audio} Audio object with configured properties
    */
   createSound(audioPath, options = {}) {
     const sound = new Audio(audioPath);

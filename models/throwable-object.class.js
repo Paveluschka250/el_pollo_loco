@@ -44,7 +44,8 @@ class ThrowableObject extends MovableObject {
     this.animateRotation();
   }
   /**
-   * Throws the bottle with physics
+   * Throws the bottle with physics (gravity and horizontal movement)
+   * Applies initial upward velocity and horizontal movement based on direction
    */
   throw() {
     this.speedY = 15;

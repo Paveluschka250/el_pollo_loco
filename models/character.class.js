@@ -162,6 +162,7 @@ class Character extends MovableObject {
 
   /**
    * Processes a single animation frame based on character state
+   * Determines which animation to play based on character condition (dead, hurt, jumping, walking/idle)
    */
   processAnimationFrame() {
     if (this.die()) {
@@ -313,7 +314,8 @@ class Character extends MovableObject {
   }
 
   /**
-   * Handles the idle animation state
+   * Handles the idle animation state with timing-based frame updates
+   * Switches between normal idle and long idle animation after 5 seconds of inactivity
    */
   handleIdleAnimation() {
     this.idleTime += 50;

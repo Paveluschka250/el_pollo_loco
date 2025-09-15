@@ -27,9 +27,10 @@ class MovableObject extends DrawableObject {
   }
 
   /**
-   * Checks collision with offset boundaries
-   * @param {MovableObject} mo - Other movable object
-   * @returns {boolean} True if colliding with offset
+   * Checks collision with offset boundaries for more precise collision detection
+   * Uses object offsets to create smaller collision areas for better gameplay feel
+   * @param {MovableObject} mo - Other movable object to check collision with
+   * @returns {boolean} True if colliding with offset boundaries
    */
   isCollidingOffset(mo) {
     return (
@@ -52,7 +53,8 @@ class MovableObject extends DrawableObject {
   }
 
   /**
-   * Applies gravity to the object
+   * Applies gravity to the object with continuous physics simulation
+   * Updates position based on vertical speed and applies downward acceleration
    */
   applyGravity() {
     setInterval(() => {

@@ -8,7 +8,8 @@ class GameRenderer {
   }
 
   /**
-   * Main draw method that renders the entire game
+   * Main draw method that renders the entire game in a continuous loop
+   * Clears canvas, draws game world, UI elements, and overlays, then schedules next frame
    */
   draw() {
     this.clearCanvas();
@@ -26,7 +27,8 @@ class GameRenderer {
   }
 
   /**
-   * Draws the main game world
+   * Draws the main game world with camera offset applied
+   * Renders background, collectibles, clouds, chickens, endboss bar, and character
    */
   drawGameWorld() {
     this.world.ctx.translate(this.world.camera_x, 0);
@@ -154,8 +156,8 @@ class GameRenderer {
   }
 
   /**
-   * Adds a single object to the map with proper flipping
-   * @param {MovableObject} mo - Movable object to draw
+   * Adds a single object to the map with proper horizontal flipping if needed
+   * @param {MovableObject} mo - Movable object to draw on canvas
    */
   addToMap(mo) {
     if (mo.otherDirection) {
