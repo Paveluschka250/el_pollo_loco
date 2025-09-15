@@ -43,6 +43,7 @@ class GameStateManager {
         this.world.throwableObjects.push(bottle);
         bottleBar.setPercentage(Math.max(0, available - 20));
         this.world.spaceWasDown = true;
+        this.resetCharacterIdleAnimation();
       }
     }
     if (!this.world.keyboard.SPACE) {
@@ -216,5 +217,15 @@ class GameStateManager {
    */
   resetCanvas() {
     this.world.ctx.setTransform(1, 0, 0, 1, 0, 0);
+  }
+
+  /**
+   * Resets character idle animation to normal idle state
+   */
+  resetCharacterIdleAnimation() {
+    if (this.world.character) {
+      this.world.character.idleTime = 0;
+      this.world.character.lastIdleFrameAt = 0;
+    }
   }
 }
