@@ -12,28 +12,38 @@ class Endscreen extends DrawableObject {
     "assets/img/You won, you lost/You Won B.png",
   ];
 
+  visible = false;
+  type = null;
+  currentImage = null;
+  imageWidth = 0;
+  imageHeight = 0;
+  maxWidth = 400;
+  maxHeight = 200;
+  canvasWidth = 720;
+  canvasHeight = 480;
+  soundManager = SoundManager.getInstance();
+  winSound;
+  loseSound;
+  buttonWidth = 120;
+  buttonHeight = 40;
+  buttonSpacing = 20;
+
   /**
    * Creates a new Endscreen instance
    */
   constructor() {
     super();
-    this.visible = false;
-    this.type = null;
-    this.currentImage = null;
-    this.imageWidth = 0;
-    this.imageHeight = 0;
-    this.maxWidth = 400;
-    this.maxHeight = 200;
-    this.canvasWidth = 720;
-    this.canvasHeight = 480;
-    this.soundManager = SoundManager.getInstance();
-    this.winSound = this.soundManager.createSound("assets/audio/win.mp3");
-    this.loseSound = this.soundManager.createSound("assets/audio/lose.mp3");
-    this.buttonWidth = 120;
-    this.buttonHeight = 40;
-    this.buttonSpacing = 20;
     this.loadImages(this.IMAGES_GAME_LOSE);
     this.loadImages(this.IMAGES_GAME_WIN);
+    this.initializeSounds();
+  }
+
+  /**
+   * Initializes all endscreen sounds
+   */
+  initializeSounds() {
+    this.winSound = this.soundManager.createSound("assets/audio/win.mp3");
+    this.loseSound = this.soundManager.createSound("assets/audio/lose.mp3");
   }
 
   /**

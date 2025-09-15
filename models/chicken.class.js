@@ -15,10 +15,14 @@ class Chicken extends MovableObject {
   ];
   IMAGES_DEAD2 = ["assets/img/3_enemies_chicken/chicken_small/2_dead/dead.png"];
 
-  IMAGES_DEAD1 = [
-    "assets/img/3_enemies_chicken/chicken_normal/2_dead/dead.png",
-  ];
-  IMAGES_DEAD2 = ["assets/img/3_enemies_chicken/chicken_small/2_dead/dead.png"];
+  type;
+  xMin;
+  xMax;
+  IMAGES_WALKING;
+  isDead = false;
+  animationInterval;
+  soundManager = SoundManager.getInstance();
+  deadSound;
 
   /**
    * Creates a new Chicken instance
@@ -35,16 +39,8 @@ class Chicken extends MovableObject {
       type === 2 ? this.IMAGES_WALKING_2 : this.IMAGES_WALKING_1;
     this.loadImage(this.IMAGES_WALKING[0]);
     this.loadImages(this.IMAGES_WALKING);
-    this.x = Math.random() * (xMax - xMin) + xMin;
-    this.y = 370;
-    if (type === 2) {
-      this.width = 60;
-      this.height = 60;
-      this.y = 370 + (60 - this.height);
-    } else {
-      this.width = 60;
-      this.height = 60;
-    }
+    this.setupPosition(xMin, xMax, type);
+    this.setupDimensions(type);
     this.speed = 0.5 + Math.random() * 0.75;
     this.offset = {
       left: 5,
@@ -52,10 +48,38 @@ class Chicken extends MovableObject {
       bottom: 5,
       right: 5,
     };
-    this.isDead = false;
-    this.soundManager = SoundManager.getInstance();
-    this.deadSound = this.soundManager.createSound("assets/audio/chicken.mp3");
+    this.initializeSounds();
     this.animate();
+  }
+
+  /**
+   * Sets up the chicken position based on type
+   * @param {number} xMin - Minimum x position
+   * @param {number} xMax - Maximum x position
+   * @param {number} type - Chicken type
+   */
+  setupPosition(xMin, xMax, type) {
+    this.x = Math.random() * (xMax - xMin) + xMin;
+    this.y = 370;
+    if (type === 2) {
+      this.y = 370;
+    }
+  }
+
+  /**
+   * Sets up the chicken dimensions based on type
+   * @param {number} type - Chicken type
+   */
+  setupDimensions(type) {
+    this.width = 60;
+    this.height = 60;
+  }
+
+  /**
+   * Initializes all chicken sounds
+   */
+  initializeSounds() {
+    this.deadSound = this.soundManager.createSound("assets/audio/chicken.mp3");
   }
 
   /**
@@ -106,9 +130,9 @@ class Chicken extends MovableObject {
    */
   resetPosition() {
     this.x = Math.random() * (this.xMax - this.xMin) + this.xMin;
-    this.y = 360;
+    this.y = 370;
     if (this.type === 2) {
-      this.y = 360 + (60 - this.height);
+      this.y = 370 + (60 - this.height);
     }
   }
 }

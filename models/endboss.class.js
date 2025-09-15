@@ -36,6 +36,30 @@ class Endboss extends MovableObject {
     "assets/img/4_enemie_boss_chicken/5_dead/G26.png",
   ]
 
+  isHurt = false;
+  hurtEndAt = 0;
+  isDead = false;
+  lastHitTime = 0;
+  hitCooldown = 1000;
+  maxLives = 3;
+  lives = 3;
+  health = 100;
+  state = 'walking';
+  alertPlayed = false;
+  alertEndTime = 0;
+  attackEndTime = 0;
+  originalSpeed;
+  attackSpeed;
+  deadAnimationPlayed = false;
+  deadAnimationEndTime = 0;
+  deadFrameCount = 0;
+  lastDeadFrameAt = 0;
+  soundManager = SoundManager.getInstance();
+  hurtSound;
+  thrownBottles = [];
+  lastBottleThrow = 0;
+  bottleThrowCooldown = 2000;
+
   /**
    * Creates a new Endboss instance with all necessary properties and animations
    */
@@ -47,40 +71,56 @@ class Endboss extends MovableObject {
     this.loadImages(this.IMAGES_ATTACK);
     this.loadImages(this.IMAGES_HURT);
     this.loadImages(this.IMAGES_DEAD);
+    this.setupPosition();
+    this.setupDimensions();
+    this.setupSpeed();
+    this.setupOffset();
+    this.initializeSounds();
+    this.animate();
+  }
+
+  /**
+   * Sets up the endboss position
+   */
+  setupPosition() {
     this.x = 2500;
     this.y = 150;
+  }
+
+  /**
+   * Sets up the endboss dimensions
+   */
+  setupDimensions() {
     this.width = 300;
     this.height = 300;
+  }
+
+  /**
+   * Sets up the endboss speed properties
+   */
+  setupSpeed() {
     this.speed = 0.15 + Math.random() * 0.25;
-    this.isHurt = false;
-    this.hurtEndAt = 0;
-    this.isDead = false;
-    this.lastHitTime = 0;
-    this.hitCooldown = 1000;
-    this.maxLives = 3;
-    this.lives = 3;
-    this.health = 100;
-    this.state = 'walking';
-    this.alertPlayed = false;
-    this.alertEndTime = 0;
-    this.attackEndTime = 0;
     this.originalSpeed = this.speed;
     this.attackSpeed = this.speed * 20;
-    this.deadAnimationPlayed = false;
-    this.deadAnimationEndTime = 0;
-    this.deadFrameCount = 0;
-    this.soundManager = SoundManager.getInstance();
-    this.hurtSound = this.soundManager.createSound('assets/audio/endboss-hurt.mp3');
-    this.thrownBottles = [];
-    this.lastBottleThrow = 0;
-    this.bottleThrowCooldown = 2000;
+  }
+
+  /**
+   * Sets up the endboss offset
+   */
+  setupOffset() {
     this.offset = {
       left: 40,
       top: 20,
       bottom: 20,
       right: 20,
     };
-    this.animate();
+  }
+
+  /**
+   * Initializes all endboss sounds
+   */
+  initializeSounds() {
+    this.hurtSound = this.soundManager.createSound('assets/audio/endboss-hurt.mp3');
   }
 
   /**

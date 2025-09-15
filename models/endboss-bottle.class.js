@@ -14,6 +14,16 @@ class EndbossBottle extends MovableObject {
     "assets/img/6_salsa_bottle/bottle_rotation/bottle_splash/6_bottle_splash.png",
   ]
 
+  soundManager = SoundManager.getInstance();
+  throwSound;
+  groundY = 360;
+  direction;
+  hasLanded = false;
+  removed = false;
+  moveInterval;
+  rotationInterval;
+  splashInterval;
+
   /**
    * Creates a new EndbossBottle instance
    * @param {number} x - X position
@@ -22,27 +32,54 @@ class EndbossBottle extends MovableObject {
    */
   constructor(x, y, direction = 1) {
     super();
-    this.soundManager = SoundManager.getInstance();
     this.loadImage(this.IMAGES_BOTTLE[0]);
     this.loadImages(this.IMAGES_BOTTLE);
     this.loadImages(this.IMAGES_BOTTLE_BROKEN);
+    this.initializeSounds();
+    this.setupPosition(x, y, direction);
+    this.setupDimensions();
+    this.setupOffset();
+    this.throw();
+    this.animateRotation();
+  }
+
+  /**
+   * Initializes all bottle sounds
+   */
+  initializeSounds() {
     this.throwSound = this.soundManager.createSound('assets/audio/throw.mp3');
+  }
+
+  /**
+   * Sets up the bottle position
+   * @param {number} x - X position
+   * @param {number} y - Y position
+   * @param {number} direction - Direction
+   */
+  setupPosition(x, y, direction) {
     this.x = x;
     this.y = y;
+    this.direction = direction;
+  }
+
+  /**
+   * Sets up the bottle dimensions
+   */
+  setupDimensions() {
     this.width = 80;
     this.height = 80;
-    this.groundY = 360;
-    this.direction = direction;
+  }
+
+  /**
+   * Sets up the bottle offset
+   */
+  setupOffset() {
     this.offset = {
       left: 26,
       top: 15,
       bottom: 12,
       right: 26,
     };
-    this.hasLanded = false;
-    this.removed = false;
-    this.throw();
-    this.animateRotation();
   }
 
   /**

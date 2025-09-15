@@ -56,6 +56,24 @@ class Character extends MovableObject {
     "assets/img/2_character_pepe/1_idle/long_idle/I-20.png",
   ];
   world;
+  idleTime = 0;
+  lastIdleFrameAt = 0;
+  idleFrameInterval = 150;
+  longIdleFrameInterval = 180;
+  lastDeadFrameAt = 0;
+  deadFrameInterval = 150;
+  lastJumpFrameAt = 0;
+  jumpFrameInterval = 50;
+  lastWalkFrameAt = 0;
+  walkFrameInterval = 80;
+  movementInterval = null;
+  animationInterval = null;
+  soundManager = SoundManager.getInstance();
+  deadSound;
+  deadSoundPlayed = false;
+  hurtSound;
+  jumpSound;
+  walkSound;
 
   /**
    * Creates a new Character instance with all necessary properties and animations
@@ -80,26 +98,19 @@ class Character extends MovableObject {
       bottom: 10,
       right: 20,
     };
-    this.idleTime = 0;
-    this.lastIdleFrameAt = 0;
-    this.idleFrameInterval = 150;
-    this.longIdleFrameInterval = 180;
-    this.lastDeadFrameAt = 0;
-    this.deadFrameInterval = 150;
-    this.soundManager = SoundManager.getInstance();
+    this.initializeSounds();
+    this.animate();
+    this.applyGravity();
+  }
+
+  /**
+   * Initializes all character sounds
+   */
+  initializeSounds() {
     this.deadSound = this.soundManager.createSound("assets/audio/dead.mp3");
-    this.deadSoundPlayed = false;
     this.hurtSound = this.soundManager.createSound("assets/audio/hurt.mp3");
     this.jumpSound = this.soundManager.createSound("assets/audio/jump.mp3");
     this.walkSound = this.soundManager.createSound("assets/audio/walk.mp3", { loop: true });
-    this.lastJumpFrameAt = 0;
-    this.jumpFrameInterval = 50;
-    this.lastWalkFrameAt = 0;
-    this.walkFrameInterval = 80;
-    this.movementInterval = null;
-    this.animationInterval = null;
-    this.animate();
-    this.applyGravity();
   }
 
   /**
