@@ -108,7 +108,8 @@
   filter: none;
 }
 
-@media only screen and (max-width: 1024px) {
+/* Touch-Detection: Zeige Mobile Controls nur auf Touch-Geräten */
+@media (hover: none) and (pointer: coarse) {
   .mobile-controls {
     display: flex;
   }
