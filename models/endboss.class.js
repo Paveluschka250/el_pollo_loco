@@ -277,7 +277,7 @@ class Endboss extends MovableObject {
     } else if (this.state === 'alert') {
       this.playAnimation(this.IMAGES_ALERT);
     } else if (this.state === 'attack') {
-      this.playAnimation(this.IMAGES_ATTACK);
+      this.playAnimation(this.IMAGES_WALKING); // Laufanimation während des Angriffs
     } else {
       this.playAnimation(this.IMAGES_WALKING);
     }
