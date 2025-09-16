@@ -44,13 +44,13 @@
   }
   
   .control-icon img {
-    width: 25px;
-    height: 25px;
+    width: 45px;
+    height: 45px;
   }
   
   .control-image img {
-    max-width: 50px;
-    max-height: 50px;
+    max-width: 90px;
+    max-height: 90px;
   }
 }
 
@@ -148,12 +148,12 @@
   }
   
   .control-icon img {
-    width: 20px;
-    height: 20px;
+    width: 40px;
+    height: 40px;
   }
   
   .control-image img {
-    max-width: 40px;
-    max-height: 40px;
+    max-width: 80px;
+    max-height: 80px;
   }
 }
