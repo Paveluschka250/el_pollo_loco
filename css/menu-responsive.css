@@ -1,0 +1,159 @@
+/* Responsive Design für Menu-Screens */
+@media only screen and (max-width: 768px) {
+  .menu-content {
+    padding: 30px 20px;
+    margin: 20px;
+  }
+  
+  .game-title {
+    font-size: 48px;
+    letter-spacing: 2px;
+    margin-bottom: 30px;
+  }
+  
+  .menu-button {
+    font-size: 20px;
+    padding: 12px 24px;
+    min-width: 180px;
+  }
+  
+  .tutorial-content,
+  .impressum-content {
+    padding: 20px 15px;
+    margin: 15px;
+  }
+  
+  .tutorial-title,
+  .impressum-title {
+    font-size: 32px;
+    letter-spacing: 1px;
+    margin-bottom: 20px;
+  }
+  
+  .controls-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  
+  .control-item {
+    padding: 12px;
+  }
+  
+  .control-text {
+    font-size: 14px;
+  }
+  
+  .control-icon img {
+    width: 25px;
+    height: 25px;
+  }
+  
+  .control-image img {
+    max-width: 50px;
+    max-height: 50px;
+  }
+}
+
+@media only screen and (max-height: 600px) {
+  .game-title {
+    display: none; /* Entfernt den Game-Title bei geringer Höhe für mehr Platz */
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  .game-title {
+    display: none; /* Entfernt den Game-Title bei sehr kleinen Bildschirmen */
+  }
+  
+  .menu-content {
+    padding: 20px 15px;
+    margin: 10px;
+  }
+  
+  .menu-button {
+    font-size: 18px;
+    padding: 10px 20px;
+    min-width: 160px;
+  }
+  
+  .tutorial-content,
+  .impressum-content {
+    padding: 15px 10px;
+    margin: 10px;
+  }
+  
+  .tutorial-title,
+  .impressum-title {
+    font-size: 28px;
+    margin-bottom: 15px;
+  }
+  
+  .section-title {
+    font-size: 18px;
+    margin-bottom: 12px;
+  }
+  
+  .info-label {
+    min-width: 70px;
+    font-size: 14px;
+  }
+  
+  .info-value,
+  .info-text {
+    font-size: 14px;
+  }
+}
+
+@media only screen and (max-width: 360px) {
+  .menu-content {
+    padding: 15px 10px;
+    margin: 5px;
+  }
+  
+  .menu-button {
+    font-size: 16px;
+    padding: 8px 16px;
+    min-width: 140px;
+  }
+  
+  .tutorial-content,
+  .impressum-content {
+    padding: 12px 8px;
+    margin: 5px;
+  }
+  
+  .tutorial-title,
+  .impressum-title {
+    font-size: 24px;
+    margin-bottom: 12px;
+  }
+  
+  .section-title {
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+  
+  .info-label {
+    min-width: 60px;
+    font-size: 12px;
+  }
+  
+  .info-value,
+  .info-text {
+    font-size: 12px;
+  }
+  
+  .control-text {
+    font-size: 12px;
+  }
+  
+  .control-icon img {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .control-image img {
+    max-width: 40px;
+    max-height: 40px;
+  }
+}

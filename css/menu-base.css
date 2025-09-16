@@ -1,0 +1,67 @@
+/* Hauptmenu und Buttons */
+.main-menu {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+}
+
+.menu-content {
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.8);
+  padding: 40px;
+  border-radius: 20px;
+  border: 3px solid #FFD700;
+  box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+  max-width: 90%;
+  width: 100%;
+}
+
+.game-title {
+  font-size: 60px;
+  letter-spacing: 4px;
+  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
+  color: #FFD700;
+  margin-bottom: 40px;
+  font-family: "rye", Arial, Helvetica, sans-serif;
+}
+
+.menu-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+}
+
+.menu-button {
+  background: linear-gradient(145deg, #FFD700, #FF8C00);
+  border: 3px solid #8B4513;
+  border-radius: 15px;
+  color: #000;
+  font-family: "rye", Arial, Helvetica, sans-serif;
+  font-size: 24px;
+  font-weight: bold;
+  padding: 15px 30px;
+  cursor: pointer;
+  text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.3);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+  transition: all 0.3s ease;
+  min-width: 200px;
+}
+
+.menu-button:hover {
+  background: linear-gradient(145deg, #FFA500, #FF4500);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.6);
+  border-color: #FFD700;
+}
+
+.menu-button:active {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+}
