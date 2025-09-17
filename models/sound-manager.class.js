@@ -66,10 +66,8 @@ class SoundManager {
     sound.volume = this.soundEnabled ? sound.originalVolume : 0;
     sound.loop = options.loop || false;
     sound.preload = options.preload || "auto";
-    
     const soundId = audioPath.split('/').pop().split('.')[0];
     this.sounds.set(soundId, sound);
-    
     return sound;
   }
 

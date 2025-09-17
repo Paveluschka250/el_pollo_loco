@@ -151,6 +151,19 @@ class GameStateManager {
    * @param {Endboss} chicken - Endboss instance to reset
    */
   resetEndboss(chicken) {
+    this.resetEndbossState(chicken);
+    this.resetEndbossPosition(chicken);
+    this.resetEndbossSpeed(chicken);
+    this.resetEndbossTimers(chicken);
+    this.resetEndbossAnimation(chicken);
+    this.resetEndbossBottles(chicken);
+  }
+
+  /**
+   * Resets endboss state and health
+   * @param {Endboss} chicken - Endboss instance to reset
+   */
+  resetEndbossState(chicken) {
     chicken.isDead = false;
     chicken.isHurt = false;
     chicken.lives = 3;
@@ -159,21 +172,56 @@ class GameStateManager {
     chicken.alertPlayed = false;
     chicken.deadAnimationPlayed = false;
     chicken.deadFrameCount = 0;
+  }
+
+  /**
+   * Resets endboss position and dimensions
+   * @param {Endboss} chicken - Endboss instance to reset
+   */
+  resetEndbossPosition(chicken) {
     chicken.width = 300;
     chicken.height = 300;
     chicken.x = 2000;
     chicken.y = 150;
+  }
+
+  /**
+   * Resets endboss speed values
+   * @param {Endboss} chicken - Endboss instance to reset
+   */
+  resetEndbossSpeed(chicken) {
     chicken.speed = 0.15 + Math.random() * 0.25;
+    chicken.originalSpeed = chicken.speed;
+    chicken.attackSpeed = chicken.originalSpeed * 20;
+  }
+
+  /**
+   * Resets endboss timer values
+   * @param {Endboss} chicken - Endboss instance to reset
+   */
+  resetEndbossTimers(chicken) {
     chicken.hurtEndAt = 0;
     chicken.lastHitTime = 0;
     chicken.alertEndTime = 0;
     chicken.attackEndTime = 0;
-    chicken.originalSpeed = chicken.speed;
-    chicken.attackSpeed = chicken.originalSpeed * 20;
     chicken.deadAnimationEndTime = 0;
     chicken.lastDeadFrameAt = 0;
+  }
+
+  /**
+   * Resets endboss animation
+   * @param {Endboss} chicken - Endboss instance to reset
+   */
+  resetEndbossAnimation(chicken) {
     chicken.currentImage = 0;
     chicken.img = chicken.imageCache[chicken.IMAGES_WALKING[0]];
+  }
+
+  /**
+   * Resets endboss bottle throwing
+   * @param {Endboss} chicken - Endboss instance to reset
+   */
+  resetEndbossBottles(chicken) {
     chicken.thrownBottles = [];
     chicken.lastBottleThrow = 0;
   }

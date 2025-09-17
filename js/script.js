@@ -18,10 +18,7 @@ function setupMenuEventListeners() {
   const howToPlayBtn = document.getElementById("how-to-play-btn");
   const impressumBtn = document.getElementById("impressum-btn");
   const backToMenuBtn = document.getElementById("back-to-menu-btn");
-  const backToMenuImpressumBtn = document.getElementById(
-    "back-to-menu-impressum-btn"
-  );
-
+  const backToMenuImpressumBtn = document.getElementById("back-to-menu-impressum-btn");
   startGameBtn.addEventListener("click", startGame);
   howToPlayBtn.addEventListener("click", showHowToPlay);
   impressumBtn.addEventListener("click", showImpressum);
@@ -35,11 +32,9 @@ function setupMenuEventListeners() {
 function setupSoundToggle() {
   const soundToggleBtn = document.getElementById("sound-toggle-btn");
   const soundManager = SoundManager.getInstance();
-
   soundToggleBtn.addEventListener("click", handleSoundToggleClick);
   soundToggleBtn.addEventListener("keydown", preventKeyboardEvents);
   soundToggleBtn.addEventListener("keyup", preventKeyboardEvents);
-
   soundEnabled = soundManager.soundEnabled;
   updateSoundIcon();
 }
@@ -78,7 +73,6 @@ function toggleSound() {
 function applySoundState() {
   const soundManager = SoundManager.getInstance();
   soundManager.setSoundEnabled(soundEnabled);
-
   if (gameWorld && gameWorld.setSoundEnabled) {
     gameWorld.setSoundEnabled(soundEnabled);
   }
@@ -116,7 +110,6 @@ function updateSoundIcon() {
 function startGame() {
   hideMainMenu();
   showGameContainer();
-
   if (!gameStarted) {
     initializeNewGame();
   } else {
@@ -144,14 +137,12 @@ function showGameContainer() {
 function initializeNewGame() {
   const canvas = document.getElementById("canvas");
   const keyboard = new Keyboard();
-
   gameWorld = new World(canvas, keyboard);
   window.world = gameWorld;
   gameWorld.setSoundEnabled(soundEnabled);
   gameWorld.startGame();
   setupMobileControls(keyboard);
   gameStarted = true;
-
   focusCanvasAfterDelay(canvas);
 }
 
@@ -224,7 +215,6 @@ function checkMobileOrientation() {
   const overlay = document.getElementById("mobile-rotation-overlay");
   const isPortrait = window.innerHeight > window.innerWidth;
   const isMobile = window.innerWidth <= 768;
-
   if (isMobile && isPortrait) {
     showMobileOverlay(overlay);
   } else {
@@ -257,7 +247,6 @@ function setupMobileControls(keyboard) {
   const rightBtn = document.getElementById("right-btn");
   const jumpBtn = document.getElementById("jump-btn");
   const throwBtn = document.getElementById("throw-btn");
-
   setupButtonEvents(leftBtn, rightBtn, jumpBtn, throwBtn, keyboard);
 }
 
@@ -274,7 +263,6 @@ function setupButtonEvents(leftBtn, rightBtn, jumpBtn, throwBtn, keyboard) {
   addTouchEvents(rightBtn, "RIGHT", keyboard);
   addTouchEvents(jumpBtn, "UP", keyboard);
   addTouchEvents(throwBtn, "SPACE", keyboard);
-
   addMouseEvents(leftBtn, "LEFT", keyboard);
   addMouseEvents(rightBtn, "RIGHT", keyboard);
   addMouseEvents(jumpBtn, "UP", keyboard);
@@ -292,12 +280,10 @@ function addTouchEvents(button, key, keyboard) {
     e.preventDefault();
     keyboard[key] = true;
   });
-
   button.addEventListener("touchend", (e) => {
     e.preventDefault();
     keyboard[key] = false;
   });
-
   button.addEventListener("touchcancel", (e) => {
     e.preventDefault();
     keyboard[key] = false;
@@ -315,12 +301,10 @@ function addMouseEvents(button, key, keyboard) {
     e.preventDefault();
     keyboard[key] = true;
   });
-
   button.addEventListener("mouseup", (e) => {
     e.preventDefault();
     keyboard[key] = false;
   });
-
   button.addEventListener("mouseleave", (e) => {
     e.preventDefault();
     keyboard[key] = false;

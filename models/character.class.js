@@ -165,21 +165,10 @@ class Character extends MovableObject {
    * Determines which animation to play based on character condition (dead, hurt, jumping, walking/idle)
    */
   processAnimationFrame() {
-    if (this.die()) {
-      this.handleDeadAnimation();
-      return;
-    }
-    if (this.world.endscreen && this.world.endscreen.visible) {
-      return;
-    }
-    if (this.hurt()) {
-      this.handleHurtAnimation();
-      return;
-    }
-    if (this.isAboveGround()) {
-      this.handleJumpAnimation();
-      return;
-    }
+    if (this.die()) {this.handleDeadAnimation();return;}
+    if (this.world.endscreen && this.world.endscreen.visible) {return;}
+    if (this.hurt()) {this.handleHurtAnimation();return;}
+    if (this.isAboveGround()) {this.handleJumpAnimation();return;}
     this.handleWalkOrIdleAnimation();
   }
 
@@ -304,11 +293,9 @@ class Character extends MovableObject {
    * Starts the walk sound effect
    */
   startWalkSound() {
-    // Only start walk sound if it's not already playing
     if (this.walkSound && this.walkSound.paused) {
       this.soundManager.playSound(this.walkSound, { resetTime: false });
     } else if (this.walkSound && !this.walkSound.paused) {
-      // Ensure volume is correct if already playing
       this.walkSound.volume = this.soundManager.soundEnabled ? (this.walkSound.originalVolume || 1) : 0;
     }
   }

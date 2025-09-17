@@ -101,10 +101,26 @@ class Chicken extends MovableObject {
     if (this.isDead) return;
     this.isDead = true;
     this.speed = 0;
+    this.setupDeadAnimation();
+    this.startDeadAnimation();
+    this.soundManager.playSound(this.deadSound);
+  }
+
+  /**
+   * Sets up the death animation by loading dead images
+   */
+  setupDeadAnimation() {
     const deadImages = this.type === 2 ? this.IMAGES_DEAD2 : this.IMAGES_DEAD1;
     this.loadImages(deadImages);
     this.currentImage = 0;
     this.img = this.imageCache[deadImages[0]];
+  }
+
+  /**
+   * Starts the death animation sequence
+   */
+  startDeadAnimation() {
+    const deadImages = this.type === 2 ? this.IMAGES_DEAD2 : this.IMAGES_DEAD1;
     let deadFrameCount = 0;
     const deadAnimation = setInterval(() => {
       if (deadFrameCount < deadImages.length) {
@@ -115,14 +131,19 @@ class Chicken extends MovableObject {
         this.img = this.imageCache[deadImages[deadImages.length - 1]];
       }
     }, 200);
+    this.scheduleDeadCleanup(deadAnimation);
+  }
 
+  /**
+   * Schedules cleanup after death animation completes
+   * @param {number} deadAnimation - Animation interval ID
+   */
+  scheduleDeadCleanup(deadAnimation) {
     setTimeout(() => {
       this.width = 0;
       this.height = 0;
       clearInterval(deadAnimation);
     }, 1000);
-
-    this.soundManager.playSound(this.deadSound);
   }
 
   /**
