@@ -45,7 +45,9 @@ function setupSoundToggle() {
  * @param {Event} e - The click event
  */
 function handleSoundToggleClick(e) {
-  e.preventDefault();
+  if (e.cancelable) {
+    e.preventDefault();
+  }
   toggleSound();
 }
 
@@ -54,7 +56,9 @@ function handleSoundToggleClick(e) {
  * @param {Event} e - The keyboard event
  */
 function preventKeyboardEvents(e) {
-  e.preventDefault();
+  if (e.cancelable) {
+    e.preventDefault();
+  }
   e.stopPropagation();
 }
 
@@ -296,15 +300,21 @@ function setupButtonEvents(leftBtn, rightBtn, jumpBtn, throwBtn, keyboard) {
  */
 function addTouchEvents(button, key, keyboard) {
   button.addEventListener("touchstart", (e) => {
-    e.preventDefault();
+    if (e.cancelable) {
+      e.preventDefault();
+    }
     keyboard[key] = true;
   });
   button.addEventListener("touchend", (e) => {
-    e.preventDefault();
+    if (e.cancelable) {
+      e.preventDefault();
+    }
     keyboard[key] = false;
   });
   button.addEventListener("touchcancel", (e) => {
-    e.preventDefault();
+    if (e.cancelable) {
+      e.preventDefault();
+    }
     keyboard[key] = false;
   });
 }
@@ -317,15 +327,21 @@ function addTouchEvents(button, key, keyboard) {
  */
 function addMouseEvents(button, key, keyboard) {
   button.addEventListener("mousedown", (e) => {
-    e.preventDefault();
+    if (e.cancelable) {
+      e.preventDefault();
+    }
     keyboard[key] = true;
   });
   button.addEventListener("mouseup", (e) => {
-    e.preventDefault();
+    if (e.cancelable) {
+      e.preventDefault();
+    }
     keyboard[key] = false;
   });
   button.addEventListener("mouseleave", (e) => {
-    e.preventDefault();
+    if (e.cancelable) {
+      e.preventDefault();
+    }
     keyboard[key] = false;
   });
 }
