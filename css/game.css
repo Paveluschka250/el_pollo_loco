@@ -8,7 +8,7 @@
   border: 2px solid #FFD700;
   border-radius: 50%;
   cursor: pointer;
-  display: flex;
+  display: none; /* Standardmäßig versteckt */
   align-items: center;
   justify-content: center;
   z-index: 2000;
@@ -16,6 +16,10 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   outline: none;
   user-select: none;
+}
+
+.sound-toggle-btn.visible {
+  display: flex; /* Sichtbar wenn das Spiel läuft */
 }
 
 .sound-toggle-btn:hover {

@@ -8,6 +8,7 @@ let soundEnabled = true;
 function init() {
   setupMenuEventListeners();
   setupSoundToggle();
+  hideSoundToggle(); // Versteckt den Button beim ersten Laden
 }
 
 /**
@@ -129,6 +130,23 @@ function hideMainMenu() {
  */
 function showGameContainer() {
   document.getElementById("game-container").style.display = "flex";
+  showSoundToggle();
+}
+
+/**
+ * Shows the sound toggle button
+ */
+function showSoundToggle() {
+  const soundToggleBtn = document.getElementById("sound-toggle-btn");
+  soundToggleBtn.classList.add("visible");
+}
+
+/**
+ * Hides the sound toggle button
+ */
+function hideSoundToggle() {
+  const soundToggleBtn = document.getElementById("sound-toggle-btn");
+  soundToggleBtn.classList.remove("visible");
 }
 
 /**
@@ -206,6 +224,7 @@ function backToMainMenuFromImpressum() {
  */
 function showMainMenu() {
   document.getElementById("main-menu").style.display = "flex";
+  hideSoundToggle();
 }
 
 /**
