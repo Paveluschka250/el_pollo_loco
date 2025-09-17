@@ -3,6 +3,7 @@
   .menu-content {
     padding: 30px 20px;
     margin: 20px;
+    max-width: 450px;
   }
   
   .game-title {
@@ -68,6 +69,7 @@
   .menu-content {
     padding: 20px 15px;
     margin: 10px;
+    max-width: 350px;
   }
   
   .menu-button {
@@ -108,6 +110,7 @@
   .menu-content {
     padding: 15px 10px;
     margin: 5px;
+    max-width: 300px;
   }
   
   .menu-button {
